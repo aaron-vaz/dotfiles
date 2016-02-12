@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+import os
+import sys
+import subprocess
+
+processes = []
+
+arg = sys.argv[0]
+if arg and os.path.isdir(arg):
+    location = arg
+else:
+    location = os.getcwd()
+
+
+def get_folders(path):
+    return next(os.walk(path))[1]
+
+for folder in get_folders(location):
+    if '.git' in get_folders(folder):
+        processes.append(subprocess.Popen('cd {} && git svn fetch --fetch-all && git stash --include-untracked && git svn rebase -l && git stash pop && git diff --name-only --diff-filter=U'.format(folder), shell=True))
+
+for process in processes:
+    process.communicate()

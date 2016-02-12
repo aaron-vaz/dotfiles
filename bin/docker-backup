@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Where $1 is the name of the volume ('data')
+# $2 is the path in the volume ('/data')
+# $3 is the name of the backup tar
+
+docker run --rm -v $1:$2 -v $(pwd):/backup alpine tar cvf /backup/$3 $2

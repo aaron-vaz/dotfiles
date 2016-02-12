@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+eval "$(jenv init -)"
+jenv shell oracle64-1.5.0.30
+
+ENVIRONMENT='Dev'
+JBOSS_LOCATION='/Applications/jboss-5.1.0.GA'
+
+echo "QA or Dev? (Dev):"
+read ENVIRONMENT
+
+if [ "$ENVIRONMENT" == "QA" ]
+then
+    echo "Switching to QA"
+    cp $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml.QA $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml
+else
+    echo "Switching to Dev"
+    cp $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml.DEV $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml
+fi
+
+echo "Cleaning up tmp"
+rm -R $JBOSS_LOCATION/server/default/tmp/*
+
+echo "Launching tab for logs"
+osascript <<END
+tell application "iTerm"
+ tell the current terminal
+  launch session "Default Session"
+  tell the last session
+   write text "grc tail -n 200 -F /$JBOSS_LOCATION/bin/etis-default.log"
+  end tell
+ end tell
+end tell
+END
+
+echo "Starting JBawss"
+cd $JBOSS_LOCATION/bin/ && sh run.sh -b 0.0.0.0 -Ddev.ldap.enable=false

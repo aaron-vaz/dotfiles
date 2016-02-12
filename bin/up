@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+brew update && brew upgrade --all
+brew cleanup --force
+#antigen update
+#antigen selfupdate
+apm upgrade -c false

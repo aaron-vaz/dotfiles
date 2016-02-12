@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+git stash --include-untracked
+git svn rebase
+git stash pop

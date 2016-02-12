@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo '=============================='
+echo 'Deleting stopped containers...'
+echo '=============================='
+
+docker rm $(docker ps -a -q)
+
+echo '==========================='
+echo 'Deleting untagged images...'
+echo '==========================='
+
+docker rmi $(docker images -q)
+
+echo '====='
+echo 'Done!'
