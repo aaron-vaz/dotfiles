@@ -14,12 +14,18 @@ then
   # Install homebrew
   if test ! $(which brew)
   then
-    $ZSH/homebrew/install.sh 2>&1
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
+
   # Upgrade homebrew
   echo "› brew update"
   brew update
-elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
+
+  # Run Homebrew through the Brewfile
+  echo "› brew bundle"
+  brew bundle check --file=$ZSH/Brewfile
+  brew bundle --file=$ZSH/Brewfile
+elif test "$(uname)" = "Linux"
 then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
 fi

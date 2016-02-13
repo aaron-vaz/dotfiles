@@ -2,9 +2,34 @@
 
 set -e
 
-brew update
-brew upgrade --all
-brew cleanup --force
+if test "$(uname)" = "Linux"
+then
+  if test "$(which apt-get)"
+  then
+    echo "› updating apt-get"
+    sudo apt-get update
+    sudo apt-get dist-upgrade
+  elif test "$(which dnf)"
+  then
+    echo "› updating dnf"
+    sudo dnf update
+  fi
+fi
+
+if test "$(uname)" = "Darwin"
+then
+  echo "› updating brew"
+  brew update
+  brew upgrade --all
+  brew cleanup --force
+fi
+
+echo "› updating antigen"
 antigen update
 antigen selfupdate
-apm upgrade -c false
+
+if test "$(which apm)"
+then
+  echo "› updating apm"
+  apm upgrade -c false
+fi

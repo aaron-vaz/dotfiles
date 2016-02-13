@@ -4,9 +4,6 @@ autocomplete-python@1.6.1
 compare-files@0.6.2
 custom-title@1.0.1
 file-icons@1.6.14
-git-control@0.4.0
-git-history@3.2.0
-git-plus@5.13.0
 jshint@1.8.3
 language-docker@1.1.6
 language-groovy@0.5.0

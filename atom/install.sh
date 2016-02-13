@@ -1,2 +1,5 @@
-apm list --installed --bare | xargs apm uninstall
-apm install --packages-file ~/.dotfiles/atom/package-list.txt
+if test "$(which apm)"
+then
+  rm -R ~/.atom/packages/*
+  apm install --packages-file ~/.dotfiles/atom/package-list.txt
+fi
