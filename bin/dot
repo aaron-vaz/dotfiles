@@ -6,15 +6,23 @@
 # to make sure you're on the latest and greatest.
 export ZSH=$HOME/.dotfiles
 
-# Set OS X defaults
-$ZSH/osx/set-defaults.sh
+if test "$(uname)" = "Darwin"
+then
+  # Set OS X defaults
+  $ZSH/osx/set-defaults.sh
 
-# Install homebrew
-$ZSH/homebrew/install.sh 2>&1
-
-# Upgrade homebrew
-echo "› brew update"
-brew update
+  # Install homebrew
+  if test ! $(which brew)
+  then
+    $ZSH/homebrew/install.sh 2>&1
+  fi
+  # Upgrade homebrew
+  echo "› brew update"
+  brew update
+elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
+then
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
+fi
 
 # Install software
 echo "› $ZSH/script/install"
