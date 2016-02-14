@@ -27,7 +27,17 @@ fi
 if test "$(which fzf)"
 then
   echo "› updating fzf"
-  cd ~/.fzf && git pull && ./install
+  if test "$(git -C ~/.fzf pull)" != "Already up-to-date."
+  then
+    cd ~/.fzf/install
+  fi
+fi
+
+if test -d ~/.tmux/plugins/tpm
+then
+  echo "› updating tpm"
+  git -C ~/.tmux/plugins/tpm pull
+  ~/.tmux/plugins/tpm/bin/update_plugins all
 fi
 
 if test "$(which antigen)"
@@ -35,6 +45,7 @@ then
   echo "› updating antigen"
   antigen update
   antigen selfupdate
+  antigen cleanup
 fi
 
 if test "$(which apm)"

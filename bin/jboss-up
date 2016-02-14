@@ -29,7 +29,7 @@ tell application "iTerm"
  tell the current terminal
   launch session "Default Session"
   tell the last session
-   write text "grc tail -n 200 -F /$JBOSS_LOCATION/bin/etis-default.log"
+   write text "tail -n 200 -F /$JBOSS_LOCATION/bin/*-default.log"
   end tell
  end tell
 end tell
