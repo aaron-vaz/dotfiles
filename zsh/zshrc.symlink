@@ -43,5 +43,4 @@ unset config_files
 #-------JEnv-------
 if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 
-#-------Fzf-------
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

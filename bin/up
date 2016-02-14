@@ -16,7 +16,7 @@ then
   fi
 fi
 
-if test "$(uname)" = "Darwin"
+if test "$(which brew)"
 then
   echo "› updating brew"
   brew update
@@ -24,9 +24,18 @@ then
   brew cleanup --force
 fi
 
-echo "› updating antigen"
-antigen update
-antigen selfupdate
+if test "$(which fzf)"
+then
+  echo "› updating fzf"
+  cd ~/.fzf && git pull && ./install
+fi
+
+if test "$(which antigen)"
+then
+  echo "› updating antigen"
+  antigen update
+  antigen selfupdate
+fi
 
 if test "$(which apm)"
 then
