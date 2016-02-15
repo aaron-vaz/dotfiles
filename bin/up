@@ -22,6 +22,7 @@ then
   brew update
   brew upgrade --all
   brew cleanup --force
+  brew cask cleanup
 fi
 
 if test "$(which fzf)"
@@ -29,7 +30,7 @@ then
   echo "› updating fzf"
   if test "$(git -C ~/.fzf pull)" != "Already up-to-date."
   then
-    cd ~/.fzf/install
+    ~/.fzf/install
   fi
 fi
 
