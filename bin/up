@@ -30,7 +30,7 @@ then
   echo "› updating fzf"
   if test "$(git -C ~/.fzf pull)" != "Already up-to-date."
   then
-    ~/.fzf/install
+    ~/.fzf/install --all --no-update-rc
   fi
 fi
 
@@ -46,7 +46,7 @@ then
   echo "› updating antigen"
   antigen update
   antigen selfupdate
-  antigen cleanup
+  antigen cleanup --force
 fi
 
 if test "$(which apm)"
