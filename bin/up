@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 if test "$(uname)" = "Linux"
 then
   if test "$(which apt-get)"
@@ -9,10 +7,12 @@ then
     echo "› updating apt-get"
     sudo apt-get update
     sudo apt-get dist-upgrade
+    echo
   elif test "$(which dnf)"
   then
     echo "› updating dnf"
     sudo dnf update
+    echo
   fi
 fi
 
@@ -23,6 +23,7 @@ then
   brew upgrade --all
   brew cleanup --force
   brew cask cleanup
+  echo
 fi
 
 if test "$(which fzf)"
@@ -32,6 +33,7 @@ then
   then
     ~/.fzf/install --all --no-update-rc
   fi
+  echo
 fi
 
 if test -d ~/.tmux/plugins/tpm
@@ -39,18 +41,23 @@ then
   echo "› updating tpm"
   git -C ~/.tmux/plugins/tpm pull
   ~/.tmux/plugins/tpm/bin/update_plugins all
+  echo
 fi
 
-if test "$(which antigen)"
+if test "$(which zplug)"
 then
-  echo "› updating antigen"
-  antigen update
-  antigen selfupdate
-  antigen cleanup --force
+  echo "› updating zplug"
+  zplug update
+  zplug update --self
+  zplug clean --force
+  zplug clear --force
+  zplug load
+  echo
 fi
 
 if test "$(which apm)"
 then
   echo "› updating apm"
   apm upgrade -c false
+  echo
 fi

@@ -9,9 +9,9 @@ export ZSH=$HOME/.dotfiles
 if test "$(uname)" = "Darwin"
 then
   # Set OS X defaults
-  $ZSH/osx/set-defaults.sh
+  $DOTFILES/osx/set-defaults.sh
 fi
 
 # Install software
-echo "› $ZSH/script/install"
-$ZSH/script/install
+echo "› $DOTFILES/script/install"
+$DOTFILES/script/install

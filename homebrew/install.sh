@@ -12,8 +12,8 @@ then
 
   # Run Homebrew through the Brewfile
   echo "› brew bundle"
-  brew bundle check --file=$ZSH/Brewfile
-  brew bundle --file=$ZSH/Brewfile
+  brew bundle check --file=$DOTFILES/Brewfile
+  brew bundle --file=$DOTFILES/Brewfile
 elif test "$(uname)" = "Linux"
 then
   if test ! $(which brew)

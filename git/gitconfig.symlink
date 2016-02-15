@@ -5,7 +5,7 @@
         protocol = https
 [alias]
         co = checkout
-        rank-contributors = !$ZSH/bin/git-rank-contributors
+        rank-contributors = !$DOTFILES/bin/git-rank-contributors
         count   = !git shortlog -sn
 [color]
         diff = auto
