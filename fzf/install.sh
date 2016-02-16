@@ -1,4 +1,6 @@
-if test "$(which fzf)"
+#!/bin/sh
+
+if test "$(which fzf 2> /dev/null)"
 then
   cd ~/.fzf && git pull && ./install --all --no-update-rc
 else

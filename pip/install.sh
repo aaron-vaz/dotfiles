@@ -1,4 +1,6 @@
-if test "$(which pip3)"
+#!/bin/sh
+
+if test "$(which pip3 2> /dev/null)"
 then
   pip3 install --user --upgrade -r ~/.dotfiles/pip/requirements.txt
 else

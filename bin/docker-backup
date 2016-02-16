@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Where $1 is the name of the volume ('data')
 # $2 is the path in the volume ('/data')
