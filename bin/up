@@ -6,13 +6,13 @@ set -e
 
 if test "$(uname)" = "Linux"
 then
-  if test "$(which apt-get 2> /dev/null)"
+  if test "$(whence apt-get 2> /dev/null)"
   then
     echo "\033[00;32m›\033[0m updating apt-get"
     sudo apt-get update
     sudo apt-get dist-upgrade
     echo
-  elif test "$(which dnf 2> /dev/null)"
+  elif test "$(whence dnf 2> /dev/null)"
   then
     echo "\033[00;32m›\033[0m updating dnf"
     sudo dnf update
@@ -20,7 +20,7 @@ then
   fi
 fi
 
-if test "$(which brew 2> /dev/null)"
+if test "$(whence brew 2> /dev/null)"
 then
   echo "\033[00;32m›\033[0m updating brew"
   brew update
@@ -30,7 +30,7 @@ then
   echo
 fi
 
-if test "$(which fzf 2> /dev/null)"
+if test "$(whence fzf 2> /dev/null)"
 then
   echo "\033[00;32m›\033[0m updating fzf"
   if test "$(git -C ~/.fzf pull)" != "Already up-to-date."
@@ -48,7 +48,7 @@ then
   echo
 fi
 
-if test "$(which zplug 2> /dev/null)"
+if test "$(whence zplug 2> /dev/null)"
 then
   echo "\033[00;32m›\033[0m updating zplug"
   zplug update
@@ -59,7 +59,7 @@ then
   echo
 fi
 
-if test "$(which apm 2> /dev/null)"
+if test "$(whence apm 2> /dev/null)"
 then
   echo "\033[00;32m›\033[0m updating apm"
   apm upgrade -c false
