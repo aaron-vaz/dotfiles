@@ -11,11 +11,16 @@ then
     echo "\033[00;32m--›\033[0m updating apt-get"
     sudo apt-get update
     sudo apt-get dist-upgrade
+    sudo apt-get autoremove
+    sudo apt-get clean
     echo
   elif test "$(whence dnf 2> /dev/null)"
   then
     echo "\033[00;32m--›\033[0m updating dnf"
+    sudo dnf clean all
     sudo dnf update
+    sudo dnf autoremove
+    sudo dnf clean all
     echo
   fi
 fi
@@ -26,7 +31,10 @@ then
   brew update
   brew upgrade --all
   brew cleanup --force
-  brew cask cleanup
+  if test "$(uname)" = "Darwin"
+  then
+    brew cask cleanup
+  fi
   echo
 fi
 
