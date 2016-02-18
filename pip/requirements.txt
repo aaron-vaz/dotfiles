@@ -2,3 +2,4 @@ glances
 wheel
 pip
 virtualenvwrapper
+autoenv

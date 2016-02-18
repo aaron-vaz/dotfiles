@@ -1,25 +1,16 @@
-# black or 0	red or 1
-# green or 2	yellow or 3
+# black or 0	  red or 1
+# green or 2	  yellow or 3
 # blue or 4	    magenta or 5
 # cyan or 6	    white or 7
 
 function parse_git_dirty() {
-  local STATUS=''
-  local FLAGS
-  FLAGS=('--porcelain')
-
-  if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-    FLAGS+='--ignore-submodules=dirty'
-  fi
-  if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-    FLAGS+='--untracked-files=no'
-  fi
-  STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
+  local STATUS=$(command git status --porcelain 2> /dev/null | tail -n1)
 
   if [[ -n $STATUS ]]; then
     echo "*"
   fi
 }
+
 function git_prompt_info() {
   local ref
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -42,12 +33,15 @@ function virtualenv_prompt_info() {
 
 local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-local user_host='%{$terminfo[bold]$fg[blue]%}%n@%m%{$reset_color%} '
-local current_dir='%{$terminfo[bold]%}%~%{$reset_color%} '
+local user_host='%{$terminfo[bold]$fg[blue]%}%n on %m%{$reset_color%} '
+local current_dir='%~ '
 local git_branch='$(git_prompt_info)%{$reset_color%} '
 local virtualenv='$(virtualenv_prompt_info)%{$reset_color%} '
 
-PROMPT="╭-${user_host}${current_dir}${git_branch}${virtualenv}
-╰%B▶︎%b "
+local prompt_top="╭-${user_host}${current_dir}${git_branch}${virtualenv}"
+local prompt_btm="╰%B▶︎%b "
+
+PROMPT="${prompt_top}
+${prompt_btm}"
 
 RPS1="${return_code}"
