@@ -1,7 +1,5 @@
 source ~/.zplug/zplug
 
-zplug "themes/bira", from:oh-my-zsh
-
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-completions", nice:10
 

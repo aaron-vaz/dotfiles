@@ -8,13 +8,13 @@ if test "$(uname)" = "Linux"
 then
   if test "$(whence apt-get 2> /dev/null)"
   then
-    echo "\033[00;32m›\033[0m updating apt-get"
+    echo "\033[00;32m--›\033[0m updating apt-get"
     sudo apt-get update
     sudo apt-get dist-upgrade
     echo
   elif test "$(whence dnf 2> /dev/null)"
   then
-    echo "\033[00;32m›\033[0m updating dnf"
+    echo "\033[00;32m--›\033[0m updating dnf"
     sudo dnf update
     echo
   fi
@@ -22,7 +22,7 @@ fi
 
 if test "$(whence brew 2> /dev/null)"
 then
-  echo "\033[00;32m›\033[0m updating brew"
+  echo "\033[00;32m--›\033[0m updating brew"
   brew update
   brew upgrade --all
   brew cleanup --force
@@ -32,7 +32,7 @@ fi
 
 if test "$(whence fzf 2> /dev/null)"
 then
-  echo "\033[00;32m›\033[0m updating fzf"
+  echo "\033[00;32m--›\033[0m updating fzf"
   if test "$(git -C ~/.fzf pull)" != "Already up-to-date."
   then
     ~/.fzf/install --all --no-update-rc
@@ -42,7 +42,7 @@ fi
 
 if test -d ~/.tmux/plugins/tpm
 then
-  echo "\033[00;32m›\033[0m updating tpm"
+  echo "\033[00;32m--›\033[0m updating tpm"
   git -C ~/.tmux/plugins/tpm pull
   ~/.tmux/plugins/tpm/bin/update_plugins all
   echo
@@ -50,7 +50,7 @@ fi
 
 if test "$(whence zplug 2> /dev/null)"
 then
-  echo "\033[00;32m›\033[0m updating zplug"
+  echo "\033[00;32m--›\033[0m updating zplug"
   zplug update
   zplug update --self
   zplug clean --force
@@ -61,7 +61,7 @@ fi
 
 if test "$(whence apm 2> /dev/null)"
 then
-  echo "\033[00;32m›\033[0m updating apm"
+  echo "\033[00;32m--›\033[0m updating apm"
   apm upgrade -c false
   echo
 fi
