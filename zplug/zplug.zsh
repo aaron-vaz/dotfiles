@@ -1,7 +1,6 @@
 source ~/.zplug/zplug
 
-zplug "zsh-users/zsh-syntax-highlighting", nice:10
-zplug "zsh-users/zsh-completions", nice:10
+source $DOTFILES/zplug/plugins.zsh
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "

@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 source ~/.zplug/zplug
+source $DOTFILES/zplug/plugins.zsh
 
 set -e
 
