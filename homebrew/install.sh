@@ -9,6 +9,7 @@ then
 
   echo "› brew update"
   brew update
+  brew upgrade --all
 
   echo "› brew bundle"
   brew bundle check --file=$DOTFILES/Brewfile.mac
@@ -34,6 +35,7 @@ then
 
   echo "› brew update"
   brew update
+  brew upgrade --all
 
   echo "› brew bundle"
   brew bundle check --file=$DOTFILES/Brewfile.linux
