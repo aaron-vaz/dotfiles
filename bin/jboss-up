@@ -20,8 +20,10 @@ else
     cp $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml.DEV $JBOSS_LOCATION/server/default/deploy/oracle-ds.xml
 fi
 
+set +e
 echo "Cleaning up tmp"
 rm -R $JBOSS_LOCATION/server/default/tmp/*
+set -e
 
 echo "Launching tab for logs"
 osascript <<END
@@ -29,7 +31,7 @@ tell application "iTerm"
  tell the current terminal
   launch session "Default Session"
   tell the last session
-   write text "tail -n 200 -F /$JBOSS_LOCATION/bin/*-default.log"
+   write text "tail -n 200 -F $JBOSS_LOCATION/bin/*-default.log"
   end tell
  end tell
 end tell
