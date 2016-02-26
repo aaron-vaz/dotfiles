@@ -49,6 +49,13 @@ then
   echo
 fi
 
+if test "$(whence apm 2> /dev/null)"
+then
+  echo "\033[00;32m──›\033[0m updating apm"
+  apm upgrade -c false
+  echo
+fi
+
 if test -d ~/.tmux/plugins/tpm
 then
   echo "\033[00;32m──›\033[0m updating tpm"
@@ -65,12 +72,5 @@ then
   zplug clean --force
   zplug clear --force
   zplug load
-  echo
-fi
-
-if test "$(whence apm 2> /dev/null)"
-then
-  echo "\033[00;32m──›\033[0m updating apm"
-  apm upgrade -c false
   echo
 fi
