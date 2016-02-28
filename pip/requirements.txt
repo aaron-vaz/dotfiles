@@ -4,3 +4,4 @@ pip
 virtualenvwrapper
 autoenv
 piprot
+pylama
