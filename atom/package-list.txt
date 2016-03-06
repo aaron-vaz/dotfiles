@@ -1,4 +1,5 @@
 atom-beautify
+atom-typescript
 autocomplete-paths
 autocomplete-python
 compare-files
