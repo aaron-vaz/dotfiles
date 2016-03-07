@@ -1,5 +1,4 @@
 "*":
-  "atom-typescript": {}
   "autocomplete-plus":
     autoActivationDelay: 500
     confirmCompletion: "enter"
@@ -15,8 +14,6 @@
   editor:
     backUpBeforeSaving: true
     fontSize: 12
-    invisibles:
-      tab: "⇥"
     preferredLineLength: 128
     scrollPastEnd: true
     showIndentGuide: true
