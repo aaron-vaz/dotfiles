@@ -81,5 +81,5 @@ fi
 if test "$(uname)" = "Darwin"
 then
   echo "\033[00;32m──›\033[0m OS X Software Update"
-  sudo softwareupdate -i -a
+  softwareupdate -l
 fi
