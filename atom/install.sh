@@ -1,9 +1,11 @@
-#!/bin/sh
+#!/bin/zsh
 
-# This script unfortunately reinstalls all packages, due to apm not currently providing adequate package management options.
-
-if test "$(which apm 2> /dev/null)"
+if test "$(whence apm 2> /dev/null)"
 then
-  rm -R ~/.atom/packages/*
-  apm install --packages-file ~/.dotfiles/atom/package-list.txt
+    # Check for differences, if the lists don't match, reinstall.
+    if [[ -n $(comm -3 <(apm list --installed --bare | cut -f1 -d"@" | sort | grep -v '^$') <(sort ~/.dotfiles/atom/package-list.txt | grep -v '^$')) ]]
+    then
+        rm -R ~/.atom/packages/*
+        apm install --packages-file ~/.dotfiles/atom/package-list.txt
+    fi
 fi

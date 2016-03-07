@@ -5,3 +5,4 @@ virtualenvwrapper
 autoenv
 piprot
 pylama
+pip-tools

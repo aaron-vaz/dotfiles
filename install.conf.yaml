@@ -1,0 +1,28 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.zshrc: zsh/zshrc.symlink
+    ~/.atom: atom.symlink
+    ~/.tmux.conf: tmux/tmux.conf.symlink
+    ~/.gitconfig.local: git/gitconfig.local.symlink
+    ~/.gitconfig: git/gitconfig.symlink
+    ~/.gitignore: git/gitignore.symlink
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+  - [~/.dotfiles/atom/install.sh, "Installing Atom plugins"]
+  - [~/.dotfiles/fzf/install.sh, "Installing fzf"]
+  - command: ~/.dotfiles/git/install.sh
+    stdin: true
+    stdout: true
+  - [~/.dotfiles/homebrew/install.sh, "Installing Homebrew"]
+  - [~/.dotfiles/iterm2/install.sh, "Installing iTerm2 theme"]
+  - [~/.dotfiles/osx/set-defaults.sh, "Setting OSX defaults"]
+  - [~/.dotfiles/pip/install.sh, "Installing pip"]
+  - [~/.dotfiles/tmux/install.sh, "Installing tmux"]
+  - [~/.dotfiles/zplug/install.sh, "Installing zplug"]
+  - [~/.dotfiles/bin/up, "Updating"]

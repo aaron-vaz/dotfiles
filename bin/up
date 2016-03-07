@@ -60,6 +60,8 @@ if test -d ~/.tmux/plugins/tpm
 then
   echo "\033[00;32m──›\033[0m updating tpm"
   git -C ~/.tmux/plugins/tpm pull
+  # tries to delete everything when TMUX_PLUGIN_MANAGER_PATH is unset https://github.com/tmux-plugins/tpm/issues/58
+  #~/.tmux/plugins/tpm/bin/clean_plugins
   ~/.tmux/plugins/tpm/bin/update_plugins all
   echo
 fi
@@ -67,10 +69,17 @@ fi
 if test "$(whence zplug 2> /dev/null)"
 then
   echo "\033[00;32m──›\033[0m updating zplug"
+  set +e
   zplug update
   zplug update --self
   zplug clean --force
   zplug clear --force
   zplug load
-  echo
+  set -e
+fi
+
+if test "$(uname)" = "Darwin"
+then
+  echo "\033[00;32m──›\033[0m OS X Software Update"
+  sudo softwareupdate -i -a
 fi
