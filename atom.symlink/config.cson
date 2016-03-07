@@ -1,0 +1,43 @@
+"*":
+  "atom-typescript": {}
+  "autocomplete-plus":
+    autoActivationDelay: 500
+    confirmCompletion: "enter"
+  core:
+    disabledPackages: [
+      "background-tips"
+      "exception-reporting"
+      "metrics"
+    ]
+    hideGitIgnoredFiles: true
+  "custom-title":
+    template: "<%= relativeFilePath %>"
+  editor:
+    backUpBeforeSaving: true
+    fontSize: 12
+    invisibles:
+      tab: "⇥"
+    preferredLineLength: 128
+    scrollPastEnd: true
+    showIndentGuide: true
+    showInvisibles: true
+    tabLength: 4
+  "file-icons":
+    coloured: false
+  "one-dark-ui":
+    layoutMode: "Compact"
+  "spell-check":
+    grammars: [
+      "text.plain"
+      "source.gfm"
+      "text.git-commit"
+      "text.html.basic"
+    ]
+  tabs:
+    enableVcsColoring: true
+  "tabs-to-spaces":
+    onSave: "untabify"
+  "tree-view":
+    hideIgnoredNames: true
+  welcome:
+    showOnStartup: false

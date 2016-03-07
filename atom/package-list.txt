@@ -2,6 +2,7 @@ atom-beautify
 atom-typescript
 autocomplete-paths
 autocomplete-python
+color-picker
 compare-files
 custom-title
 file-icons
@@ -15,8 +16,8 @@ linter-pylama
 linter-tidy
 linter-xmllint
 markdown-pdf
+minimap
 pretty-json
-save-session
 script
 sort-lines
 tabs-to-spaces
