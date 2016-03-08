@@ -33,8 +33,6 @@
     ]
   tabs:
     enableVcsColoring: true
-  "tabs-to-spaces":
-    onSave: "untabify"
   "tree-view":
     hideIgnoredNames: true
   welcome:
