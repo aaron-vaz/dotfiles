@@ -1,4 +1,1 @@
-if [[ "$(whence jenv 2> /dev/null)" ]]
-then
-    eval "$(jenv init - --no-rehash zsh)"
-fi
+[[ $(whence jenv 2> /dev/null) ]] && eval "$(jenv init - --no-rehash zsh)"
