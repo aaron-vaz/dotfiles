@@ -22,6 +22,8 @@
     tabLength: 4
   "file-icons":
     coloured: false
+  linter:
+    showErrorPanel: false
   "one-dark-ui":
     layoutMode: "Compact"
   "spell-check":

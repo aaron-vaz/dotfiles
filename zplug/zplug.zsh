@@ -5,7 +5,7 @@ export ZPLUG_THREADS=32
 zplug "b4b4r07/zplug"
 
 #Load path first.
-zplug "$DOTFILES", of:"**/path.zsh", from:local, nice:-1
+zplug "$DOTFILES", of:"**/path.zsh", nice:1, from:local
 
 #Load everything else.
 zplug "$DOTFILES", of:"**/*.zsh", ignore:"**/(path|completion|zplug|config|plugins).zsh", from:local

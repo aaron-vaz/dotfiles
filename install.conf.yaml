@@ -25,4 +25,6 @@
   - [~/.dotfiles/pip/install.sh, "Installing pip"]
   - [~/.dotfiles/tmux/install.sh, "Installing tmux"]
   - [~/.dotfiles/zplug/install.sh, "Installing zplug"]
-  - [~/.dotfiles/bin/up, "Updating"]
+  - command: ~/.dotfiles/bin/up
+    stdin: true
+    stdout: true

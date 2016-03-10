@@ -1,1 +1,1 @@
-eval "$(jenv init -)"
+eval "$(jenv init - --no-rehash zsh)"
