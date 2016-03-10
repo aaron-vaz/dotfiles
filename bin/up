@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 source ~/.zplug/zplug
-source $DOTFILES/zplug/plugins.zsh
+source $DOTFILES/zplug/zplug.zsh
 
 set -e
 
@@ -32,6 +32,7 @@ then
   brew update
   brew upgrade --all
   brew cleanup --force
+  brew prune
   if test "$(uname)" = "Darwin"
   then
     brew cask cleanup
