@@ -2,9 +2,6 @@
 
 set -e
 
-eval "$(jenv init -)"
-jenv shell oracle64-1.5.0.30
-
 ENVIRONMENT='Dev'
 JBOSS_LOCATION='/Applications/jboss-5.1.0.GA'
 
@@ -25,17 +22,6 @@ echo "Cleaning up tmp"
 rm -R $JBOSS_LOCATION/server/default/tmp/*
 set -e
 
-echo "Launching tab for logs"
-osascript <<END
-tell application "iTerm"
- tell the current terminal
-  launch session "Default Session"
-  tell the last session
-   write text "tail -n 200 -F $JBOSS_LOCATION/bin/*-default.log"
-  end tell
- end tell
-end tell
-END
-
-echo "Starting JBawss"
-cd $JBOSS_LOCATION/bin/ && sh run.sh -b 0.0.0.0 -Ddev.ldap.enable=false
+tmux new-session -d "tail -n 200 -F $JBOSS_LOCATION/bin/*-default.log"
+tmux split-window -v "cd $JBOSS_LOCATION/bin; eval $(jenv init -); jenv shell oracle64-1.5.0.30; sh run.sh -b 0.0.0.0 -Ddev.ldap.enable=false"
+tmux -2 attach-session -d
