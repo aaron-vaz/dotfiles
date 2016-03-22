@@ -2,7 +2,6 @@ glances
 wheel
 pip
 virtualenvwrapper
-autoenv
 piprot
 pylama
 pip-tools
