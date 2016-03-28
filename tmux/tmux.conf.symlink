@@ -6,7 +6,7 @@ set -g base-index 1
 set-window-option -g pane-base-index 1
 
 # increase scrollback lines
-set -g history-limit 10000
+set -g history-limit 100000
 
 # Local config
 if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'
