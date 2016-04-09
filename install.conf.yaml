@@ -11,6 +11,8 @@
     ~/.gitconfig.local: git/gitconfig.local.symlink
     ~/.gitconfig: git/gitconfig.symlink
     ~/.gitignore: git/gitignore.symlink
+    ~/.nanorc: nano/nanorc.symlink
+    ~/.nano: nano.symlink
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
