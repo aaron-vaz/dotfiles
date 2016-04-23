@@ -23,5 +23,5 @@ rm -R $JBOSS_LOCATION/server/default/tmp/*
 set -e
 
 tmux new-session -d "tail -n 200 -F $JBOSS_LOCATION/bin/*-default.log"
-tmux split-window -v "cd $JBOSS_LOCATION/bin; eval $(jenv init -); jenv shell oracle64-1.5.0.30; sh run.sh -b 0.0.0.0 -Ddev.ldap.enable=false"
+tmux split-window -v "cd $JBOSS_LOCATION/bin; eval $(jenv init -); jenv shell 1.6; sh run.sh"
 tmux -2 attach-session -d

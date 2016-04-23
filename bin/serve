@@ -1,3 +1,21 @@
-#!/bin/sh
+#!/bin/zsh
 
-python3 -m http.server $1
+local PORT=$(shuf -i 2000-65000 -n 1)
+
+local WIRED=$(ipconfig getifaddr en3)
+local WIFI=$(ipconfig getifaddr en0)
+
+if [[ $WIRED ]]; then
+    local INTERFACEIP="$WIRED"
+else
+    local INTERFACEIP="$WIFI"
+fi
+
+local URL="http://$INTERFACEIP:$PORT/$1"
+
+echo $URL | pbcopy
+
+echo "$URL copied to clipboard."
+
+#TODO: Check to see if this command fails, and try a different port.
+python3 -m http.server $PORT

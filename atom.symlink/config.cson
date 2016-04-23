@@ -22,6 +22,8 @@
     tabLength: 4
   "file-icons":
     coloured: false
+  "language-log":
+    tail: true
   "linter-pylama":
     ignoreErrorsAndWarnings: "E501"
     pylamaVersion: "internal"

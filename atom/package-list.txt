@@ -3,7 +3,6 @@ atom-typescript
 autocomplete-paths
 autocomplete-python
 color-picker
-compare-files
 custom-title
 file-icons
 jshint

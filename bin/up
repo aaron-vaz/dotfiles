@@ -1,10 +1,6 @@
 #!/usr/bin/env zsh
 
-source ~/.zplug/zplug
-source $DOTFILES/zplug/zplug.zsh
-
 set -e
-
 
 if [[ $(git -C $DOTFILES diff --shortstat 2> /dev/null | tail -n1) != "" ]]
 then
@@ -79,14 +75,15 @@ then
   echo
 fi
 
-if test "$(whence zplug 2> /dev/null)"
+if test -d ~/.zplug
 then
   echo "\033[00;32m──›\033[0m updating zplug"
   set +e
+  git -C ~/.zplug pull
+  source $DOTFILES/zplug/zplug.zsh
   zplug update
-  zplug update --self
   zplug clean --force
-  zplug clear --force
+  zplug clear
   zplug load
   set -e
 fi

@@ -14,3 +14,8 @@ fi
 source $DOTFILES/zsh/config.zsh
 source $DOTFILES/zplug/zplug.zsh
 zplug load
+
+if [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]
+then
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+fi
