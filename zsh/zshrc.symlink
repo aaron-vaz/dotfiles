@@ -12,6 +12,7 @@ then
 fi
 
 source $DOTFILES/zsh/config.zsh
+
 source $DOTFILES/zplug/zplug.zsh
 zplug load
 

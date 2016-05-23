@@ -2,6 +2,7 @@
 
 set -e
 
+git svn fetch --parent
 git stash --include-untracked
-git svn rebase
+git svn rebase --local
 git stash pop

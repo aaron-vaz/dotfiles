@@ -24,6 +24,8 @@
     coloured: false
   "language-log":
     tail: true
+  linter:
+    showErrorPanel: false
   "linter-pylama":
     ignoreErrorsAndWarnings: "E501"
     pylamaVersion: "internal"

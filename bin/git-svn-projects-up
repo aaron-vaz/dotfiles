@@ -17,7 +17,7 @@ def get_folders(path):
 
 for folder in get_folders(location):
     if '.git' in get_folders(folder):
-        processes.append(subprocess.Popen('cd {} && git svn fetch --fetch-all && git stash --include-untracked && git svn rebase -l && git stash pop && git diff --name-only --diff-filter=U'.format(folder), shell=True))
+        processes.append(subprocess.Popen('cd {} && git-svn-up'.format(folder), shell=True))
 
 for process in processes:
     process.communicate()

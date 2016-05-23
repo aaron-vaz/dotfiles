@@ -22,6 +22,10 @@ echo "Cleaning up tmp"
 rm -R $JBOSS_LOCATION/server/default/tmp/*
 set -e
 
+# Ping the server and open the browser when it's finished starting.
+trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
+for i in {1..300}; do httping -qc1 http://localhost:8181 && open http://localhost:8181 && break; done 2> /dev/null &
+
 tmux new-session -d "tail -n 200 -F $JBOSS_LOCATION/bin/*-default.log"
 tmux split-window -v "cd $JBOSS_LOCATION/bin; eval $(jenv init -); jenv shell 1.6; sh run.sh"
 tmux -2 attach-session -d
