@@ -1,8 +1,13 @@
 function pip() {
-    if [[ "$@" == "install"* ]]
+    if [ -f $PYTHONUSERBASE/bin/pip ]
     then
-        $PYTHONUSERBASE/bin/pip "$@" --user
+        if [[ "$@" == "install"* ]]
+        then
+            $PYTHONUSERBASE/bin/pip "$@" --user
+        else
+            $PYTHONUSERBASE/bin/pip "$@"
+        fi
     else
-        $PYTHONUSERBASE/bin/pip "$@"
+        command "$0" "$@"
     fi
 }

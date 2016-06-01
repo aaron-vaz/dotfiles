@@ -18,12 +18,12 @@ then
   if test "$(whence apt-get 2> /dev/null)"
   then
     echo "\033[00;32m──›\033[0m updating apt-get"
-    sudo apt-get update
+    sudo apt update
     set +e
-    sudo apt-get dist-upgrade
-    sudo apt-get autoremove
+    sudo apt dist-upgrade
+    sudo apt autoremove
     set -e
-    sudo apt-get clean
+    sudo apt clean
     echo
   elif test "$(whence dnf 2> /dev/null)"
   then
@@ -41,14 +41,12 @@ fi
 if test "$(whence brew 2> /dev/null)"
 then
   echo "\033[00;32m──›\033[0m updating brew"
+  brew bundle cleanup --file=$DOTFILES/homebrew/Brewfile
   brew update
   brew upgrade --all
   brew cleanup --force
   brew prune
-  if test "$(uname)" = "Darwin"
-  then
-    brew cask cleanup
-  fi
+  brew cask cleanup
   echo
 fi
 
