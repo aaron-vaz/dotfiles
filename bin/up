@@ -18,12 +18,12 @@ then
   if test "$(whence apt-get 2> /dev/null)"
   then
     echo "\033[00;32m──›\033[0m updating apt-get"
-    sudo apt update
+    sudo apt-get update
     set +e
-    sudo apt dist-upgrade
-    sudo apt autoremove
+    sudo apt-get dist-upgrade
+    sudo apt-get autoremove
     set -e
-    sudo apt clean
+    sudo apt-get clean
     echo
   elif test "$(whence dnf 2> /dev/null)"
   then
