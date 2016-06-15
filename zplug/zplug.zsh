@@ -12,6 +12,7 @@ zplug "lwis/zsh-theme"
 
 #Load completions last.
 zplug "$DOTFILES", use:"**/completion.zsh", nice:10, from:local
+zplug "zsh-users/zsh-autosuggestions", nice:10
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-completions", nice:10
 zplug "srijanshetty/zsh-pip-completion", nice:10

@@ -27,7 +27,6 @@
   linter:
     showErrorPanel: false
   "linter-pylama":
-    ignoreErrorsAndWarnings: "E501"
     pylamaVersion: "internal"
     usePep257: false
   "one-dark-ui":
