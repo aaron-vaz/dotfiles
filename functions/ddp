@@ -1,0 +1,4 @@
+function ddp()
+{
+    pv -tpreb $1 | dd of=$2 bs=65536 conv=notrunc,noerror
+}

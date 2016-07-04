@@ -11,6 +11,7 @@ language-groovy
 language-log
 linter
 linter-csslint
+linter-js-yaml
 linter-pylama
 linter-tidy
 linter-xmllint

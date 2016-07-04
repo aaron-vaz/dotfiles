@@ -26,6 +26,10 @@
     tail: true
   linter:
     showErrorPanel: false
+  "linter-js-yaml":
+    customTags: [
+      "!include"
+    ]
   "linter-pylama":
     pylamaVersion: "internal"
     usePep257: false
