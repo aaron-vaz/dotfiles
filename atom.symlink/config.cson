@@ -24,13 +24,16 @@
     coloured: false
   "language-log":
     tail: true
-  linter:
-    showErrorPanel: false
   "linter-js-yaml":
     customTags: [
       "!include"
+      "!include_dir_list"
+      "!include_dir_named"
+      "!include_dir_merge_list"
+      "!include_dir_merge_named"
     ]
   "linter-pylama":
+    ignoreErrorsAndWarnings: "D203,D212,D213,D404,E501"
     pylamaVersion: "internal"
     usePep257: false
   "one-dark-ui":
