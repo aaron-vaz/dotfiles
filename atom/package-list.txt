@@ -5,6 +5,7 @@ autocomplete-python
 color-picker
 custom-title
 file-icons
+go-plus
 jshint
 language-docker
 language-groovy
