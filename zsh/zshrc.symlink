@@ -1,7 +1,7 @@
 # shortcut to this dotfiles path is $DOTFILES
-export DOTFILES=$HOME/.dotfiles
+export PROJECTS=$HOME/Code
 
-export PROJECTS=$HOME/Projects
+export DOTFILES=$PROJECTS/shell/dotfiles
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
