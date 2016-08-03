@@ -6,8 +6,8 @@ zplug "$DOTFILES", use:"**/path.zsh", nice:1, from:local
 #Load everything else.
 zplug "$DOTFILES", use:"**/*.zsh", ignore:"**/(path|completion|zplug|config|plugins).zsh", from:local
 
-#Load the theme.
-zplug "lwis/zsh-theme"
+# Load pure prompt theme.
+zplug "sindresorhus/pure"
 #zplug "$PROJECTS/zsh-theme", from:local
 
 #Load completions last.
