@@ -8,7 +8,7 @@ zplug "$DOTFILES", use:"**/*.zsh", ignore:"**/(path|completion|zplug|config|plug
 
 # Load pure prompt theme.
 zplug "sindresorhus/pure"
-#zplug "$PROJECTS/zsh-theme", from:local
+zplug "mafredri/zsh-async"
 
 #Load completions last.
 zplug "$DOTFILES", use:"**/completion.zsh", nice:10, from:local
