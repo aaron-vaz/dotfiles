@@ -1,3 +1,3 @@
 function ssh() {
-    /usr/bin/ssh -t "$@" "tmux attach -t \"lewis~remote\" || tmux new -s \"lewis~remote\" || zsh || bash";
+    /usr/bin/ssh -t "$@" "tmux attach -t \"aaron~remote\" || tmux new -s \"aaron~remote\" || zsh || bash";
 }
