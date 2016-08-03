@@ -3,9 +3,9 @@
 if test "$(whence apm 2> /dev/null)"
 then
     # Check for differences, if the lists don't match, reinstall.
-    if [[ -n $(comm -3 <(apm list --installed --bare | cut -f1 -d"@" | sort | grep -v '^$') <(sort ~/.dotfiles/atom/package-list.txt | grep -v '^$')) ]]
+    if [[ -n $(comm -3 <(apm list --installed --bare | cut -f1 -d"@" | sort | grep -v '^$') <(sort ~/Code/shell/dotfiles/atom/package-list.txt | grep -v '^$')) ]]
     then
         rm -R ~/.atom/packages/*
-        apm install --packages-file ~/.dotfiles/atom/package-list.txt
+        apm install --packages-file ~/Code/shell/dotfiles/atom/package-list.txt
     fi
 fi

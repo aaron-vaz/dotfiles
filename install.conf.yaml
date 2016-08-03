@@ -19,6 +19,7 @@
   - [~/Code/shell/dotfiles/zplug/install.sh, "Installing zplug"]
   - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
   - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
+  - [~/Code/shell/dotfiles/jenv/install.sh, "Installing jenv"]
   - command: ~/Code/shell/dotfiles/git/install.sh
     stdin: true
     stdout: true

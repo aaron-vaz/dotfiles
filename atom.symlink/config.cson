@@ -13,7 +13,7 @@
     template: "<%= relativeFilePath %>"
   editor:
     backUpBeforeSaving: true
-    fontSize: 12
+    fontSize: 11
     invisibles: {}
     preferredLineLength: 128
     scrollPastEnd: true
