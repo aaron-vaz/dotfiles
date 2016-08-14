@@ -5,8 +5,17 @@ Plug 'junegunn/vim-easy-align'
 
 " go support
 Plug 'fatih/vim-go'
-
 Plug 'nsf/gocode'
+
+" the nerd tree
+Plug 'scrooloose/nerdtree'
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+map <C-n> :NERDTreeToggle<CR>
+
+
+" vim airline
+Plug 'bling/vim-airline'
 
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
