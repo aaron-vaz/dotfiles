@@ -5,4 +5,3 @@ virtualenvwrapper
 piprot
 pylama
 pip-tools
-livestreamer
