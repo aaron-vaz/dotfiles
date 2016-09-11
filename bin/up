@@ -52,8 +52,15 @@ fi
 
 if test "$(whence pip 2> /dev/null)"
 then
-  echo "\033[00;32m──›\033[0m updating pip"
+  echo "\033[00;32m──›\033[0m updating pip2"
   pip install --user --upgrade -r $DOTFILES/pip/requirements.txt
+  echo
+fi
+
+if test "$(whence pip3 2> /dev/null)"
+then
+  echo "\033[00;32m──›\033[0m updating pip3"
+  pip3 install --user --upgrade -r $DOTFILES/pip/requirements.txt
   echo
 fi
 
