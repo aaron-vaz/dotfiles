@@ -63,6 +63,7 @@ brew 'zsh'
 
 cask '1password'
 cask 'alfred'
+cask 'android-file-transfer'
 cask 'atom'
 cask 'chicken'
 cask 'cyberduck'
