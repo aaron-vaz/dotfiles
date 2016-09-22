@@ -91,6 +91,13 @@ then
   echo
 fi
 
+if test -f ~/.vim/autoload/plug.vim
+then
+  echo "\033[00;32m──›\033[0m updating vim-plug"
+  vim +PlugUpdate +PlugUpgrade +qall
+  echo
+fi
+
 if test -d ~/.zplug
 then
   echo "\033[00;32m──›\033[0m updating zplug"
