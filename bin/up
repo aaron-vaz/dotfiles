@@ -43,7 +43,7 @@ then
   echo "\033[00;32m──›\033[0m updating brew"
   brew bundle cleanup --file=$DOTFILES/homebrew/Brewfile
   brew update
-  brew upgrade --all
+  brew upgrade
   brew cleanup --force
   brew prune
   brew cask cleanup
