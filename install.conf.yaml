@@ -17,14 +17,16 @@
 
 - shell:
   - [git submodule update --init --recursive, "Installing submodules"]
-  - [~/Code/shell/dotfiles/zplug/install.sh, "Installing zplug"]
   - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
+  - [~/Code/shell/dotfiles/vscode/install.sh, "Installing VS Code plugins"]
   - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
   - [~/Code/shell/dotfiles/vim-plug/install.sh, "Installing Vim Plug"]
   - command: ~/Code/shell/dotfiles/git/install.sh
     stdin: true
     stdout: true
   - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
+  - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
+  - [~/Code/shell/dotfiles/golang/install.sh, "Installing GO Packages"]
   - [~/Code/shell/dotfiles/iterm2/install.sh, "Installing iTerm2 theme"]
   - [~/Code/shell/dotfiles/osx/set-defaults.sh, "Setting OSX defaults"]
   - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]

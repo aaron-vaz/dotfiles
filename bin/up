@@ -98,21 +98,8 @@ then
   echo
 fi
 
-if test -d ~/.zplug
-then
-  echo "\033[00;32m──›\033[0m updating zplug"
-  set +e
-  git -C ~/.zplug pull
-  source $DOTFILES/zplug/zplug.zsh
-  zplug update
-  zplug clean --force
-  zplug clear
-  zplug load
-  set -e
-fi
-
-if test "$(uname)" = "Darwin"
-then
-  echo "\033[00;32m──›\033[0m OS X Software Update"
-  softwareupdate -l
+if which antibody >/dev/null 2>&1; then
+  echo "\033[00;32m──›\033[0m update antibody"
+  antibody update
+  echo
 fi
