@@ -8,4 +8,5 @@ else
 fi
 
 antibody bundle < "$DOTFILES/antibody/bundles" > ~/.antibody_bundles
+antibody bundle sindresorhus/pure >> ~/.antibody_bundles
 antibody bundle < "$DOTFILES/antibody/last_bundles" >> ~/.antibody_bundles
