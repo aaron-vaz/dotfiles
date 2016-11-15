@@ -1,5 +1,6 @@
 - defaults:
     link:
+      create: true
       relink: true
 
 - clean: ['~']
@@ -17,20 +18,20 @@
 
 - shell:
   - [git submodule update --init --recursive, "Installing submodules"]
-  - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
-  - [~/Code/shell/dotfiles/vscode/install.sh, "Installing VS Code plugins"]
+  - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
+  - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
   - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
   - [~/Code/shell/dotfiles/vim-plug/install.sh, "Installing Vim Plug"]
+  - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
+  - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
+  - [~/Code/shell/dotfiles/golang/install.sh, "Installing GO Packages"]
   - command: ~/Code/shell/dotfiles/git/install.sh
     stdin: true
     stdout: true
-  - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
-  - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
-  - [~/Code/shell/dotfiles/golang/install.sh, "Installing GO Packages"]
   - [~/Code/shell/dotfiles/iterm2/install.sh, "Installing iTerm2 theme"]
   - [~/Code/shell/dotfiles/osx/set-defaults.sh, "Setting OSX defaults"]
-  - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
-  - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
+  - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
+  - [~/Code/shell/dotfiles/vscode/install.sh, "Installing VS Code plugins"]
   - command: ~/Code/shell/dotfiles/bin/up
     stdin: true
     stdout: true
