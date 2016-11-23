@@ -103,3 +103,9 @@ if which antibody >/dev/null 2>&1; then
   antibody update
   echo
 fi
+
+if test "$(uname)" = "Darwin"
+then
+  echo "\033[00;32m──›\033[0m OS X Software Update"
+  softwareupdate -l	
+fi
