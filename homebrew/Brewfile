@@ -65,6 +65,7 @@ brew 'utf8proc'
 brew 'vim'
 brew 'watch'
 brew 'wget'
+brew 'yarn'
 brew 'youtube-dl'
 brew 'zsh'
 
