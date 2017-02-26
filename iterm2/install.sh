@@ -1,4 +1,4 @@
 if test "$(uname)" = "Darwin"
 then
-  open $DOTFILES/iterm2/iterm2/Mathias.itermcolors
+  open $DOTFILES/iterm2/Mathias.itermcolors
 fi
