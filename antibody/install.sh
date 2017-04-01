@@ -4,7 +4,8 @@ if which brew >/dev/null 2>&1; then
   brew tap -q getantibody/homebrew-antibody
   brew install antibody
 else
-  curl -sL https://git.io/vwMNi | sh -s
+  curl -sL https://git.io/antibody | bash -s
+  echo 'source <(antibody init)' >> ~/.zshrc
 fi
 
 antibody bundle < "$DOTFILES/antibody/bundles" > ~/.antibody_bundles

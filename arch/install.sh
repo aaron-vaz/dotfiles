@@ -2,5 +2,5 @@
 
 if test "$(whence pacman 2> /dev/null)"
 then
-  sudo pacman -S - < $DOTFILES/arch/ArchPackages
+  sudo pacman -S --noconfirm - < $DOTFILES/arch/ArchPackages
 fi

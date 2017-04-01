@@ -2,7 +2,7 @@
 
 set -e
 
-DOTFILES="$PWD"
+export DOTFILES="$PWD"
 CONFIG="install.conf.yaml"
 HEADLESS_CONFIG="install.conf.headless.yaml"
 DOTBOT_DIR="dotbot"

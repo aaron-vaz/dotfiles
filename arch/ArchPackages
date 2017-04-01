@@ -58,6 +58,10 @@ perl
 pkg-config
 procps-ng
 psmisc
+python
+python2
+python-pip
+python2-pip
 reiserfsprogs
 s-nail
 sed
