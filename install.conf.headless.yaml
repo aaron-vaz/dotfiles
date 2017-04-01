@@ -1,0 +1,32 @@
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.zshrc: zsh/zshrc.symlink
+    ~/.vimrc: vim-plug/vimrc.symlink
+    ~/.tmux.conf: tmux/tmux.conf.symlink
+    ~/.gitconfig.local: git/gitconfig.local.symlink
+    ~/.gitconfig: git/gitconfig.symlink
+    ~/.gitignore: git/gitignore.symlink
+    ~/.nanorc: nano/nanorc.symlink
+    ~/.nano: nano.symlink
+
+- shell:
+  - [git submodule update --init --recursive, "Installing submodules"]
+  - [~/Code/shell/dotfiles/arch/install.sh, "Installing Arch Packages"]
+  - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
+  - [~/Code/shell/dotfiles/fzf/install.sh, "Installing FZF"]
+  - [~/Code/shell/dotfiles/vim-plug/install.sh, "Installing Vim Plug"]
+  - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
+  - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
+  - [~/Code/shell/dotfiles/golang/install.sh, "Installing Golang Packages"]
+  - command: ~/Code/shell/dotfiles/git/install.sh
+    stdin: true
+    stdout: true
+  - command: ~/Code/shell/dotfiles/bin/up
+    stdin: true
+    stdout: true

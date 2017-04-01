@@ -1,0 +1,12 @@
+#!/bin/sh
+# Helper for using cower to install AUR packages
+
+if [[ $1 != "" ]]
+then
+  cd /tmp
+  cower -dd "$1"
+  cd "*$1*"
+  makepkg -si
+else
+  echo "Please specify a target to install"
+fi

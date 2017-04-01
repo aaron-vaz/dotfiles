@@ -11,11 +11,12 @@ if test "$(which code)"; then
 
   modules="
     PeterJausovec.vscode-docker
-    dbaeumer.vscode-eslint
     donjayamanne.python
-    dracula-theme.theme-dracula
+    gerane.Theme-Dark-Dracula
     lukehoban.Go
     mattn.Runner
+    robertohuertasm.vscode-icons
+    seanmcbreen.Spell
   "
   for module in $modules; do
     code --install-extension "$module" || true

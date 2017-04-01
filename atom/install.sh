@@ -6,6 +6,6 @@ then
     if [[ -n $(comm -3 <(apm list --installed --bare | cut -f1 -d"@" | sort | grep -v '^$') <(sort ~/Code/shell/dotfiles/atom/package-list.txt | grep -v '^$')) ]]
     then
         rm -R ~/.atom/packages/*
-        apm install --packages-file ~/Code/shell/dotfiles/atom/package-list.txt
+        apm install --packages-file $DOTFILES/atom/package-list.txt
     fi
 fi
