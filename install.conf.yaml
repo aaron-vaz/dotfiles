@@ -24,6 +24,7 @@
 
 - shell:
   - [git submodule update --init --recursive, "Installing submodules"]
+  - [~/Code/shell/dotfiles/arch/install.sh, "Installing Arch Packages"]
   - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
   - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
   - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
