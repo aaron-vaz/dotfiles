@@ -106,6 +106,13 @@ then
   echo
 fi
 
+if test -f ~/.local/share/nvim/site/autoload/plug.vim
+then
+  echo "\033[00;32m──›\033[0m updating neovim-plug"
+  nvim +PlugUpdate +PlugUpgrade +qall
+  echo
+fi
+
 if which antibody >/dev/null 2>&1; then
   echo "\033[00;32m──›\033[0m updating antibody"
   antibody update

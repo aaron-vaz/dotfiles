@@ -1,0 +1,33 @@
+call plug#begin('~/.local/share/nvim/site/plugged')
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+
+" go support
+Plug 'fatih/vim-go'
+Plug 'nsf/gocode'
+
+" the nerd tree
+Plug 'scrooloose/nerdtree'
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+map <C-n> :NERDTreeToggle<CR>
+
+" goyo vim
+Plug 'junegunn/goyo.vim'
+
+" vim airline
+Plug 'bling/vim-airline'
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+Plug 'flazz/vim-colorschemes'
+
+" deoplete for neovim
+Plug 'shougo/deoplete.nvim'
+let g:deoplete#enable_at_startup = 1
+
+" Add plugins to &runtimepath
+call plug#end()

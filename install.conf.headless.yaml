@@ -2,12 +2,17 @@
     link:
       create: true
       relink: true
+    shell:
+      stdin: true
+      stdout: true
+      stderr: true
 
 - clean: ['~']
 
 - link:
     ~/.zshrc: zsh/zshrc.symlink
     ~/.vimrc: vim-plug/vimrc.symlink
+    ~/.config/nvim/init.vim: vim-plug/init.vim.symlink
     ~/.tmux.conf: tmux/tmux.conf.symlink
     ~/.gitconfig.local: git/gitconfig.local.symlink
     ~/.gitconfig: git/gitconfig.symlink
@@ -24,9 +29,6 @@
   - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
   - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
   - [~/Code/shell/dotfiles/golang/install.sh, "Installing Golang Packages"]
+  - [~/Code/shell/dotfiles/jabba/install.sh, "Installing Jabba"]
   - command: ~/Code/shell/dotfiles/git/install.sh
-    stdin: true
-    stdout: true
   - command: ~/Code/shell/dotfiles/bin/up
-    stdin: true
-    stdout: true
