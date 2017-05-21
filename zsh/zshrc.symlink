@@ -54,4 +54,4 @@ then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 fi
 
-[ -s "~/.jabba/jabba.sh" ] && source "~/.jabba/jabba.sh"
+[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"

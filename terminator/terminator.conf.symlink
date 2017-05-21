@@ -4,7 +4,7 @@
   [[default]]
     [[[child1]]]
       parent = window0
-      profile = default
+      profile = Dracula 
       type = Terminal
     [[[window0]]]
       parent = ""
@@ -330,19 +330,17 @@
     foreground_color = "#000000"
     palette = "#000000:#cc0000:#00a600:#999900:#0000b2:#b200b2:#00a6b2:#cccccc:#666666:#e50000:#00d900:#e5e500:#0000ff:#e500e5:#00e5e5:#e5e5e5"
   [[Mathias]]
-    cursor_color = "#bbbbbb"
-    foreground_color = "#bbbbbb"
-    palette = "#000000:#e52222:#a6e32d:#fc951e:#c48dff:#fa2573:#67d9f0:#f2f2f2:#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff"
+    background_color = "#2d3743"
+    cursor_color = "#000000"
+    foreground_color = "#e1e1e0"
+    palette = "#000000:#ff4242:#74af68:#ffad29:#338f86:#9414e6:#23d7d7:#e1e1e0:#555555:#ff3242:#74cd68:#ffb929:#23d7d7:#ff37ff:#00ede1:#ffffff"
   [[Medallion]]
     background_color = "#1d1908"
     cursor_color = "#d3ba30"
     foreground_color = "#cac296"
     palette = "#000000:#b64c00:#7c8b16:#d3bd26:#616bb0:#8c5a90:#916c25:#cac29a:#5e5219:#ff9149:#b2ca3b:#ffe54a:#acb8ff:#ffa0ff:#ffbc51:#fed698"
   [[Misterioso]]
-    background_color = "#2d3743"
-    cursor_color = "#000000"
-    foreground_color = "#e1e1e0"
-    palette = "#000000:#ff4242:#74af68:#ffad29:#338f86:#9414e6:#23d7d7:#e1e1e0:#555555:#ff3242:#74cd68:#ffb929:#23d7d7:#ff37ff:#00ede1:#ffffff"
+    cursor_color = "#aaaaaa"
   [[Molokai]]
     background_color = "#121212"
     cursor_color = "#bbbbbb"
