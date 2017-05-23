@@ -31,3 +31,6 @@ let g:deoplete#enable_at_startup = 1
 
 " Add plugins to &runtimepath
 call plug#end()
+
+" add line numbers by default
+set number
