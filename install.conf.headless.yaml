@@ -12,7 +12,7 @@
 - link:
     ~/.zshrc: zsh/zshrc.symlink
     ~/.vimrc: vim-plug/vimrc.symlink
-    ~/.config/nvim/init.vim: vim-plug/init.vim.symlink
+    ~/.config/nvim/init.vim: vim-plug/neovim.vim.symlink
     ~/.tmux.conf: tmux/tmux.conf.symlink
     ~/.gitconfig.local: git/gitconfig.local.symlink
     ~/.gitconfig: git/gitconfig.symlink
