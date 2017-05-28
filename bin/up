@@ -35,6 +35,14 @@ then
     set -e
     sudo dnf clean all
     echo
+  elif test "$(whence pacaur 2> /dev/null)"
+  then
+    echo "\033[00;32m──›\033[0m updating aur"
+    pacaur -Syu
+    set +e
+    pacaur -Rns $(pacaur -Qtdq)
+    set -e
+    echo
   elif test "$(whence pacman 2> /dev/null)"
   then
     echo "\033[00;32m──›\033[0m updating pacman"
