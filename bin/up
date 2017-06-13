@@ -107,18 +107,24 @@ then
   echo
 fi
 
-if test -f ~/.vim/autoload/plug.vim
+if test "$(whence vim 2> /dev/null)"
 then
-  echo "\033[00;32m──›\033[0m updating vim-plug"
-  vim +PlugUpdate +PlugUpgrade +qall
-  echo
+  if test -f ~/.vim/autoload/plug.vim
+  then
+   echo "\033[00;32m──›\033[0m updating vim-plug"
+   vim +PlugUpdate +PlugUpgrade +qall
+   echo
+  fi
 fi
 
-if test -f ~/.local/share/nvim/site/autoload/plug.vim
+if test "$(whence nvim 2> /dev/null)"
 then
-  echo "\033[00;32m──›\033[0m updating neovim-plug"
-  nvim +PlugUpdate +PlugUpgrade +qall
-  echo
+  if test -f ~/.local/share/nvim/site/autoload/plug.vim
+  then 
+   echo "\033[00;32m──›\033[0m updating neovim-plug"
+   nvim +PlugUpdate +PlugUpgrade +qall
+   echo
+  fi
 fi
 
 if which antibody >/dev/null 2>&1; then
