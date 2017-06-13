@@ -4,7 +4,7 @@
   [[default]]
     [[[child1]]]
       parent = window0
-      profile = Dracula 
+      profile = Dracula
       type = Terminal
     [[[window0]]]
       parent = ""
