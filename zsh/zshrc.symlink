@@ -21,6 +21,9 @@ fi
 # load antibody plugins
 source ~/.antibody_bundles
 
+# Source Jabba
+[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
+
 # load everything but the path and completion files
 for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
   source "$file"
@@ -53,5 +56,3 @@ if [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]
 then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 fi
-
-[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
