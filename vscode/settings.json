@@ -17,5 +17,14 @@
   "workbench.iconTheme": "vscode-icons",
 
   "go.lintTool": "gometalinter",
-  "go.docsTool": "gogetdoc"
+  "go.docsTool": "gogetdoc",
+  "gitProjectManager.baseProjectsFolders": [
+    "~/Code/go/src/github.com/aaron-vaz",
+    "~/Code/go/src/gitlab.com/aaronvaz"
+  ],
+  "cSpell.userWords": [
+    "Initialises",
+    "gorm",
+    "initialised"
+  ]
 }
