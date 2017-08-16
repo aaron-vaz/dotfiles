@@ -13,8 +13,7 @@
   "terminal.external.osxExec": "iTerm.app",
   "files.autoSave": "onFocusChange",
   "extensions.autoUpdate": true,
-  "workbench.colorTheme": "Dark-Dracula",
-  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Dracula Soft",
 
   "go.lintTool": "gometalinter",
   "go.docsTool": "gogetdoc",
@@ -24,7 +23,22 @@
   ],
   "cSpell.userWords": [
     "Initialises",
+    "aaronvaz",
+    "dbtest",
     "gorm",
-    "initialised"
-  ]
+    "initialise",
+    "initialised",
+    "initialising",
+    "jinzhu",
+    "sqlite"
+  ],
+  "workbench.iconTheme": "vscode-icons",
+  "go.buildOnSave": "workspace",
+  "go.lintOnSave": "workspace",
+  "go.vetOnSave": "workspace",
+  "go.testOnSave": true,
+  "go.liveErrors": {
+    "enabled": true,
+    "delay": 500
+  }
 }
