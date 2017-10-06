@@ -40,5 +40,10 @@
   "go.liveErrors": {
     "enabled": true,
     "delay": 500
-  }
+  },
+  "files.associations": {
+    "Jekinsfile": "declarative"
+  },
+  "vsicons.projectDetection.autoReload": true,
+  "window.menuBarVisibility": "toggle"
 }
