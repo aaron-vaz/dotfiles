@@ -8,7 +8,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     docker-compose stop
     docker-compose rm -v --force
-    docker-compose build
+    docker-compose build --pull
     docker-compose up -d
     docker-compose logs -f
 fi
