@@ -13,7 +13,7 @@
   "terminal.external.osxExec": "iTerm.app",
   "files.autoSave": "onFocusChange",
   "extensions.autoUpdate": true,
-  "workbench.colorTheme": "Dracula Soft",
+  "workbench.colorTheme": "One Dark Pro Vivid",
 
   "go.lintTool": "gometalinter",
   "go.docsTool": "gogetdoc",
@@ -45,5 +45,7 @@
     "Jekinsfile": "declarative"
   },
   "vsicons.projectDetection.autoReload": true,
-  "window.menuBarVisibility": "toggle"
+  "window.menuBarVisibility": "toggle",
+  "cSpell.language": "en,en-GB",
+  "git.autofetch": true
 }

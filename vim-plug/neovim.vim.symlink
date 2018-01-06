@@ -34,3 +34,6 @@ call plug#end()
 
 " add line numbers by default
 set number
+
+" theme
+colorscheme dracula
