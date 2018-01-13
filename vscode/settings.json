@@ -13,7 +13,6 @@
   "terminal.external.osxExec": "iTerm.app",
   "files.autoSave": "onFocusChange",
   "extensions.autoUpdate": true,
-  "workbench.colorTheme": "One Dark Pro Vivid",
 
   "go.lintTool": "gometalinter",
   "go.docsTool": "gogetdoc",
@@ -47,5 +46,6 @@
   "vsicons.projectDetection.autoReload": true,
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
-  "git.autofetch": true
+  "git.autofetch": true,
+  "workbench.colorTheme": "One Dark Pro"
 }

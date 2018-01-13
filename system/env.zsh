@@ -1,2 +1,2 @@
-export EDITOR='nano'
-export GIT_PAGER="cat"
+export EDITOR='nvim'
+export GIT_PAGER="less"
