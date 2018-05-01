@@ -13,7 +13,7 @@
     ui = true
 [core]
     excludesfile = ~/.gitignore
-    editor = nano
+    editor = nvim
     autocrlf = input
 [apply]
     whitespace = nowarn
@@ -25,3 +25,6 @@
     autocorrect = 1
 [push]
     default = simple
+[user]
+	name = Aaron Vaz
+	email = vazaaron08@gmail.com
