@@ -32,7 +32,6 @@
     "sqlite"
   ],
   "workbench.iconTheme": "vscode-icons",
-  "go.buildOnSave": "workspace",
   "go.lintOnSave": "workspace",
   "go.vetOnSave": "workspace",
   "go.testOnSave": true,
@@ -47,5 +46,7 @@
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
   "git.autofetch": true,
-  "workbench.colorTheme": "One Dark Pro"
+  "workbench.colorTheme": "One Dark Pro",
+  "go.autocompleteUnimportedPackages": true,
+  "go.buildOnSave": "workspace"
 }
