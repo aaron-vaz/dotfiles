@@ -46,7 +46,7 @@
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
   "git.autofetch": true,
-  "workbench.colorTheme": "One Dark Pro",
+  "workbench.colorTheme": "One Dark Pro Vivid",
   "go.autocompleteUnimportedPackages": true,
   "go.buildOnSave": "workspace"
 }

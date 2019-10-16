@@ -3,7 +3,7 @@ if test "$(which code)"; then
   if [ "$(uname -s)" = "Darwin" ]; then
     VSCODE_HOME="$HOME/Library/Application Support/Code"
   else
-    VSCODE_HOME="$HOME/.config/Code"
+    VSCODE_HOME="$HOME/.config/Code - OSS"
   fi
 
   ln -sf "$DOTFILES/vscode/settings.json" "$VSCODE_HOME/User/settings.json"
@@ -11,13 +11,12 @@ if test "$(which code)"; then
 
   modules="
     HookyQR.beautify
-    PeterJausovec.vscode-docker
-    lukehoban.Go
+    ms-azuretools.vscode-docker
+    ms-vscode.go
     mattn.Runner
     ms-python.python
-    robertohuertasm.vscode-icons
+    vscode-icons-team.vscode-icons
     streetsidesoftware.code-spell-checker
-    zhuangtongfa.Material-theme
   "
   for module in $modules; do
     code --install-extension "$module" || true
