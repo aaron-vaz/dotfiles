@@ -1,5 +1,4 @@
 {
-  "editor.fontFamily": "Hack",
   "editor.fontSize": 11,
   "editor.rulers": [
     80,
@@ -48,5 +47,13 @@
   "git.autofetch": true,
   "workbench.colorTheme": "One Dark Pro Vivid",
   "go.autocompleteUnimportedPackages": true,
-  "go.buildOnSave": "workspace"
+  "go.buildOnSave": "workspace",
+  "go.formatTool": "goimports",
+  "go.useLanguageServer": true,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  }
 }
