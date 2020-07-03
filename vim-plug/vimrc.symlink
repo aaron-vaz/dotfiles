@@ -28,6 +28,3 @@ Plug 'flazz/vim-colorschemes'
 " Add plugins to &runtimepath
 call plug#end()
 
-" theme
-colorscheme dracula
-

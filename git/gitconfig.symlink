@@ -28,3 +28,5 @@
 [user]
     name = Aaron Vaz
     email = vazaaron08@gmail.com
+[pull]
+	rebase = false

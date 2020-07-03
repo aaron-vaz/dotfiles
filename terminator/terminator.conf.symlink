@@ -166,6 +166,7 @@
     font = MesloLGLDZ Nerd Font Mono 10
     foreground_color = "#f8f8f2"
     palette = "#000000:#ff5555:#50fa7b:#f1fa8c:#bd93f9:#ff79c6:#8be9fd:#bbbbbb:#555555:#ff5555:#50fa7b:#f1fa8c:#bd93f9:#ff79c6:#8be9fd:#ffffff"
+    scrollback_infinite = True
   [[Earthsong]]
     background_color = "#292520"
     cursor_color = "#f6f7ec"

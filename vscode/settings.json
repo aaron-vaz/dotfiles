@@ -45,7 +45,7 @@
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
   "git.autofetch": true,
-  "workbench.colorTheme": "One Dark Pro Vivid",
+  "workbench.colorTheme": "One Dark Pro",
   "go.autocompleteUnimportedPackages": true,
   "go.buildOnSave": "workspace",
   "go.formatTool": "goimports",
@@ -54,6 +54,9 @@
     "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[jsonc]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "[json]": {
     "editor.defaultFormatter": "HookyQR.beautify"
   }
 }
