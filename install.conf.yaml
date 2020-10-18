@@ -7,7 +7,7 @@
       stdout: true
       stderr: true
 
-- clean: ['~']
+- clean: ["~"]
 
 - link:
     ~/.zshrc: zsh/zshrc.symlink
@@ -23,19 +23,20 @@
     ~/.config/terminator/config: terminator/terminator.conf.symlink
 
 - shell:
-  - [git submodule update --init --recursive, "Installing submodules"]
-  - [~/Code/shell/dotfiles/arch/install.sh, "Installing Arch Packages"]
-  - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
-  - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
-  - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
-  - [~/Code/shell/dotfiles/vim-plug/install.sh, "Installing Vim Plug"]
-  - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
-  - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
-  - [~/Code/shell/dotfiles/golang/install.sh, "Installing GO Packages"]
-  - [~/Code/shell/dotfiles/jabba/install.sh, "Installing Jabba"]
-  - command: ~/Code/shell/dotfiles/git/install.sh
-  - [~/Code/shell/dotfiles/iterm2/install.sh, "Installing iTerm2 theme"]
-  - [~/Code/shell/dotfiles/osx/set-defaults.sh, "Setting OSX defaults"]
-  - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
-  - [~/Code/shell/dotfiles/vscode/install.sh, "Installing VS Code plugins"]
-  - command: ~/Code/shell/dotfiles/bin/up
+    - [git submodule update --init --recursive, "Installing submodules"]
+    - [~/Code/shell/dotfiles/arch/install.sh, "Installing Arch Packages"]
+    - [~/Code/shell/dotfiles/homebrew/install.sh, "Installing Homebrew"]
+    - [~/Code/shell/dotfiles/antibody/install.sh, "Installing Antibody"]
+    - [~/Code/shell/dotfiles/fzf/install.sh, "Installing fzf"]
+    - [~/Code/shell/dotfiles/vim-plug/install.sh, "Installing Vim Plug"]
+    - [~/Code/shell/dotfiles/pip/install.sh, "Installing pip"]
+    - [~/Code/shell/dotfiles/tmux/install.sh, "Installing tmux"]
+    - [~/Code/shell/dotfiles/golang/install.sh, "Installing GO Packages"]
+    - [~/Code/shell/dotfiles/jabba/install.sh, "Installing Jabba"]
+    - [~/Code/shell/dotfiles/gw/install.sh, "Installing gw"]
+    - command: ~/Code/shell/dotfiles/git/install.sh
+    - [~/Code/shell/dotfiles/iterm2/install.sh, "Installing iTerm2 theme"]
+    - [~/Code/shell/dotfiles/osx/set-defaults.sh, "Setting OSX defaults"]
+    - [~/Code/shell/dotfiles/atom/install.sh, "Installing Atom plugins"]
+    - [~/Code/shell/dotfiles/vscode/install.sh, "Installing VS Code plugins"]
+    - command: ~/Code/shell/dotfiles/bin/up
