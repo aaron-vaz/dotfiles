@@ -58,5 +58,6 @@
   },
   "[json]": {
     "editor.defaultFormatter": "HookyQR.beautify"
-  }
+  },
+  "window.titleBarStyle": "custom"
 }
