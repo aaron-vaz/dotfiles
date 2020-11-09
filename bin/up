@@ -7,7 +7,7 @@ then
     echo "\033[1;31m──›\033[0m dotfiles are dirty, skipping"
 else
     echo "\033[00;32m──›\033[0m updating dotfiles"
-    if test "$(git -C $DOTFILES pull)" != "Already up-to-date."
+    if ! [[ $(git -C $DOTFILES pull) =~ ".+up.to.date" ]]
     then
         exit
     fi
