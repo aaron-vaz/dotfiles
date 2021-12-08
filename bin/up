@@ -57,12 +57,9 @@ fi
 if test "$(whence brew 2> /dev/null)"
 then
   echo "\033[00;32m──›\033[0m updating brew"
-  brew bundle cleanup --file=$DOTFILES/homebrew/Brewfile
   brew update
   brew upgrade
-  brew cleanup --force
-  brew prune
-  brew cask cleanup
+  brew cleanup --prune=all
   echo
 fi
 

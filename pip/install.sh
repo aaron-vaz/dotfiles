@@ -5,5 +5,3 @@ then
     curl -fsSL https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py && python3 /tmp/get-pip.py --user && rm /tmp/get-pip.py && $PYTHONUSERBASE/bin/pip install --user --upgrade -r $DOTFILES/pip/requirements.txt
 fi
 
-pip3 install --user --upgrade -r $DOTFILES/pip/requirements.txt
-pip2 install --user --upgrade -r $DOTFILES/pip/requirements.txt

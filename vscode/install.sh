@@ -27,7 +27,8 @@ if [ $BINARY != "" ]; then
     HookyQR.beautify
     ms-azuretools.vscode-docker
     ms-vscode.go
-    mattn.Runner
+    haskell.haskell
+    zhuangtongfa.material-theme
     ms-python.python
     vscode-icons-team.vscode-icons
     streetsidesoftware.code-spell-checker
