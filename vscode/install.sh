@@ -26,7 +26,7 @@ if [ $BINARY != "" ]; then
   modules="
     HookyQR.beautify
     ms-azuretools.vscode-docker
-    ms-vscode.go
+    golang.go
     haskell.haskell
     zhuangtongfa.material-theme
     ms-python.python
