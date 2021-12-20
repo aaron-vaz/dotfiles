@@ -59,5 +59,6 @@
   "[json]": {
     "editor.defaultFormatter": "HookyQR.beautify"
   },
-  "window.titleBarStyle": "custom"
+  "window.titleBarStyle": "custom",
+  "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace"
 }
