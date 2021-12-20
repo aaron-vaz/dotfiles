@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-git svn fetch --fetch-all
-git stash --include-untracked
-git svn rebase --local
-git stash pop
