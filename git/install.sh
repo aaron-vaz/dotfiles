@@ -48,3 +48,8 @@ setup_gitconfig () {
 }
 
 setup_gitconfig
+
+# symlinks
+ln -sf git/gitconfig.local.symlink ~/.gitconfig.local
+ln -sf git/gitconfig.symlink ~/.gitconfig
+ln -sf git/gitignore.symlink ~/.gitignore
