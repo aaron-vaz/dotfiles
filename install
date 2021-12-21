@@ -2,12 +2,14 @@
 
 set -e
 
+export DOTFILES="$PWD"
+
 # clean broken symlinks
 find ~ -xtype l -exec rm -f {} \;
 
 # run install scripts
 for install_file in **/install.sh; do
-  ./$install_file
+  bash -e $install_file
 done
 
 # run up function

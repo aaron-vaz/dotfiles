@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # symlinks
-ln -sf zsh/zshrc.symlink ~/.zshrc
+ln -sf $DOTFILES/zsh/zshrc.symlink ~/.zshrc

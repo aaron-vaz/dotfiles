@@ -6,7 +6,7 @@ install_plugin() {
   git clone --depth 1 https://github.com/$plugin.git $location/$plugin
 }
 
-plugin_dir=zsh/.plugins
+plugin_dir=zsh-plugins/.plugins
 
 plugins=(
   zsh-users/zsh-autosuggestions
@@ -20,7 +20,7 @@ mkdir $plugin_dir
 
 # install plugins
 for plugin in "${plugins[@]}"; do
-  install_plugin $plugin.git $plugin_dir
+  install_plugin $plugin $plugin_dir
 done
 
 # install prompt
