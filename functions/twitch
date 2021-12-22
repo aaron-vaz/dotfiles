@@ -1,9 +1,0 @@
-function twitch()
-{
-    if test "$(uname)" = "Darwin"
-    then
-        livestreamer --player-passthrough=hls --player /Applications/VLC.app/Contents/MacOS/VLC "https://www.twitch.tv/$1" best
-    else
-        echo "Unsupported OS"
-    fi
-}

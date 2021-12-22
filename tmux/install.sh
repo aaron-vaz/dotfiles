@@ -5,4 +5,11 @@ then
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
-~/.tmux/plugins/tpm/bin/install_plugins
+if test $(which tmux 2> /dev/null)
+then
+  ~/.tmux/plugins/tpm/bin/install_plugins
+
+  # symlinks
+  ln -sf $DOTFILES/tmux/tmux.conf.symlink ~/.tmux.conf
+fi
+

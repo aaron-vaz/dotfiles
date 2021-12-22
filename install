@@ -3,21 +3,15 @@
 set -e
 
 export DOTFILES="$PWD"
-CONFIG="install.conf.yaml"
-HEADLESS_CONFIG="install.conf.headless.yaml"
-DOTBOT_DIR="dotbot"
 
-DOTBOT_BIN="bin/dotbot"
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# run install scripts
+for install_file in **/install.sh; do
+  echo ""
+  echo "\033[00;32m──›\033[0m Installing $install_file"
+  echo ""
+  
+  bash -e $install_file
+done
 
-cd "${BASEDIR}"
-git submodule update --init --recursive "${DOTBOT_DIR}"
-
-if [[ $1 == "headless" ]]
-then
-  echo "Using configuration from: ${HEADLESS_CONFIG}"
-  "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${HEADLESS_CONFIG}" "${@:2}"
-else
-  echo "Using configuration from: ${CONFIG}"
-  "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
-fi
+# run up function
+./bin/up

@@ -12,18 +12,6 @@ for file in ${(M)config_files:#*/path.zsh}; do
   source "$file"
 done
 
-# if in linux you need to init antibody
-if test "$(uname)" = "Linux"
-then
- source <(antibody init)
-fi
-
-# load antibody plugins
-source ~/.antibody_bundles
-
-# Source Jabba
-[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
-
 # load everything but the path and completion files
 for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
   source "$file"
@@ -52,31 +40,7 @@ then
   source ~/.localrc
 fi
 
-# rustup
-if [[ -a $HOME/.cargo ]]
-then
-    export PATH="$PATH:$HOME/.cargo/bin"
-fi
-
 if [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]
 then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 fi
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
-
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
-
-# tabtab source for slss package
-# uninstall by removing these lines or running `tabtab uninstall slss`
-[[ -f /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /home/aaron/.npm-packages/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/aaron/.sdkman"
-[[ -s "/home/aaron/.sdkman/bin/sdkman-init.sh" ]] && source "/home/aaron/.sdkman/bin/sdkman-init.sh"
