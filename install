@@ -9,6 +9,10 @@ find ~ -xtype l -exec rm -f {} \;
 
 # run install scripts
 for install_file in **/install.sh; do
+  echo ""
+  echo "\033[00;32m──›\033[0m Installing $install_file"
+  echo ""
+  
   bash -e $install_file
 done
 

@@ -14,14 +14,23 @@ plugins=(
   zsh-users/zsh-history-substring-search
   zsh-users/zsh-completions
   srijanshetty/zsh-pip-completion
+  2m/zsh-jabba
 )
 
 mkdir $plugin_dir
 
 # install plugins
 for plugin in "${plugins[@]}"; do
+  echo ""
+  echo "\033[00;32m──›\033[0m installing $plugin"
+  echo ""
+  
   install_plugin $plugin $plugin_dir
 done
 
 # install prompt
+echo ""
+echo "\033[00;32m──›\033[0m installing Starship prompt"
+echo ""
+
 sh -c "$(curl -fsSL https://starship.rs/install.sh)"
