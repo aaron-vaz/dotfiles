@@ -14,7 +14,6 @@ plugins=(
   zsh-users/zsh-history-substring-search
   zsh-users/zsh-completions
   srijanshetty/zsh-pip-completion
-  2m/zsh-jabba
 )
 
 mkdir $plugin_dir
