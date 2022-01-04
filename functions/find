@@ -1,0 +1,9 @@
+# find util since macos contains bsd find
+function find() {
+    if test "$(whence gfind 2> /dev/null)"
+    then	
+	gfind "$@"
+    else
+    	command "$0" "$@"
+    fi
+}
