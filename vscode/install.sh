@@ -24,14 +24,31 @@ if [ $BINARY != "" ]; then
   ln -sf "$DOTFILES/vscode/keybindings.json" "$VSCODE_HOME/User/keybindings.json"
 
   modules="
-    HookyQR.beautify
-    ms-azuretools.vscode-docker
+    bungcip.better-toml
+    dbaeumer.vscode-eslint
+    eamodio.gitlens
+    esbenp.prettier-vscode
     golang.go
+    hashicorp.terraform
     haskell.haskell
-    zhuangtongfa.material-theme
+    justusadam.language-haskell
+    ms-azuretools.vscode-docker
+    ms-kubernetes-tools.vscode-kubernetes-tools
     ms-python.python
-    vscode-icons-team.vscode-icons
+    ms-python.vscode-pylance
+    ms-toolsai.jupyter
+    ms-toolsai.jupyter-keymap
+    ms-toolsai.jupyter-renderers
+    ms-vscode-remote.remote-containers
+    ms-vscode-remote.remote-ssh
+    ms-vscode-remote.remote-ssh-edit
+    ms-vscode.makefile-tools
+    redhat.vscode-yaml
+    rust-lang.rust-analyzer
     streetsidesoftware.code-spell-checker
+    vscode-icons-team.vscode-icons
+    yzhang.markdown-all-in-one
+    zhuangtongfa.material-theme
   "
   for module in $modules; do
     "$BINARY" --install-extension "$module" || true

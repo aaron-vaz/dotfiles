@@ -6,14 +6,14 @@
   ],
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
-  "editor.tabCompletion": true,
+  "editor.tabCompletion": "on",
   "explorer.openEditors.visible": 0,
   "window.reopenFolders": "none",
   "terminal.external.osxExec": "iTerm.app",
   "files.autoSave": "onFocusChange",
   "extensions.autoUpdate": true,
 
-  "go.lintTool": "gometalinter",
+  "go.lintTool": "golangci-lint",
   "go.docsTool": "gogetdoc",
   "gitProjectManager.baseProjectsFolders": [
     "~/Code/go/src/github.com/aaron-vaz",
@@ -45,7 +45,6 @@
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
   "git.autofetch": true,
-  "workbench.colorTheme": "One Dark Pro",
   "go.autocompleteUnimportedPackages": true,
   "go.buildOnSave": "workspace",
   "go.formatTool": "goimports",
@@ -57,8 +56,27 @@
     "editor.defaultFormatter": "HookyQR.beautify"
   },
   "[json]": {
-    "editor.defaultFormatter": "HookyQR.beautify"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "window.titleBarStyle": "custom",
-  "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace"
+  "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.editor.untitled.hint": "hidden",
+  "go.toolsManagement.autoUpdate": true,
+  "oneDarkPro.bold": true,
+  "rust-client.engine": "rust-analyzer",
+  "haskell.manageHLS": "GHCup",
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "workbench.colorTheme": "One Dark Pro Mix",
+  "redhat.telemetry.enabled": false
 }
