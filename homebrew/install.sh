@@ -4,6 +4,6 @@ if test "$(uname)" = "Darwin"
 then
   if test ! $(which brew 2> /dev/null)
   then
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 fi
