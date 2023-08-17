@@ -1,0 +1,12 @@
+#! /bin/sh
+
+if [ $# -eq 0 ]; then
+    echo "Convert video to mp4 using ffmpeg"
+    echo ""
+    echo "Usage:"
+    echo "    videotomp4 [path to video]"
+
+    exit 1 
+fi    
+
+ffmpeg -i $1 -vcodec h264 -acodec mp2 ${1%.*}.mp4

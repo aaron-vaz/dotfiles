@@ -1,0 +1,2 @@
+#compdef wk
+_files -W $WORKSPACES -/
