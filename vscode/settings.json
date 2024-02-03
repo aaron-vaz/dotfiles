@@ -30,7 +30,7 @@
     "jinzhu",
     "sqlite"
   ],
-  "workbench.iconTheme": "vscode-icons",
+  "workbench.iconTheme": "material-icon-theme",
   "go.lintOnSave": "workspace",
   "go.vetOnSave": "workspace",
   "go.testOnSave": true,
@@ -69,7 +69,6 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "workbench.editor.untitled.hint": "hidden",
   "go.toolsManagement.autoUpdate": true,
   "oneDarkPro.bold": true,
   "rust-client.engine": "rust-analyzer",
@@ -77,6 +76,7 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "workbench.colorTheme": "One Dark Pro Mix",
-  "redhat.telemetry.enabled": false
+  "workbench.colorTheme": "GitHub Dark",
+  "redhat.telemetry.enabled": false,
+  "workbench.editor.empty.hint": "hidden"
 }
