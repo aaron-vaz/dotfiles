@@ -9,11 +9,12 @@ install_plugin() {
 plugin_dir=zsh-plugins/.plugins
 
 plugins=(
-  zsh-users/zsh-autosuggestions
-  zsh-users/zsh-syntax-highlighting
-  zsh-users/zsh-history-substring-search
-  zsh-users/zsh-completions
+  hlissner/zsh-autopair
   srijanshetty/zsh-pip-completion
+  zsh-users/zsh-autosuggestions
+  zsh-users/zsh-completions
+  zsh-users/zsh-history-substring-search
+  zsh-users/zsh-syntax-highlighting
 )
 
 mkdir $plugin_dir
