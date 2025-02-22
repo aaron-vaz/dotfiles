@@ -1,5 +1,4 @@
 {
-  "editor.fontSize": 11,
   "editor.rulers": [
     80,
     120
@@ -41,7 +40,6 @@
   "files.associations": {
     "Jekinsfile": "declarative"
   },
-  "vsicons.projectDetection.autoReload": true,
   "window.menuBarVisibility": "toggle",
   "cSpell.language": "en,en-GB",
   "git.autofetch": true,
@@ -53,7 +51,7 @@
     "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "HookyQR.beautify"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -78,5 +76,7 @@
   },
   "workbench.colorTheme": "GitHub Dark",
   "redhat.telemetry.enabled": false,
-  "workbench.editor.empty.hint": "hidden"
+  "workbench.editor.empty.hint": "hidden",
+  "geminicodeassist.project": "av-gcp-test",
+  "cloudcode.duetAI.project": "av-gcp-test"
 }
