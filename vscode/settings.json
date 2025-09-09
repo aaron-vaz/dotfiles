@@ -78,5 +78,7 @@
   "redhat.telemetry.enabled": false,
   "workbench.editor.empty.hint": "hidden",
   "geminicodeassist.project": "av-gcp-test",
-  "cloudcode.duetAI.project": "av-gcp-test"
+  "diffEditor.codeLens": true,
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gemini-2.0-flash"
 }
