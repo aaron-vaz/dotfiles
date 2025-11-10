@@ -1,5 +1,7 @@
 [include]
     path = ~/.gitconfig.local
+[url "git@github.com:"]
+    insteadOf = "https://github.com/"    
 [hub]
     protocol = https
 [alias]
@@ -26,7 +28,7 @@
 [push]
     default = simple
 [pull]
-	rebase = false
+    rebase = false
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
