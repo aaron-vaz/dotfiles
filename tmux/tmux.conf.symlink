@@ -15,6 +15,9 @@ if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'
 set -g base-index 1
 set -g pane-base-index 1
 
+# Mouse scrolling
+set -g mouse on
+
 set-option -g status-position top
 
 set-option -g repeat-time 0
