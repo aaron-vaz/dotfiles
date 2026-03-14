@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-03-14",
+  "categories": {
+    "misconceptions": {
+      "description": "Things I got wrong that need correction",
+      "entries": []
+    },
+    "preferences": {
+      "description": "User preferences and workflow choices",
+      "entries": []
+    },
+    "config": {
+      "description": "Configuration details and structure",
+      "entries": [
+        {
+          "id": "opencode-config-structure",
+          "timestamp": "2026-03-14",
+          "context": "General understanding of opencode config",
+          "whatIGotWrong": "Confused about dotfiles structure and symlink setup",
+          "correction": "The opencode config lives in ~/Code/shell/dotfiles/opencode/.opencode/ NOT directly in ~/Code/shell/dotfiles/opencode/. The install.sh symlinks individual files from .opencode/ subdirectory to ~/.config/opencode/",
+          "details": {
+            "actualLocation": "/Users/aaronvaz/Code/shell/dotfiles/opencode/.opencode/",
+            "symlinkTarget": "~/.config/opencode/",
+            "keyFiles": ["AGENTS.md", "settings.json", "opencode.json", "oh-my-opencode.json"],
+            "installScript": "~/Code/shell/dotfiles/opencode/install.sh handles all symlinks"
+          },
+          "tags": ["config", "dotfiles", "symlinks", "structure"]
+        }
+      ]
+    },
+    "commands": {
+      "description": "Command corrections and clarifications",
+      "entries": []
+    },
+    "patterns": {
+      "description": "Code patterns and conventions",
+      "entries": []
+    },
+    "workflows": {
+      "description": "Workflow corrections and improvements",
+      "entries": [
+        {
+          "id": "opencode-config-update-workflow",
+          "timestamp": "2026-03-14",
+          "context": "When making changes to opencode configuration files",
+          "whatIGotWrong": "Made changes to opencode config files but didn't run install.sh, commit, and push",
+          "correction": "Always run install.sh to update symlinks, then commit and push changes to dotfiles repo so symlinks remain correct and OpenCode can pick up changes",
+          "details": {
+            "steps": [
+              "1. Edit files in ~/Code/shell/dotfiles/opencode/.opencode/",
+              "2. Run ~/Code/shell/dotfiles/opencode/install.sh to update symlinks",
+              "3. Verify symlinks with ls -la ~/.config/opencode/",
+              "4. Commit changes: git add -A && git commit -m 'config: description'",
+              "5. Push: git push"
+            ],
+            "critical": "Must run install.sh after adding new directories (skills, learnings, etc.) or OpenCode won't see them"
+          },
+          "tags": ["workflows", "config", "dotfiles", "git", "symlinks"]
+        }
+      ]
+    }
+  }
+}

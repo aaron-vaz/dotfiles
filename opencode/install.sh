@@ -55,4 +55,9 @@ if [ -d "$DOTFILES_ROOT/opencode/.opencode/snippet" ]; then
   success 'snippet directory symlinked'
 fi
 
+if [ -d "$DOTFILES_ROOT/opencode/.opencode/learnings" ]; then
+  ln -sfn "$DOTFILES_ROOT/opencode/.opencode/learnings" ~/.config/opencode/learnings
+  success 'learnings directory symlinked'
+fi
+
 success 'opencode configuration installed'
