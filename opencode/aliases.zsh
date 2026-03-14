@@ -1,0 +1,5 @@
+alias oc='opencode'
+alias ocs='opencode -s'
+alias ocl='opencode --list-sessions'
+alias ocn='opencode --new-session'
+alias ock='opencode --kill-server'
