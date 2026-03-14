@@ -35,4 +35,24 @@ if [ -f "$DOTFILES_ROOT/opencode/.opencode/opencode.json" ]; then
   success 'opencode.json symlinked'
 fi
 
+if [ -f "$DOTFILES_ROOT/opencode/.opencode/oh-my-opencode.json" ]; then
+  ln -sf "$DOTFILES_ROOT/opencode/.opencode/oh-my-opencode.json" ~/.config/opencode/oh-my-opencode.json
+  success 'oh-my-opencode.json symlinked'
+fi
+
+if [ -d "$DOTFILES_ROOT/opencode/.opencode/skills" ]; then
+  ln -sfn "$DOTFILES_ROOT/opencode/.opencode/skills" ~/.config/opencode/skills
+  success 'skills directory symlinked'
+fi
+
+if [ -d "$DOTFILES_ROOT/opencode/.opencode/kb" ]; then
+  ln -sfn "$DOTFILES_ROOT/opencode/.opencode/kb" ~/.config/opencode/kb
+  success 'kb directory symlinked'
+fi
+
+if [ -d "$DOTFILES_ROOT/opencode/.opencode/snippet" ]; then
+  ln -sfn "$DOTFILES_ROOT/opencode/.opencode/snippet" ~/.config/opencode/snippet
+  success 'snippet directory symlinked'
+fi
+
 success 'opencode configuration installed'
