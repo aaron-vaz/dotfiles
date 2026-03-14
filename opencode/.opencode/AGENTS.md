@@ -60,12 +60,20 @@ Search for relevant patterns from past sessions:
 
 | Config | Location | Symlink Target |
 |--------|----------|----------------|
-| OpenCode global config | `~/.config/opencode/AGENTS.md` | `/Users/aaronvaz/Code/shell/dotfiles/opencode/.opencode/AGENTS.md` |
-| OpenCode skills | `~/.config/opencode/skills/` | `/Users/aaronvaz/Code/shell/dotfiles/opencode/skills/` |
+| OpenCode config | `~/.config/opencode` | `/Users/aaronvaz/Code/shell/dotfiles/opencode` |
 | Git config | `~/.gitconfig` | `/Users/aaronvaz/Code/shell/dotfiles/git/gitconfig.symlink` |
 | Git ignore | `~/.gitignore` | `/Users/aaronvaz/Code/shell/dotfiles/git/gitignore.symlink` |
 
 **Dotfiles repo:** `/Users/aaronvaz/Code/shell/dotfiles`
+
+**Setup symlink (one-time):**
+```bash
+# Backup existing config if needed
+mv ~/.config/opencode ~/.config/opencode.backup
+
+# Create symlink
+ln -s /Users/aaronvaz/Code/shell/dotfiles/opencode ~/.config/opencode
+```
 
 **When updating configs:**
 1. Edit files in the dotfiles repo (not the symlinks)
