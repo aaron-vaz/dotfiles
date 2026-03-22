@@ -4,7 +4,7 @@ Personal coding preferences and workflow conventions for AI-assisted development
 
 ## OVERVIEW
 
-Global configuration for OpenCode with oh-my-opencode plugin. Provides model assignments, custom skills, and workflow conventions optimized for Kotlin/Gradle projects with React frontend support.
+Global configuration for OpenCode with custom skills and workflow conventions optimized for Kotlin/Gradle projects with React frontend support.
 
 ## QUICK START
 
@@ -71,7 +71,6 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 ```
 Session Start
   ├─→ Load AGENTS.md (global instructions)
-  ├─→ Load oh-my-opencode.json (model config)
   ├─→ Load skills/ directory (custom skills)
   └─→ Check project AGENTS.md (project-specific overrides)
 ```
@@ -84,7 +83,6 @@ Session Start
 ├── agents.d/               # Referenced modules
 ├── settings.json           # OpenCode settings
 ├── opencode.json           # Provider config + plugins
-├── oh-my-opencode.json     # Agent/category model assignments
 ├── skills/                 # Custom skills
 ├── kb/                     # Knowledge base
 ├── snippet/                # Code snippets

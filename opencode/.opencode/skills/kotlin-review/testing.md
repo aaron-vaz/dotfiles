@@ -9,9 +9,9 @@ fun `should return calculator for metric type`() { ... }
 
 ---
 
-## Given/When/Then
+## Given/When/Then (REQUIRED)
 
-Always include all sections:
+**MANDATORY:** Every test MUST have all three sections as explicit comments, even if empty:
 
 ```kotlin
 @Test
@@ -25,6 +25,25 @@ fun `should return default stats instance`() {
     // Then
     assertNotNull(stats)
 }
+```
+
+**NEVER combine When/Then.** These are always separate phases:
+
+```kotlin
+// ❌ WRONG - Combined When/Then
+webTestClient.get()
+    .uri("/api/v1/...")
+    .exchange()  // When
+    .expectStatus().isOk  // Then
+
+// ✅ CORRECT - Separate phases
+// When
+val response = webTestClient.get()
+    .uri("/api/v1/...")
+    .exchange()
+
+// Then
+response.expectStatus().isOk
 ```
 
 Group related assertions under "And":
@@ -42,8 +61,33 @@ assertNotNull(stats.calculators)
 ## Assertions
 
 - Use JUnit 5 `org.junit.jupiter.api.Assertions.*`
-- Individual static imports
+- Individual static imports: `import org.junit.jupiter.api.Assertions.assertEquals`
 - Use `@ParameterizedTest` with `@EnumSource`, `@ValueSource`
+
+**Extract values in Then, don't chain expectations:**
+
+```kotlin
+// ❌ WRONG - Chained expectations blur When/Then
+webTestClient.get()
+    .uri("/api/v1/users/1")
+    .exchange()
+    .expectStatus().isOk
+    .expectBody()
+    .jsonPath("$.name").isEqualTo("John")
+
+// ✅ CORRECT - Capture response, assert in Then
+// When
+val response = webTestClient.get()
+    .uri("/api/v1/users/1")
+    .exchange()
+
+// Then
+assertEquals(HttpStatus.OK, response.status())
+
+// And - verify response body
+val user = response.expectBody(User::class.java).returnResult().responseBody
+assertEquals("John", user?.name)
+```
 
 ---
 

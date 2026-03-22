@@ -6,7 +6,6 @@
     }
   },
   "plugin": [
-    "oh-my-opencode",
     "cc-safety-net",
     "envsitter-guard",
     "opencode-mem",
