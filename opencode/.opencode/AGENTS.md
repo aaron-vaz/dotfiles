@@ -89,3 +89,21 @@ Session Start
 └── learnings/              # Corrections and preferences
     └── learnings.json      # Structured learnings database
 ```
+
+## MODE SWITCHING
+
+**Use the right mode for the task (press Tab to switch):**
+
+| Mode | Best For | Model |
+|------|----------|-------|
+| `build` | Coding, file edits, running tests | kimi-k2.5 |
+| `plan` | Architecture decisions, analysis | glm-5 |
+| `review` | Code review, bug hunting | kimi-k2.5 |
+| `deep` | Complex refactoring, debugging | glm-5 |
+| `quick` | Rapid iterations, simple tasks | kimi-k2.5 |
+
+**Heuristics:**
+- Switching to **plan** mode? Use when asked to "design", "analyze", or "review before implementing"
+- Switching to **review** mode? Use for PR feedback or when user says "check this code"
+- Switching to **deep** mode? Use for 3+ file changes or complex logic problems
+- Stay in **build** mode for routine coding and quick fixes
