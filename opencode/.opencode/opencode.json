@@ -5,6 +5,41 @@
       "name": "go"
     }
   },
+  "mode": {
+    "build": {
+      "model": "opencode-go/kimi-k2.5",
+      "temperature": 0.3
+    },
+    "plan": {
+      "model": "opencode-go/glm-5",
+      "temperature": 0.2,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false
+      }
+    },
+    "review": {
+      "model": "opencode-go/kimi-k2.5",
+      "temperature": 0.1,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "read": true,
+        "grep": true,
+        "glob": true
+      }
+    },
+    "deep": {
+      "model": "opencode-go/glm-5",
+      "temperature": 0.2
+    },
+    "quick": {
+      "model": "opencode-go/kimi-k2.5",
+      "temperature": 0.5
+    }
+  },
   "plugin": [
     "cc-safety-net",
     "envsitter-guard",
