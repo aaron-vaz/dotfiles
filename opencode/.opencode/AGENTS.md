@@ -44,6 +44,7 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 | Delegate work | Use specialized agents, implement directly only for trivial tasks |
 | Verify basics | Run lint/tests before marking complete |
 | Fix root causes | Not symptoms; after 3 failures: STOP → REVERT → CONSULT ORACLE |
+| Check file changes | Before writing, re-read if file may have been modified since last read |
 
 ## KEY ANTI-PATTERNS
 
@@ -54,6 +55,7 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 | Shotgun debugging | Systematic hypothesis testing |
 | Commit without request | Only when user asks |
 | Force push main/master | Never on protected branches |
+| Overwrite user changes | Re-read file before writing if user may have modified it |
 
 ## WHERE TO LOOK
 
