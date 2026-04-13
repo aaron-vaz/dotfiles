@@ -1,8 +1,8 @@
 ---
 name: jvm
 description: Running builds, tests, or troubleshooting JVM projects using Gradle or Maven. Use when running builds, tests, encountering Java version errors, build failures, or when the user mentions Gradle, Maven, ./gradlew, mvn, or JVM projects.
-model: sonnet
-last_reviewed: 2026-02-26
+model: opencode-go/kimi-k2.5
+last_reviewed: 2026-04-13
 ---
 
 # JVM Projects (Gradle & Maven)

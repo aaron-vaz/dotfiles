@@ -1,7 +1,7 @@
 ---
 name: self-review
 description: Use after committing/pushing your own code - acts as staff/principal engineer reviewing your work with direct feedback
-model: glm-5
+model: opencode-go/glm-5.1
 last_reviewed: 2026-04-13
 ---
 

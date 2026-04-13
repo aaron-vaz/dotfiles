@@ -1,7 +1,8 @@
 ---
 name: kotlin-review
 description: Use when reviewing PRs, code changes, or after writing Kotlin code to check for idiomatic patterns and anti-patterns.
-model: sonnet
+model: opencode-go/kimi-k2.5
+last_reviewed: 2026-04-13
 ---
 
 # Kotlin Code Review

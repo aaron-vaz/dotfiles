@@ -7,10 +7,12 @@
   },
   "mode": {
     "build": {
-      "model": "opencode-go/kimi-k2.5"
+      "model": "opencode-go/kimi-k2.5",
+      "description": "Default mode for coding, editing, testing. Use this for 90% of work."
     },
     "plan": {
-      "model": "opencode-go/glm-5",
+      "model": "opencode-go/glm-5.1",
+      "description": "Architecture and design mode. Read-only for brainstorming before implementation.",
       "tools": {
         "write": false,
         "edit": false,
@@ -19,20 +21,14 @@
     },
     "review": {
       "model": "opencode-go/kimi-k2.5",
+      "description": "Code review mode. Read-only analysis of existing code.",
       "tools": {
         "write": false,
         "edit": false,
         "bash": false,
-        "read": true,
-        "grep": true,
-        "glob": true
+        "webfetch": false,
+        "task": false
       }
-    },
-    "deep": {
-      "model": "opencode-go/glm-5"
-    },
-    "quick": {
-      "model": "opencode-go/kimi-k2.5"
     }
   },
   "plugin": [
@@ -41,5 +37,27 @@
     "opencode-mem",
     "opencode-notify",
     "tokenscope"
-  ]
+  ],
+  "workflow": {
+    "startWithPlan": [
+      "Designing new features or systems",
+      "Architecture decisions",
+      "Refactoring large components",
+      "Adding new major functionality",
+      "Breaking down complex requirements"
+    ],
+    "stayInBuild": [
+      "Bug fixes",
+      "Small enhancements",
+      "Writing tests",
+      "Documentation updates",
+      "Code cleanup",
+      "Simple refactors"
+    ],
+    "useReview": [
+      "Before committing significant changes",
+      "Self-review before PR",
+      "Analyzing existing code for issues"
+    ]
+  }
 }

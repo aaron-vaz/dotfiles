@@ -95,18 +95,44 @@ Session Start
 
 ## MODE SWITCHING
 
-**Use the right mode for the task (press Tab to switch):**
+**OpenCode requires MANUAL mode switching (type `/mode <name>` in chat)**
 
-| Mode | Best For | Model |
-|------|----------|-------|
-| `build` | Coding, file edits, running tests | kimi-k2.5 |
-| `plan` | Architecture decisions, analysis | glm-5 |
-| `review` | Code review, bug hunting | kimi-k2.5 |
-| `deep` | Complex refactoring, debugging | glm-5 |
-| `quick` | Rapid iterations, simple tasks | kimi-k2.5 |
+| Mode | Best For | Model | Tools |
+|------|----------|-------|-------|
+| `build` | Coding, editing, testing (default) | kimi-k2.5 | All tools |
+| `plan` | Architecture, design, analysis | glm-5.1 | Read-only |
+| `review` | Code review, analysis | kimi-k2.5 | Read-only |
 
-**Heuristics:**
-- Switching to **plan** mode? Use when asked to "design", "analyze", or "review before implementing"
-- Switching to **review** mode? Use for PR feedback or when user says "check this code"
-- Switching to **deep** mode? Use for 3+ file changes or complex logic problems
-- Stay in **build** mode for routine coding and quick fixes
+### When to Switch Modes
+
+**Start with PLAN mode when:**
+- Designing new features or systems
+- Architecture decisions
+- Refactoring large components
+- Adding major functionality
+- Complex requirements breakdown
+
+**Stay in BUILD mode (default) for:**
+- Bug fixes
+- Small enhancements
+- Writing tests
+- Documentation
+- Code cleanup
+- 90% of day-to-day work
+
+**Use REVIEW mode when:**
+- Before committing significant changes
+- Self-review before PR
+- Analyzing code issues
+
+### How to Switch
+
+```bash
+# In OpenCode chat:
+/mode plan     # For architecture/design
+/mode build    # For coding (default)
+/mode review   # For code review
+
+# Or start with mode:
+opencode --mode plan
+```
