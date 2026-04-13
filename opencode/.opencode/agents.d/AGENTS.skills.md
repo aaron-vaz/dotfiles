@@ -1,6 +1,6 @@
 # Custom Skills Reference
 
-## INSTALLED SKILLS (11)
+## INSTALLED SKILLS (14)
 
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
@@ -12,8 +12,10 @@
 | jvm | Gradle/Maven builds | Build/test issues, Java version errors |
 | jvm-test-quality | Test coverage | Coverage gaps, branch coverage, test plans |
 | kotlin-review | Kotlin patterns | Review PRs, idiomatic patterns |
+| learnings | Learnings management | Capture and manage corrections/preferences |
 | mermaid-diagram-creator | Diagrams | Flowcharts, sequence, state, class, ER diagrams |
 | pr-review-learnings | PR feedback learning | Learn from human PR feedback |
+| pr-reviews | Pull request reviews | Review PRs with best practices |
 | react-best-practices | React/Next.js | Write, review, refactor React code |
 | self-review | Self code review | After committing, staff-level review |
 
