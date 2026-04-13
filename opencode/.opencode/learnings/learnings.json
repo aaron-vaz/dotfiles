@@ -9,15 +9,28 @@
           "id": "kotlin-test-junit5-versioning",
           "timestamp": "2026-04-13",
           "context": "When adding junit version to gradle/libs.versions.toml",
-          "whatIGotWrong": "Assumed kotlin-test-junit5 would use the junit version from version catalog",
-          "correction": "kotlin-test-junit5 is released by JetBrains aligned with Kotlin version, not JUnit version. Only junit-platform-launcher uses the JUnit version.",
+          "whatIGotWrong": "Added version.ref = 'junit' to kotlin-test-junit5, assuming it would use JUnit versioning. Build failed because kotlin-test-junit5:6.0.3 doesn't exist.",
+          "correction": "kotlin-test-junit5 is released by JetBrains aligned with Kotlin version, not JUnit version. Only junit-platform-launcher should use the JUnit version.",
           "details": {
             "correctMapping": {
-              "junit-platform-launcher": "uses junit version (6.0.3 from Spring BOM)",
-              "kotlin-test-junit5": "uses Kotlin version (2.3.10)"
-            }
+              "junit-platform-launcher": "uses junit version (6.0.3)",
+              "kotlin-test-junit5": "uses Kotlin version (2.3.10) - released by JetBrains"
+            },
+            "failedArtifact": "org.jetbrains.kotlin:kotlin-test-junit5:6.0.3 does not exist"
           },
           "tags": ["misconceptions", "gradle", "kotlin", "junit", "version-catalog"]
+        },
+        {
+          "id": "wrong-attribution-of-build-failure",
+          "timestamp": "2026-04-13",
+          "context": "When build failed after adding junit version",
+          "whatIGotWrong": "Assumed the protobuf plugin version changes (asProvider().get()) caused the build failure, when actually the failure was from adding version.ref = 'junit' to kotlin-test-junit5",
+          "correction": "When build fails, verify which change actually caused the failure before attributing blame. The asProvider().get() pattern for protobuf plugin worked correctly.",
+          "details": {
+            "actualCause": "Adding version.ref = 'junit' to kotlin-test-junit5 caused artifact lookup failure",
+            "innocentChange": "libs.versions.protobuf.asProvider().get() worked correctly"
+          },
+          "tags": ["misconceptions", "debugging", "gradle", "attribution"]
         }
       ]
     },
@@ -55,11 +68,11 @@
           "id": "protobuf-plugin-version-resolution",
           "timestamp": "2026-04-13",
           "context": "When configuring protobuf plugin artifacts in build.gradle.kts",
-          "whatIGotWrong": "First tried to use libs.versions.protobuf.get() directly, which doesn't work in protobuf plugin block context",
-          "correction": "Use libs.versions.<name>.asProvider().get() pattern for protobuf plugin artifact strings",
+          "whatIGotWrong": "First tried to use libs.versions.protobuf.get() directly in protobuf plugin block - failed with 'Unresolved reference'",
+          "correction": "Use libs.versions.<name>.asProvider().get() pattern for protobuf plugin artifact strings. The get() method alone doesn't work in this context because the libs extension isn't available the same way.",
           "details": {
             "pattern": "artifact = \"com.google.protobuf:protoc:${libs.versions.protobuf.asProvider().get()}\"",
-            "why": "The protobuf plugin's artifact configuration is evaluated in a different context where libs isn't directly available in the same way. asProvider().get() resolves the provider at evaluation time."
+            "why": "The protobuf plugin's artifact configuration is evaluated in a different context where the libs extension isn't directly accessible. asProvider().get() properly resolves the provider at evaluation time."
           },
           "tags": ["patterns", "gradle", "protobuf", "grpc", "kotlin"]
         }
