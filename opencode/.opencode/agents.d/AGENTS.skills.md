@@ -1,23 +1,17 @@
 # Custom Skills Reference
 
-## INSTALLED SKILLS (14)
+## INSTALLED SKILLS (8)
 
-| Skill | Purpose | When to Use |
-|-------|---------|-------------|
-| agents-md-updater | Documentation sync | After code changes, check if docs need updating |
-| agents-md-validator | AGENTS.md validation | Validate structure, commands, paths, scoring |
-| conventional-commits | Semantic versioning | Commit changes with proper versioning |
-| find-skills | Skill discovery | Find/install new skills for specific tasks |
-| generate-project-docs | Project documentation | Onboarding guides, API mapping, data flows |
-| jvm | Gradle/Maven builds | Build/test issues, Java version errors |
-| jvm-test-quality | Test coverage | Coverage gaps, branch coverage, test plans |
-| kotlin-review | Kotlin patterns | Review PRs, idiomatic patterns |
-| learnings | Learnings management | Capture and manage corrections/preferences |
-| mermaid-diagram-creator | Diagrams | Flowcharts, sequence, state, class, ER diagrams |
-| pr-review-learnings | PR feedback learning | Learn from human PR feedback |
-| pr-reviews | Pull request reviews | Review PRs with best practices |
-| react-best-practices | React/Next.js | Write, review, refactor React code |
-| self-review | Self code review | After committing, staff-level review |
+| Skill | Purpose | When to Use | Status |
+|-------|---------|-------------|--------|
+| agents-md-validator | AGENTS.md validation | Validate structure, commands, paths, scoring | ✅ OpenCode compatible |
+| find-skills | Skill discovery | Find/install new skills for specific tasks | ✅ OpenCode compatible |
+| jvm | Gradle/Maven builds | Build/test issues, Java version errors | ✅ Migrated to OpenCode |
+| jvm-test-quality | Test coverage | Coverage gaps, branch coverage, test plans | ✅ OpenCode compatible |
+| kotlin-review | Kotlin patterns | Review PRs, idiomatic patterns | ✅ OpenCode compatible |
+| learnings | Learnings management | Capture and manage corrections/preferences | ✅ OpenCode compatible |
+| mermaid-diagram-creator | Diagrams | Flowcharts, sequence, state, class, ER diagrams | ✅ OpenCode compatible |
+| self-review | Self code review | After committing, staff-level review | ✅ Migrated to OpenCode |
 
 ## SKILL INVOCATION
 
@@ -42,17 +36,18 @@ Example:
 
 | Task Pattern | Skills to Load |
 |--------------|----------------|
-| Kotlin PR review | `kotlin-review`, `pr-reviews` |
+| Kotlin code review | `kotlin-review` |
 | Build/test JVM project | `jvm`, `jvm-test-quality` |
-| React frontend work | `react-best-practices`, `frontend-ui-ux` |
+| Self-review before PR | `self-review` |
 | Create diagrams | `mermaid-diagram-creator` |
-| Commit changes | `conventional-commits` |
+| Manage learnings | `learnings` |
+| Validate AGENTS.md | `agents-md-validator` |
 
 ## SKILL VS BUILT-IN
 
 | Domain | Use Skill | Or Built-In |
 |--------|-----------|-------------|
-| Browser automation | — | `playwright`, `dev-browser` |
-| Git operations | — | `git-master` |
-| Frontend/UI | `react-best-practices` | `frontend-ui-ux` |
-| Project docs | `generate-project-docs` | — |
+| Git operations | — | Built-in git tools |
+| JVM builds | `jvm` | Manual gradle/mvn commands |
+| Code review | `kotlin-review` | General analysis |
+| Diagrams | `mermaid-diagram-creator` | ASCII/text descriptions |
