@@ -7,12 +7,10 @@
   },
   "mode": {
     "build": {
-      "model": "opencode-go/kimi-k2.5",
-      "temperature": 0.3
+      "model": "opencode-go/kimi-k2.5"
     },
     "plan": {
       "model": "opencode-go/glm-5",
-      "temperature": 0.2,
       "tools": {
         "write": false,
         "edit": false,
@@ -21,7 +19,6 @@
     },
     "review": {
       "model": "opencode-go/kimi-k2.5",
-      "temperature": 0.1,
       "tools": {
         "write": false,
         "edit": false,
@@ -32,21 +29,17 @@
       }
     },
     "deep": {
-      "model": "opencode-go/glm-5",
-      "temperature": 0.2
+      "model": "opencode-go/glm-5"
     },
     "quick": {
-      "model": "opencode-go/kimi-k2.5",
-      "temperature": 0.5
+      "model": "opencode-go/kimi-k2.5"
     }
   },
   "plugin": [
     "cc-safety-net",
     "envsitter-guard",
     "opencode-mem",
-    "opencode-snip",
     "opencode-notify",
-    "opencode-snippets",
     "tokenscope"
   ]
 }
