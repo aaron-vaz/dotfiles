@@ -16,7 +16,7 @@ fi
 
 TEMP_FILE=$(mktemp)
 
-jq --arg id "$ID" '
+  jq --arg id "$ID" '
   def update_entry:
     if .id == $id then
       .status = "discarded"
@@ -24,7 +24,7 @@ jq --arg id "$ID" '
       .
     end;
 
-  .categories | to_entries | map(
+  to_entries | map(
     .value.entries |= map(update_entry)
   ) | from_entries
 ' "$LEARNINGS_FILE" > "$TEMP_FILE"
