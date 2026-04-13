@@ -1,60 +1,104 @@
 # Agent & Model Configuration
 
-## AGENT ASSIGNMENTS
+## MODE WORKFLOW
 
-| Agent | Model | Use Case |
+OpenCode requires **manual mode switching** (unlike Claude Code). Use these guidelines:
+
+### When to Start with PLAN Mode
+
+**Start in plan mode (`/mode plan`) when:**
+- Designing new features or systems
+- Making architecture decisions
+- Refactoring large components
+- Adding new major functionality
+- Breaking down complex requirements
+
+**Plan mode features:**
+- Model: `opencode-go/glm-5.1` (better at reasoning/architecture)
+- Read-only: Cannot write files or run commands
+- Purpose: Brainstorm, design, analyze before implementing
+
+### When to Use BUILD Mode (Default)
+
+**Stay in build mode for:**
+- Bug fixes
+- Small enhancements
+- Writing tests
+- Documentation updates
+- Code cleanup
+- Simple refactors
+- 90% of day-to-day coding
+
+**Build mode features:**
+- Model: `opencode-go/kimi-k2.5` (reliable, high quota)
+- Full tool access: Read, Write, Edit, Bash, Task
+- Default mode on startup
+
+### When to Use REVIEW Mode
+
+**Switch to review mode (`/mode review`) when:**
+- Before committing significant changes
+- Self-review before creating a PR
+- Analyzing existing code for issues
+- Want read-only code analysis
+
+**Review mode features:**
+- Model: `opencode-go/kimi-k2.5`
+- Read-only: Cannot modify files
+- Purpose: Objective code analysis
+
+## MODELS
+
+| Model | Quota (5h) | Best For |
+|-------|-----------|----------|
+| kimi-k2.5 | 1,850 | General coding (default) |
+| glm-5.1 | 880 | Architecture, planning |
+| glm-5 | 1,150 | Deep reasoning (alternative) |
+| mimo-v2-pro | 1,290 | High-quality coding |
+| minimax-m2.7 | 14,000 | Fast, cheap tasks |
+
+## SKILL MODEL ASSIGNMENTS
+
+Skills automatically load their preferred models:
+
+| Skill | Model | Override |
 |-------|-------|----------|
-| sisyphus | kimi-k2.5 | Orchestration, delegation, main agent |
-| hephaestus | glm-5 | Deep autonomous work, implementation |
-| oracle | glm-5 | Architecture, debugging, consultation |
-| librarian | minimax-m2.5-free | Docs/code search (free tier) |
-| explore | minimax-m2.5-free | Codebase grep (free tier) |
-| prometheus | kimi-k2.5 | Strategic planning |
-| metis | kimi-k2.5 | Plan analysis, hidden intentions |
-| momus | glm-5 | Quality review, plan verification |
-| multimodal-looker | kimi-k2.5 | Image/document analysis |
+| self-review | opencode-go/glm-5.1 | Yes |
+| kotlin-review | opencode-go/kimi-k2.5 | Yes |
+| jvm | opencode-go/kimi-k2.5 | Yes |
+| learnings | opencode-go/kimi-k2.5 | Yes |
 
-## CATEGORY ASSIGNMENTS
+## TYPICAL WORKFLOW
 
-| Category | Model | Use Case |
-|----------|-------|----------|
-| visual-engineering | gemini-3-flash | Frontend/UI/UX/styling/animation |
-| ultrabrain | glm-5 | Hard logic problems, algorithms |
-| deep | glm-5 | Autonomous research, complex tasks |
-| artistry | gemini-3-flash | Creative design work |
-| quick | minimax-m2.5-free | Trivial tasks, typo fixes |
-| unspecified-low | kimi-k2.5 | Default low-effort tasks |
-| unspecified-high | glm-5 | Default high-effort tasks |
-| writing | kimi-k2.5 | Documentation, prose |
+```
+1. New feature request
+   └─→ Switch to PLAN mode: "/mode plan"
+   └─→ Discuss design, architecture
+   └─→ Get implementation approach
 
-## DELEGATION PATTERNS
+2. Implementation
+   └─→ Switch to BUILD mode: "/mode build"
+   └─→ Write code, tests
+   └─→ Iterate
 
-### When to Use Which Agent
+3. Before commit
+   └─→ Optional: Switch to REVIEW mode: "/mode review"
+   └─→ Review changes
+   └─→ Back to BUILD to fix issues
 
-| Task Type | Agent | Reason |
-|-----------|-------|--------|
-| Orchestration | sisyphus | Main coordinator, delegates to specialists |
-| Implementation | hephaestus/deep | Deep work, autonomous execution |
-| Architecture question | oracle | Read-only consultation |
-| Unfamiliar library | librarian | External docs/examples |
-| Find existing code | explore | Codebase grep, pattern discovery |
-| Plan creation | prometheus | Strategic planning |
-| Plan review | momus + metis | Quality + intention analysis |
-| Code review | momus | Expert review |
-| Visual/UI work | visual-engineering | Domain-optimized model |
+4. Self-review (optional)
+   └─→ Load skill: skill(name="self-review")
+   └─→ Skill loads glm-5.1 automatically
+```
 
-### Delegation Rules
+## SWITCHING MODES
 
-1. **Always delegate** work to specialized agents rather than implementing directly
-2. **Use background agents** (librarian, explore) for research - never block
-3. **Session continuity** - always use `session_id` for follow-up questions
-4. **Verify delegation results** - check outputs match expected outcomes
+```bash
+# In OpenCode chat, type:
+/mode plan     # Architecture/planning
+/mode build    # Coding (default)
+/mode review   # Code review
 
-## MODEL CAPABILITIES
-
-| Model | Strengths | Weaknesses |
-|-------|-----------|------------|
-| kimi-k2.5 | Claude-like, orchestration, multimodal | Slower than free tier |
-| glm-5 | Deep reasoning, autonomy, coding | Less conversational |
-| gemini-3-flash | Visual tasks, frontend, fast | Lighter reasoning |
-| minimax-m2.5-free | Fast, free, simple tasks | Limited capabilities |
+# Or start with mode:
+opencode --mode plan
+```
