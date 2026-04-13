@@ -22,7 +22,7 @@
 ./gradlew test                   # Run tests
 ./gradlew spotlessCheck          # Lint/format check
 ./gradlew spotlessApply          # Auto-format
-./gradlew ktlintCheck            # Kotlin lint (if configured)
+./gradlew ktlintCheck            # Kotlin lint (optional - only if ktlint plugin configured)
 ```
 
 #### npm/pnpm

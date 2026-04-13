@@ -13,7 +13,6 @@
 │   └── AGENTS.config.md         # This file - config setup
 ├── settings.json                # OpenCode settings
 ├── opencode.json                # Provider config + plugins
-├── oh-my-opencode.json          # Agent/category model assignments
 ├── skills/                      # Custom skills directory
 │   ├── agents-md-updater/
 │   ├── agents-md-validator/
@@ -78,21 +77,16 @@ git push
 {
   "provider": { "go": { "name": "go" } },
   "plugin": [
-    "oh-my-opencode",
     "cc-safety-net",
     "envsitter-guard",
     "opencode-mem",
-    "opencode-snip",
     "opencode-notify",
-    "opencode-snippets",
     "tokenscope"
   ]
 }
 ```
 
-### oh-my-opencode.json
 
-See [`AGENTS.agents.md`](./AGENTS.agents.md) for full configuration.
 
 ## COMMANDS REFERENCE
 
@@ -119,14 +113,14 @@ git worktree remove <path>
 | Symlink broken | Re-run `install.sh` |
 | Config not loading | Check symlink with `ls -la ~/.config/opencode` |
 | Skills not found | Verify `~/.config/opencode/skills/` exists |
-| Wrong model used | Check `oh-my-opencode.json` overrides |
+| Wrong model used | Check `opencode.json` mode configuration |
 
 ## FILES TO EDIT
 
 | What to Change | File |
 |----------------|------|
 | Global instructions | `AGENTS.md` |
-| Agent/model config | `oh-my-opencode.json` |
+| Agent/model config | `AGENTS.agents.md` |
 | Plugin settings | `opencode.json` |
 | OpenCode settings | `settings.json` |
 | Add custom skill | `skills/<name>/SKILL.md` |

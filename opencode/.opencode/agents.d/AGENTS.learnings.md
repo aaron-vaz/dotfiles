@@ -68,7 +68,7 @@ The learnings system captures:
 | **Correction** | Config lives in `~/Code/shell/dotfiles/opencode/.opencode/` (note the `.opencode/` subdirectory) |
 | **Actual location** | `/Users/aaronvaz/Code/shell/dotfiles/opencode/.opencode/` |
 | **Symlink target** | `~/.config/opencode/` |
-| **Key files** | `AGENTS.md`, `settings.json`, `opencode.json`, `oh-my-opencode.json` |
+| **Key files** | `AGENTS.md`, `settings.json`, `opencode.json` |
 | **Install** | `install.sh` symlinks individual files from `.opencode/` to `~/.config/opencode/` |
 
 ```bash
