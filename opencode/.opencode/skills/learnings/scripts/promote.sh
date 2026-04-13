@@ -25,7 +25,7 @@ fi
 TEMP_FILE=$(mktemp)
 
 # Use jq to update the entry status and promotedTo
-jq --arg id "$ID" --arg target "$TARGET" '
+  jq --arg id "$ID" --arg target "$TARGET" '
   def update_entry:
     if .id == $id then
       .status = "promoted" | .promotedTo = $target
@@ -33,7 +33,7 @@ jq --arg id "$ID" --arg target "$TARGET" '
       .
     end;
 
-  .categories | to_entries | map(
+  to_entries | map(
     .value.entries |= map(update_entry)
   ) | from_entries
 ' "$LEARNINGS_FILE" > "$TEMP_FILE"

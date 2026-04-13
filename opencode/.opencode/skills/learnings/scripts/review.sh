@@ -19,7 +19,7 @@ if [ "$SHOW_ALL" = "--all" ]; then
   echo "Showing ALL entries (status: pending_review | promoted | discarded)"
   echo ""
   jq -r '
-    .categories | to_entries[] | 
+    to_entries[] | 
     "[\(.key)] \(.value.description)\n" +
     (.value.entries | map(
       "\n  [\(.id)] status=\(.status)\n" +
@@ -32,7 +32,7 @@ else
   echo "Showing PENDING REVIEW entries only"
   echo ""
   jq -r '
-    .categories | to_entries[] | 
+    to_entries[] | 
     "[\(.key)] \(.value.description)\n" +
     (.value.entries | map(
       select(.status == "pending_review") |
