@@ -1,10 +1,25 @@
 {
   "version": "1.0",
-  "lastUpdated": "2026-03-14",
+  "lastUpdated": "2026-04-13",
   "categories": {
     "misconceptions": {
       "description": "Things I got wrong that need correction",
-      "entries": []
+      "entries": [
+        {
+          "id": "kotlin-test-junit5-versioning",
+          "timestamp": "2026-04-13",
+          "context": "When adding junit version to gradle/libs.versions.toml",
+          "whatIGotWrong": "Assumed kotlin-test-junit5 would use the junit version from version catalog",
+          "correction": "kotlin-test-junit5 is released by JetBrains aligned with Kotlin version, not JUnit version. Only junit-platform-launcher uses the JUnit version.",
+          "details": {
+            "correctMapping": {
+              "junit-platform-launcher": "uses junit version (6.0.3 from Spring BOM)",
+              "kotlin-test-junit5": "uses Kotlin version (2.3.10)"
+            }
+          },
+          "tags": ["misconceptions", "gradle", "kotlin", "junit", "version-catalog"]
+        }
+      ]
     },
     "preferences": {
       "description": "User preferences and workflow choices",
@@ -35,7 +50,20 @@
     },
     "patterns": {
       "description": "Code patterns and conventions",
-      "entries": []
+      "entries": [
+        {
+          "id": "protobuf-plugin-version-resolution",
+          "timestamp": "2026-04-13",
+          "context": "When configuring protobuf plugin artifacts in build.gradle.kts",
+          "whatIGotWrong": "First tried to use libs.versions.protobuf.get() directly, which doesn't work in protobuf plugin block context",
+          "correction": "Use libs.versions.<name>.asProvider().get() pattern for protobuf plugin artifact strings",
+          "details": {
+            "pattern": "artifact = \"com.google.protobuf:protoc:${libs.versions.protobuf.asProvider().get()}\"",
+            "why": "The protobuf plugin's artifact configuration is evaluated in a different context where libs isn't directly available in the same way. asProvider().get() resolves the provider at evaluation time."
+          },
+          "tags": ["patterns", "gradle", "protobuf", "grpc", "kotlin"]
+        }
+      ]
     },
     "workflows": {
       "description": "Workflow corrections and improvements",
@@ -57,6 +85,30 @@
             "critical": "Must run install.sh after adding new directories (skills, learnings, etc.) or OpenCode won't see them"
           },
           "tags": ["workflows", "config", "dotfiles", "git", "symlinks"]
+        },
+        {
+          "id": "branch-creation-check",
+          "timestamp": "2026-04-13",
+          "context": "Before creating a new branch for commits",
+          "whatIGotWrong": "Created a new branch when already on an appropriate feature branch, leading to unnecessary PR and cleanup",
+          "correction": "Check git status and current branch before creating commits. If already on a feature branch for the work, commit directly to it instead of creating new branches.",
+          "details": {
+            "correctFlow": "git status → already on feat/xyz → commit and push to existing branch",
+            "wrongFlow": "git status → create new branch → commit → push → create PR → merge back to original"
+          },
+          "tags": ["workflows", "git", "branches"]
+        },
+        {
+          "id": "multi-file-version-tracking",
+          "timestamp": "2026-04-13",
+          "context": "When version numbers change in version catalogs",
+          "whatIGotWrong": "Only updated gradle/libs.versions.toml but forgot to update documentation files (AGENTS.md, CLAUDE.md) that reference the same version",
+          "correction": "When updating versions in libs.versions.toml, search for and update all documentation files that reference the same version number",
+          "details": {
+            "example": "Spring Boot 4.0.3 → 4.0.5 required updates in: libs.versions.toml, AGENTS.md, .claude/CLAUDE.md, buildSrc/AGENTS.md",
+            "grepCommand": "grep -r \"4.0.3\" --include=\"*.md\" ."
+          },
+          "tags": ["workflows", "documentation", "versions", "anti-pattern"]
         }
       ]
     }
