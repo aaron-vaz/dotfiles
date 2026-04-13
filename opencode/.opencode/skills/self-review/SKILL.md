@@ -1,13 +1,13 @@
 ---
 name: self-review
 description: Use after committing/pushing your own code - acts as staff/principal engineer reviewing your work with direct feedback
-model: opus
-last_reviewed: 2026-02-03
+model: glm-5
+last_reviewed: 2026-04-13
 ---
 
 # Self-Review Workflow
 
-**IMPORTANT: This skill requires using Opus model for staff engineer-level architectural judgment.**
+**IMPORTANT: This skill requires using glm-5 model for staff engineer-level architectural judgment.**
 
 ## When to Use
 - After committing and pushing code to feature branch
@@ -15,8 +15,8 @@ last_reviewed: 2026-02-03
 - Want staff/principal engineer perspective on your code
 
 ## When NOT to Use
-- Reviewing team PRs → use `pr-reviews` skill
-- Pre-commit checks → use `pre-commit-reviewer` agent
+- Reviewing team PRs → use `skill(name="pr-reviews")` instead
+- Pre-commit checks → just run test suite
 - Quick sanity check → just run test suite
 
 ## Persona
@@ -64,39 +64,32 @@ git log --oneline main..HEAD  # All commits on branch
 git diff --stat main...HEAD    # Files changed
 ```
 
-**Read AGENTS.md / CLAUDE.md** for project patterns and conventions.
+**Read AGENTS.md** for project patterns and conventions.
 
 **Understand intent:**
 - What's being built/fixed?
 - Why these changes?
 - What's the blast radius?
 
-### 3. Run Review Agents (Parallel)
+### 3. Run Domain-Specific Skills
 
-Run ALL relevant agents. No shortcuts.
-
-**Always run:**
-- `pr-review-toolkit:code-reviewer` - General code quality, AGENTS.md/CLAUDE.md compliance
-- `pr-review-toolkit:silent-failure-hunter` - Error handling, silent failures
-
-**Conditional (based on changes):**
-- `pr-review-toolkit:pr-test-analyzer` - If test files changed
-- `pr-review-toolkit:comment-analyzer` - If significant comments/docs added
-- `pr-review-toolkit:type-design-analyzer` - If new types added (TypeScript/Kotlin)
-- `pr-review-toolkit:code-simplifier` - If complex logic (after other reviews pass)
+Based on the code being reviewed, load relevant skills:
 
 **Language-specific:**
 - `kotlin-review` - If Kotlin files changed
 - `react-best-practices` - If React/Next.js files changed
 
-**Launch agents in parallel:**
+**Other useful skills:**
+- `jvm-test-quality` - If test files or coverage analysis needed
+
+**Launch skill analysis:**
 ```
-Use the Task tool with multiple agent invocations in a single message
+skill(name="kotlin-review")  # or appropriate skill
 ```
 
 ### 4. Manual Architecture Review
 
-While agents run, manually review for:
+While running analysis, manually review for:
 
 #### Architecture & Design Patterns
 - Does this fit the existing architecture?
@@ -135,11 +128,11 @@ While agents run, manually review for:
 
 ### 5. Synthesize Findings
 
-Wait for all agents to complete. Then:
+Wait for all analysis to complete. Then:
 
-**Combine agent findings + manual review:**
+**Combine skill findings + manual review:**
 - Group by severity: Blocking → Important → Suggestions
-- Remove false positives (agents can be wrong)
+- Remove false positives (analysis can be wrong)
 - Add context: explain WHY something matters
 - Reference file:line for all issues
 
@@ -203,29 +196,24 @@ Ready to address issues, or want to discuss any?
 
 ## Model Selection
 
-**Use Opus** for this workflow:
+**Use glm-5** for this workflow:
 - Staff engineer judgment requires deep reasoning
 - Architecture decisions need careful analysis
 - Tradeoff evaluation is nuanced
 - Worth the cost to catch serious issues
 
-**Agents can use their own models:**
-- code-reviewer: sonnet (pattern matching)
-- silent-failure-hunter: sonnet (error flow analysis)
-- Test-analyzer: sonnet (behavioral coverage)
-
 ## Common Mistakes
 
-**Skipping agents because "I know my code"**
+**Skipping analysis because "I know my code"**
 - Problem: You have blindspots
-- Fix: Run all agents, every time
+- Fix: Run skills, every time
 
 **Being too nice (forgetting persona)**
 - Problem: Softening feedback defeats the purpose
 - Fix: Direct, blunt feedback. Act like a peer who's challenging your decisions.
 
-**Focusing only on agent findings**
-- Problem: Agents catch mechanics, miss architecture
+**Focusing only on skill findings**
+- Problem: Skills catch mechanics, miss architecture
 - Fix: Manual review is required, not optional
 
 **Not explaining WHY**
@@ -236,15 +224,15 @@ Ready to address issues, or want to discuss any?
 - Problem: 50 commits = review fatigue, miss issues
 - Fix: Review in chunks (recent commits), then full branch at end
 
-**False positives from agents**
-- Problem: Agents don't understand Kotlin operators, extension properties, etc.
-- Fix: Verify agent findings against actual code before including
+**False positives from analysis**
+- Problem: Automated analysis doesn't understand Kotlin operators, extension properties, etc.
+- Fix: Verify findings against actual code before including
 
 ## Re-read Triggers
 
-- Project conventions: Read `AGENTS.md` or `CLAUDE.md`
-- Kotlin patterns: Read `~/.claude/skills/kotlin-review/SKILL.md`
-- React patterns: Read `~/.claude/skills/react-best-practices/SKILL.md`
+- Project conventions: Read `AGENTS.md`
+- Kotlin patterns: Load `skill(name="kotlin-review")`
+- React patterns: Load `skill(name="react-best-practices")`
 - Test patterns: Check project testing conventions
 
 ## Example: Recent Commits Review
@@ -256,7 +244,7 @@ git log --oneline -10
 # User selects: "Review last 3 commits"
 git diff HEAD~3
 
-# Run agents in parallel on those changes
+# Load relevant skills and run analysis
 # Manual review of architecture
 # Synthesize and present with direct feedback
 
@@ -275,7 +263,7 @@ git diff --stat main...HEAD
 # Full diff
 git diff main...HEAD
 
-# Run agents on entire diff
+# Run skill analysis
 # Deep architecture review
 # Present findings with next steps
 ```

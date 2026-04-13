@@ -11,7 +11,7 @@ Comprehensive guide for running JVM commands and troubleshooting build issues.
 
 ## Running Commands
 
-Claude Code runs non-interactive bash, so jabba must be explicitly sourced. Use exact version strings (indexed 2026-03-11).
+OpenCode runs non-interactive bash, so jabba must be explicitly sourced. Use exact version strings (indexed 2026-03-11).
 
 ### Pattern
 ```bash
