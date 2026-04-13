@@ -56,6 +56,7 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 | Commit without request | Only when user asks |
 | Force push main/master | Never on protected branches |
 | Overwrite user changes | Re-read file before writing if user may have modified it |
+| Trust snippet/grep output blindly | Verify actual file state (e.g., `git status` shows staged/unstaged, not untracked) |
 
 ## WHERE TO LOOK
 
