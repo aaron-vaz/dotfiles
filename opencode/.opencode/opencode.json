@@ -36,28 +36,8 @@
     "envsitter-guard",
     "opencode-mem",
     "opencode-notify",
+    "opencode-worktree",
     "tokenscope"
-  ],
-  "workflow": {
-    "startWithPlan": [
-      "Designing new features or systems",
-      "Architecture decisions",
-      "Refactoring large components",
-      "Adding new major functionality",
-      "Breaking down complex requirements"
-    ],
-    "stayInBuild": [
-      "Bug fixes",
-      "Small enhancements",
-      "Writing tests",
-      "Documentation updates",
-      "Code cleanup",
-      "Simple refactors"
-    ],
-    "useReview": [
-      "Before committing significant changes",
-      "Self-review before PR",
-      "Analyzing existing code for issues"
-    ]
-  }
+  ]
 }
+

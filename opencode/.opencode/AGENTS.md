@@ -105,34 +105,65 @@ Session Start
 
 ### When to Switch Modes
 
-**Start with PLAN mode when:**
+**PLAN mode — start here when:**
 - Designing new features or systems
 - Architecture decisions
 - Refactoring large components
 - Adding major functionality
 - Complex requirements breakdown
+- Exploring unfamiliar code domains
+- Investigating multi-file bugs before fixing
 
-**Stay in BUILD mode (default) for:**
-- Bug fixes
-- Small enhancements
+**BUILD mode (default) — stay here for:**
+- Bug fixes (after root cause identified)
+- Small enhancements (1-2 files)
 - Writing tests
 - Documentation
 - Code cleanup
 - 90% of day-to-day work
 
-**Use REVIEW mode when:**
-- Before committing significant changes
+**REVIEW mode — switch before committing:**
 - Self-review before PR
-- Analyzing code issues
+- After significant changes (>5 files)
+- Analyzing code issues or regressions
+
+### Signal Phrases
+
+When you hear these, suggest the corresponding mode:
+
+| Signal | Mode | Why |
+|--------|------|-----|
+| "add feature", "build X", "new endpoint/service", "create module" | `plan` | New code paths need design first |
+| "refactor", "reorganize", "migrate", "replace" | `plan` | Structural changes need exploration |
+| "why does X break", "investigate", "figure out" | `plan` | Understand before fixing |
+| "fix this bug" (root cause known) | `build` | Clear path to solution |
+| "update tests", "add test for" | `build` | Implementation task |
+| "looks good", "review this", "check my work" | `review` | Analysis only |
+
+### Mode Lifecycle
+
+For non-trivial work, follow this flow:
+
+```
+plan → build → review
+  ↓       ↓       ↓
+Design   Implement  Verify
+```
+
+- **Start in plan** for anything touching >3 files or introducing new concepts
+- **Move to build** once the approach is agreed upon
+- **Switch to review** before committing significant changes
+- **Stay in build** for small, well-scoped changes
 
 ### How to Switch
 
 ```bash
-# In OpenCode chat:
 /mode plan     # For architecture/design
 /mode build    # For coding (default)
 /mode review   # For code review
+```
 
-# Or start with mode:
+Or start with a mode:
+```bash
 opencode --mode plan
 ```
