@@ -47,7 +47,6 @@
   "plugin": [
     "cc-safety-net",
     "envsitter-guard",
-    "opencode-mem",
     "opencode-notify",
     "opencode-worktree",
     "tokenscope",

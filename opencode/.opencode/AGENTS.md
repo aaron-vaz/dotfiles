@@ -83,6 +83,7 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 | Code patterns | Existing similar files in same module |
 | Agent delegation | [`AGENTS.agents.md`](./agents.d/AGENTS.agents.md) |
 | Skills available | [`AGENTS.skills.md`](./agents.d/AGENTS.skills.md) |
+| Knowledge base | `~/.config/opencode/kb/search-kb.sh` — search past session learnings |
 
 ## INITIALIZATION
 
