@@ -5,29 +5,42 @@
       "name": "go"
     }
   },
-  "mode": {
+  "model": "opencode-go/deepseek-v4-flash",
+  "agent": {
     "build": {
+      "mode": "primary",
       "model": "opencode-go/kimi-k2.5",
-      "description": "Default mode for coding, editing, testing. Use this for 90% of work."
+      "description": "Default coding mode. Use for 90% of work: editing, testing, debugging.",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": "allow"
+      }
     },
     "plan": {
-      "model": "opencode-go/glm-5.1",
-      "description": "Architecture and design mode. Read-only for brainstorming before implementation.",
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": false
+      "mode": "primary",
+      "model": "opencode-go/qwen3.7-max",
+      "description": "Architecture and design mode. Read-only reasoning for complex planning before implementation.",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "allow"
       }
     },
     "review": {
-      "model": "opencode-go/kimi-k2.5",
+      "mode": "primary",
+      "model": "opencode-go/kimi-k2.6",
       "description": "Code review mode. Read-only analysis of existing code.",
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": false,
-        "webfetch": false,
-        "task": false
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny",
+        "webfetch": "deny",
+        "todowrite": "deny"
       }
     }
   },
@@ -37,7 +50,7 @@
     "opencode-mem",
     "opencode-notify",
     "opencode-worktree",
-    "tokenscope"
+    "tokenscope",
+    "./plugins/caveman/plugin.js"
   ]
 }
-

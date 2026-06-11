@@ -48,7 +48,66 @@
   },
   "preferences": {
     "description": "User preferences and workflow choices",
-    "entries": []
+    "entries": [
+      {
+        "id": "test-structure-blocks",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When writing tests in Kotlin",
+        "whatIGotWrong": "Put action calls inside assert blocks in // Then, and put multiple assertions in single // Then block",
+        "correction": "Use Spock-style: // Given, // When, // Then, // And on single lines. Action (even if it throws) goes in // When. Extra assertions go in // And block after // Then.",
+        "details": {
+          "pattern": "// Given\nsetup\n\n// When\nval result = call()\n\n// Then\nassertEquals(expected, result)\n\n// And\nassertTrue(result.isValid)",
+          "exceptionTests": "// When\nval action = suspend { thingThatThrows() }\n\n// Then\nassertFailsWith<Exception> { action() }"
+        },
+        "tags": [
+          "preferences",
+          "testing",
+          "kotlin",
+          "spock"
+        ]
+      },
+      {
+        "id": "no-stepverifier",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When testing Reactor Mono in Kotlin coroutines",
+        "whatIGotWrong": "Used StepVerifier for testing Reactor Mono in coroutine tests",
+        "correction": "Never use StepVerifier. Use kotlinx.coroutines.reactor.awaitSingle() or awaitFirstOrNull() within runTest.",
+        "details": {
+          "wrong": "StepVerifier.create(result).assertNext { ... }.verifyComplete()",
+          "correct": "val result = mono.awaitSingle()"
+        },
+        "tags": [
+          "preferences",
+          "testing",
+          "reactor",
+          "kotlin",
+          "coroutines"
+        ]
+      },
+      {
+        "id": "runtTest-only-for-suspend",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When choosing test scope for Kotlin tests",
+        "whatIGotWrong": "Used runTest for tests that don't test suspend functions (e.g., Reactor .block(), plain code)",
+        "correction": "Only use runTest when testing suspend functions. For non-suspend functions or Reactor .block(), use plain test blocks.",
+        "details": {
+          "useRunTest": "suspend fun myFunction() = ...",
+          "dontUseRunTest": "webTestClient.get().exchange().block() - plain test block"
+        },
+        "tags": [
+          "preferences",
+          "testing",
+          "kotlin",
+          "coroutines"
+        ]
+      }
+    ]
   },
   "config": {
     "description": "Configuration details and structure",
@@ -106,6 +165,63 @@
           "protobuf",
           "grpc",
           "kotlin"
+        ]
+      },
+      {
+        "id": "conditionalOnBean-component-vs-bean",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When making Spring beans conditional on other beans in Spring Boot",
+        "whatIGotWrong": "Applied @ConditionalOnBean to @Component classes directly. This caused ordering issues where Spring couldn't determine the dependency graph correctly.",
+        "correction": "Use @ConditionalOnBean on @Bean methods within @Configuration classes, not on @Component classes. Spring Boot's condition evaluation works correctly at the @Bean level.",
+        "details": {
+          "wrong": "@Component @ConditionalOnBean(X.class) class MyService implements X",
+          "correct": "@Configuration class MyConfig { @Bean @ConditionalOnBean(X.class) fun myService(): X = MyService() }"
+        },
+        "tags": [
+          "patterns",
+          "spring-boot",
+          "kotlin",
+          "beans"
+        ]
+      },
+      {
+        "id": "no-default-fallback-beans",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When creating fallback implementations for tests in shared modules",
+        "whatIGotWrong": "Created DefaultUserProvisioner in libs/common as a fallback when services:user isn't available. This adds prod code just for test contexts.",
+        "correction": "Don't create DefaultXxx fallback beans in shared modules for tests. Use @ConditionalOnBean to make beans optional, or create test-specific components in test sources.",
+        "details": {
+          "antiPattern": "libs/common: DefaultUserProvisioner for when services:user is missing",
+          "better": "@ConditionalOnBean(UserProvisioner.class) on auth beans, or TestUserProvisioner in src/testFixtures"
+        },
+        "tags": [
+          "patterns",
+          "spring-boot",
+          "testing",
+          "architecture"
+        ]
+      },
+      {
+        "id": "firebase-auth-inject-bean",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When using Firebase Admin SDK in Spring Boot",
+        "whatIGotWrong": "Used static FirebaseAuth.getInstance() directly in code instead of injecting it as a Spring bean",
+        "correction": "Inject FirebaseAuth as a Spring bean. Create it in @Configuration alongside FirebaseApp, then inject it. Never use static getInstance() in production code.",
+        "details": {
+          "wrong": "FirebaseAuth.getInstance().verifyIdToken(token)",
+          "correct": "class MyService(private val firebaseAuth: FirebaseAuth) { ... firebaseAuth.verifyIdToken(token) }"
+        },
+        "tags": [
+          "patterns",
+          "spring-boot",
+          "firebase",
+          "dependency-injection"
         ]
       }
     ]
@@ -174,6 +290,25 @@
           "documentation",
           "versions",
           "anti-pattern"
+        ]
+      },
+      {
+        "id": "spring-security-defaults",
+        "timestamp": "2026-06-10",
+        "status": "pending_review",
+        "promotedTo": null,
+        "context": "When configuring Spring Security WebFlux",
+        "whatIGotWrong": "Added custom exceptionHandling in WebSecurityConfig to return 401/403, which is redundant with Spring Security defaults",
+        "correction": "Spring Security default behavior already returns 401 for unauthenticated and 403 for unauthorized. Don't add custom exceptionHandling unless you need custom behavior.",
+        "details": {
+          "redundant": "exceptionHandling { authenticationEntryPoint { ... UNAUTHORIZED ... } }",
+          "correct": "Remove exceptionHandling block entirely - defaults work correctly"
+        },
+        "tags": [
+          "workflows",
+          "spring-security",
+          "webflux",
+          "defaults"
         ]
       }
     ]

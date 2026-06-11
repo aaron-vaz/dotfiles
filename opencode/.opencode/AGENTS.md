@@ -38,6 +38,11 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 
 | Rule | Details |
 |------|---------|
+| Test style | Spock-style: `// Given`, `// When`, `// Then`, `// And` on single lines; explanation comments above the block |
+| `runTest` usage | Only when testing suspend functions — never for `.block()` on Reactor Mono or blocking I/O |
+| No `StepVerifier` | Use `awaitSingle()` / `awaitFirstOrNull()` for coroutine tests; avoid Reactor testing utilities |
+| No JVM assert | Never `assert()` in tests — use `assertTrue`, `assertEquals`, `assertFailsWith` etc. |
+| No try-catch in tests | Never `try/catch` in tests — use `assertFailsWith` etc. |
 | No comments | Unless explicitly requested |
 | No type suppression | Never `as any`, `@ts-ignore`, empty catch |
 | Conventional commits | `feat/fix/refactor/docs/test/chore` |
@@ -45,6 +50,16 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 | Verify basics | Run lint/tests before marking complete |
 | Fix root causes | Not symptoms; after 3 failures: STOP → REVERT → CONSULT ORACLE |
 | Check file changes | Before writing, re-read if file may have been modified since last read |
+
+## USER PREFERENCES
+
+### Testing
+
+| Topic | Preference |
+|-------|-----------|
+| Extra assertions | Use `// And` block for additional assertions after `// Then` |
+| Action in `When` | The actual call (even if it throws) goes in `// When`, assertion in `// Then` |
+| Reactor tests | Never `StepVerifier`; use `awaitSingle()` / `awaitFirstOrNull()` with `runTest` |
 
 ## KEY ANTI-PATTERNS
 
@@ -167,3 +182,21 @@ Or start with a mode:
 ```bash
 opencode --mode plan
 ```
+
+<!-- caveman-begin -->
+Respond terse like smart caveman. All technical substance stay. Only fluff die.
+
+Rules:
+- Drop: articles (a/an/the), filler (just/really/basically), pleasantries, hedging
+- Fragments OK. Short synonyms. Technical terms exact. Code unchanged.
+- Pattern: [thing] [action] [reason]. [next step].
+- Not: "Sure! I'd be happy to help you with that."
+- Yes: "Bug in auth middleware. Fix:"
+
+Switch level: /caveman lite|full|ultra|wenyan
+Stop: "stop caveman" or "normal mode"
+
+Auto-Clarity: drop caveman for security warnings, irreversible actions, user confused. Resume after.
+
+Boundaries: code/commits/PRs written normal.
+<!-- caveman-end -->
