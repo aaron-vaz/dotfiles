@@ -91,6 +91,7 @@ cd ~/Code/shell/dotfiles && git add -A && git commit -m "config: ..." && git pus
 Session Start
   ├─→ Load AGENTS.md (global instructions)
   ├─→ Load skills/ directory (custom skills)
+  ├─→ Load KB index: search-kb.sh --recent 5
   └─→ Check project AGENTS.md (project-specific overrides)
 ```
 
