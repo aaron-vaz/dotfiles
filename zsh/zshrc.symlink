@@ -44,3 +44,8 @@ if [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]
 then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 fi
+
+if [[ -d ~/.local/bin ]]
+then
+    export PATH="$HOME/.local/bin:$PATH"
+fi

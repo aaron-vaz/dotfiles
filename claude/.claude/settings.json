@@ -1,0 +1,156 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/.claude/scripts/*)",
+      "Bash(~/.claude/kb/*)"
+    ],
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(mkfs *)",
+      "Bash(dd *)",
+      "Bash(chmod 777 *)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~/)",
+      "Bash(rm -rf /Users/aaronvaz/)",
+      "Bash(rm -rf /Users/aaronvaz/.claude/)",
+      "Read(file_path:/Users/aaronvaz/.ssh/**)",
+      "Read(file_path:/Users/aaronvaz/.gnupg/**)",
+      "Read(file_path:/Users/aaronvaz/.kube/**)",
+      "Read(file_path:/Users/aaronvaz/Library/**)",
+      "Read(file_path:/Users/aaronvaz/.netrc)",
+      "Read(file_path:/Users/aaronvaz/.npmrc)",
+      "Read(file_path:/Users/aaronvaz/.pypirc)",
+      "Read(file_path:/Users/aaronvaz/.docker/config.json)"
+    ],
+    "ask": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git commit*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/kb/search-kb.sh --status active --medium 2>/dev/null | head -20 | { read -r line && echo '## Relevant KB entries:' && echo \"$line\" && cat; } || true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/notify.sh 'Claude Code' '' 'Waiting for input' '' 'claude-idle' 'Glass'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/pre-commit-review.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-planning-commits.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-git-usage.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/run-tests.sh",
+            "timeout": 60,
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/save-session-summary.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "set +e; CMD=$(echo \"${CLAUDE_TOOL_INPUT:-{}}\" | jq -r '.command // empty' 2>/dev/null); [[ -n \"$CMD\" ]] && echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ): $CMD\" >> ~/.claude/command-log.txt 2>/dev/null; exit 0"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/save-session-summary.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/save-session-summary.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Workflow|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/track-subagent-tokens.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-tool-calls.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-error.sh",
+            "timeout": 2,
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"$HOME/.claude/hooks/statusline.js\""
+  },
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "latest",
+  "theme": "dark-ansi"
+}
