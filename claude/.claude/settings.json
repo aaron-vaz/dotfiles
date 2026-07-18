@@ -1,7 +1,7 @@
 {
   "env": {
     "ANTHROPIC_MODEL": "qwen3.7-plus",
-    "ANTHROPIC_DEFAULT_FABLE_MODE": "kimi-k3",
+    "ANTHROPIC_DEFAULT_FABLE_MODE": "kimi-k2.7-code",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "qwen3.7-plus",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
@@ -41,6 +41,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opusplan",
   "hooks": {
     "SessionStart": [
       {
@@ -109,8 +110,18 @@
     "type": "command",
     "command": "node \"$HOME/.claude/hooks/statusline.js\""
   },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  },
   "effortLevel": "medium",
   "autoUpdatesChannel": "latest",
   "theme": "dark-ansi",
-  "model": "opusplan"
+  "enabledPlugins": {
+    "caveman@caveman": true
+  }
 }

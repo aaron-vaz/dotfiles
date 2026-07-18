@@ -50,9 +50,9 @@ RISKS NOTED: <risks already identified>
 OPEN QUESTIONS: <still unsure about>
 ```
 
-### Step 2 — Delegate to a different model
+### Step 2 — Delegate to adversarial reviewer
 
-Use the Agent tool with a different model than the one doing the primary work:
+Use the Agent tool to delegate review to a different model:
 
 ```
 Agent(
@@ -71,16 +71,25 @@ Agent(
   5. Simpler alternatives that were overlooked
 
   For each finding, rate confidence (high/medium/low) and explain your reasoning.",
-  model: <different model than primary>
+  model: "fable"
 )
 ```
 
-**Model selection guidance:**
-- If primary work is on `qwen3.7-plus` (sonnet) → use `deepseek-v4-pro` (opus) or `kimi-k2.7-code` (fable) for review — different architecture catches different blind spots
-- If primary work is on `kimi-k2.7-code` (fable) → use `deepseek-v4-pro` (opus) for review — different reasoning style
-- If primary work is on `deepseek-v4-pro` (opus) → use `kimi-k2.7-code` (fable) for review — coding-specialized perspective
-- If primary work is on `mimo-v2.5` (haiku) → use `qwen3.7-plus` (sonnet) or `kimi-k2.7-code` (fable) for deeper analysis
-- The key is **different model**, not necessarily bigger model — different architectures have different failure modes
+**Model selection:**
+
+Default adversarial reviewer: **fable tier** → `kimi-k2.7-code` (via `ANTHROPIC_DEFAULT_FABLE_MODE` in settings).
+
+Rationale:
+- Fable-tier, coding-specialized reasoning — strong at finding logic flaws, edge cases, flawed assumptions
+- 1,350 requests per 5-hour window — sufficient for periodic review gates
+- Different architecture from `qwen3.7-plus` (primary sonnet) AND `deepseek-v4-pro` (primary opus) — avoids reviewing own work
+- Cost-equivalent to other OpenCode models — no cost penalty
+
+Fallback chain if fable tier unavailable or is the primary model:
+1. **opus tier** → `deepseek-v4-pro` — opus-tier, 3,450/5h
+2. **sonnet tier** → `glm-5.2` via settings override, or `qwen3.7-plus` as last resort
+
+The key principle: **different model than primary**, not necessarily bigger model. Different architectures have different failure modes.
 
 ### Step 3 — Independent assessment first, then compare
 
