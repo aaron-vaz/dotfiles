@@ -38,10 +38,10 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 |------|---------|--------|
 | SessionStart | Always | Loads recent KB entries into context |
 | Notification | `idle_prompt` | macOS notification when waiting for input |
-| PreToolUse/Bash | `git commit` | Pre-commit review, planning file check, git usage validation |
-| PostToolUse/Edit+Write | After file edits | Async: runs tests, saves session summary |
-| PostToolUse/Bash | After any command | Async: logs command, saves session summary |
-| PostToolUseFailure | Any tool failure | Async: logs error for learning system |
+| PreToolUse/Bash | `git commit` | Pre-commit review suggestion, planning file check, git usage validation |
+| PostToolUse/Edit+Write | After file edits | Async: runs tests |
+| PostToolUse/Bash | After any command | Logs command to command-log.txt |
+| PostToolUse/Workflow+Agent | After subagent completes | Async: tracks subagent tokens for cost display |
 
 ### Skills
 
