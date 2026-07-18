@@ -25,7 +25,6 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 │   └── audit-kb.sh        # Find stale entries
 │
 ├── sessions/              # Session tracking
-├── learnings/             # Error logs for learning system
 ├── logs/                  # Runtime logs
 ├── ideas/                 # Brainstorming notes
 └── startup/               # Session initialization prompts
@@ -50,13 +49,11 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 |-------|---------|
 | `adversarial-review` | Cross-model review at 3 gates (investigation, plan, architecture) |
 | `conventional-commits` | Semantic commit message format |
-| `end-session` | Session cleanup checklist |
-| `end-session-agent` | Auto-runs at session startup for archival |
 | `grill-me` | Stress-test a plan or design |
 | `investigation-intake` | Pre-investigation checklist |
 | `jira-writing` | Create Jira issues from notes |
 | `self-review` | Review own code as staff engineer |
-| `session-archiver` | Archive session to KB |
+| `session-archiver` | Archive session to KB (manual) |
 | `skill-audit` | Remove token-wasteful content from skills |
 | `tech-discovery` | Technical discovery documents |
 | `web-design-guidelines` | UI/a11y review |

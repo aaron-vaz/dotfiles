@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 // Claude Code Statusline
-// Shows: model | current task | directory | context usage | cost | rate limits
-
-const MONTHLY_LIMIT_USD = 2000;
+// Shows: model | current task | directory | context usage | rate limits
 
 const fs = require('fs');
 const path = require('path');
@@ -92,76 +90,6 @@ process.stdin.on('end', () => {
       }
     }
 
-    // Cost tracking — session cost from Claude + monthly accumulator across sessions.
-    // Monthly file: ~/.claude/costs/YYYY-MM.json → { sessions: { [id]: cost } }
-    // Subagent file: ~/.claude/costs/subagent-YYYY-MM.json → { sessions: { [id]: { tokens: N } } }
-    // Statusline updates the accumulator on every render (no Stop hook needed).
-    // Subagent cost estimate: Sonnet 4.6 blended rate ~$6/1M tokens (60% input, 40% output).
-    const SUBAGENT_RATE_PER_TOKEN = 6.0 / 1_000_000;
-    let costStr = '';
-    const sessionCost = data.cost?.total_cost_usd;
-    if (sessionCost != null && session) {
-      try {
-        const costsDir = path.join(claudeDir, 'costs');
-        fs.mkdirSync(costsDir, { recursive: true });
-
-        const now = new Date();
-        const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        const monthFile = path.join(costsDir, `${monthKey}.json`);
-
-        let monthData = { sessions: {} };
-        try { monthData = JSON.parse(fs.readFileSync(monthFile, 'utf8')); } catch (e) {}
-
-        monthData.sessions[session] = sessionCost;
-        fs.writeFileSync(monthFile, JSON.stringify(monthData));
-
-        // Read subagent accumulator for this session
-        let subagentCost = 0;
-        try {
-          const subFile = path.join(costsDir, `subagent-${monthKey}.json`);
-          const subData = JSON.parse(fs.readFileSync(subFile, 'utf8'));
-          const subTokens = subData.sessions?.[session]?.tokens || 0;
-          subagentCost = subTokens * SUBAGENT_RATE_PER_TOKEN;
-        } catch (e) {}
-
-        const totalSessionCost = sessionCost + subagentCost;
-
-        // Monthly total includes subagent costs for all sessions this month
-        let monthlySubagentCost = 0;
-        try {
-          const subFile = path.join(costsDir, `subagent-${monthKey}.json`);
-          const subData = JSON.parse(fs.readFileSync(subFile, 'utf8'));
-          for (const s of Object.values(subData.sessions || {})) {
-            monthlySubagentCost += (s.tokens || 0) * SUBAGENT_RATE_PER_TOKEN;
-          }
-        } catch (e) {}
-
-        const monthlyTotal = Object.values(monthData.sessions).reduce((a, b) => a + b, 0) + monthlySubagentCost;
-        const monthPct = (monthlyTotal / MONTHLY_LIMIT_USD) * 100;
-
-        const fmt = (v) => v < 0.01 ? `$${v.toFixed(4)}` : `$${v.toFixed(2)}`;
-        const limitLabel = MONTHLY_LIMIT_USD >= 1000 ? `$${MONTHLY_LIMIT_USD / 1000}k` : `$${MONTHLY_LIMIT_USD}`;
-
-        // Days until billing reset (1st of next month, midnight UTC)
-        const nowUtc = new Date();
-        const resetUtc = new Date(Date.UTC(nowUtc.getUTCMonth() === 11 ? nowUtc.getUTCFullYear() + 1 : nowUtc.getUTCFullYear(), (nowUtc.getUTCMonth() + 1) % 12, 1));
-        const daysLeft = Math.ceil((resetUtc - nowUtc) / 86400000);
-        const resetLabel = daysLeft <= 3 ? `\x1b[33m⏳ ${daysLeft}d\x1b[0m` : `⏳ ${daysLeft}d`;
-
-        let color;
-        if (monthPct < 50) color = '\x1b[32m';
-        else if (monthPct < 75) color = '\x1b[33m';
-        else color = '\x1b[31m';
-
-        // Show subagent cost as ~$X suffix when non-zero (estimate indicator)
-        const sessionLabel = subagentCost > 0
-          ? `${fmt(sessionCost)}+~${fmt(subagentCost)}`
-          : fmt(sessionCost);
-
-        costStr = ` │ ${color}💸 ${sessionLabel}\x1b[0m │ ${color}📊 ${fmt(monthlyTotal)}/${limitLabel}\x1b[0m │ ${resetLabel}`;
-      } catch (e) {}
-    }
-
     // Rate limits (Claude.ai Pro/Max subscription only — absent on API/enterprise accounts)
     let rateLimits = '';
     const fiveHour = data.rate_limits?.five_hour;
@@ -188,9 +116,9 @@ process.stdin.on('end', () => {
     // Output
     const dirname = path.basename(dir);
     if (task) {
-      process.stdout.write(`\x1b[2m${model}\x1b[0m │ \x1b[1m${task}\x1b[0m │ \x1b[2m${dirname}\x1b[0m${ctx}${costStr}${rateLimits}`);
+      process.stdout.write(`\x1b[2m${model}\x1b[0m │ \x1b[1m${task}\x1b[0m │ \x1b[2m${dirname}\x1b[0m${ctx}${rateLimits}`);
     } else {
-      process.stdout.write(`\x1b[2m${model}\x1b[0m │ \x1b[2m${dirname}\x1b[0m${ctx}${costStr}${rateLimits}`);
+      process.stdout.write(`\x1b[2m${model}\x1b[0m │ \x1b[2m${dirname}\x1b[0m${ctx}${rateLimits}`);
     }
   } catch (e) {
     // Silent fail - don't break statusline on parse errors

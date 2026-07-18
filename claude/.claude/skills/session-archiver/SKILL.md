@@ -1,51 +1,83 @@
 ---
 name: session-archiver
-description: Archives valuable session context to the knowledge base for future reference. Use when archiving sessions not captured during the end-session workflow.
+description: Archives valuable session context to the knowledge base for future reference. Use when manually archiving a session or feature.
 ---
 
 # Session Archiver
 
-Automatically archives valuable sessions that weren't captured during end-session workflow.
+Manually archive valuable sessions to the knowledge base.
 
 ## Workflow
 
-### Step 1: Scan Recent Sessions
+### Step 1: Identify Session to Archive
 
+**Option A: From session file**
 ```bash
 find ~/.claude/sessions -name "20*.md" -mtime -7 -type f | sort -r
 ```
+Skip `current.md`.
 
-**Exclude current session:** skip `current.md`.
+**Option B: From current context** — if user says "archive this session", use the current session's content.
 
-### Step 2: Check Already Archived
+### Step 2: Check for Duplicates
 
 ```bash
-# List existing KB entries to avoid duplicates
-ls ~/.claude/kb/entries/ 2>/dev/null
+~/.claude/kb/search-kb.sh --brief <keyword-from-session>
 ```
 
-### Step 3: Evaluate Each Session
+If an existing entry already covers the same decision/root cause, skip or note as a follow-up.
 
-**For each session file, read and evaluate:**
+### Step 3: Evaluate
+
+**Size is a prerequisite, not a qualifier.** A long session with no conclusion is noise.
 
 **Evaluation criteria (ALL must pass):**
 
-1. **Size threshold:** Session file > 500 bytes (substantial content)
-2. **Not already archived:** Date not already in KB entries
-3. **Has valuable content:** Section headers, code blocks, structured content
+1. **Size threshold:** > 500 bytes (prerequisite only — filters truly empty sessions)
+2. **Not a duplicate:** Existing KB entry doesn't already cover the same topic
+3. **Contains durable, non-derivable knowledge** — at least one of:
+   - A root cause was identified for a bug/incident
+   - A concrete decision was made with a stated why (tradeoff, constraint, rejected alternative)
+   - A reusable gotcha/pattern was discovered that isn't obvious from reading the code
+   - A fact about an external system (API quirk, infra behavior) was learned
+4. **Not superseded or abandoned** — the session reached a real stopping point
 
-**Skip if:**
-- File < 500 bytes (trivial session)
-- Already archived
-- Only contains auto-generated headers
-- Contains only "## Session YYYY-MM-DD" with no content after
+**Skip if (any one disqualifies):**
+- File < 500 bytes
+- Near-duplicate of existing KB entry
+- Only auto-generated headers
+- Pure exploration with no decision/fix/answer reached
+- Content fully derivable from code/git history
+- One-off throwaway query with no reusable insight
+
+**When in doubt, skip.** A missing KB entry costs nothing — the session file still exists. A junk KB entry wastes time on every future search. Bias toward under-archiving.
 
 ### Step 4: Create KB Entry
 
-For each qualifying session, write a KB entry to `~/.claude/kb/entries/<date>-<slug>.md` with YAML frontmatter:
-- `title`, `date`, `project`, `tags`, `status: active`, `outcome`, `expires` (90 days)
-- Sections: Context, Key Decisions, Outcome, Lessons Learned, Related
+Write to `~/.claude/kb/entries/<date>-<slug>.md` with YAML frontmatter:
+```yaml
+---
+name: <short-slug>
+description: <one-line summary>
+date: <YYYY-MM-DD>
+tags: [<relevant-tags>]
+status: active
+---
+```
 
-### Step 5: Report Summary
+Sections:
+- **Context** — What was the problem/task
+- **Key Decisions** — What was decided and why
+- **Outcome** — What was the result
+- **Lessons Learned** — Gotchas, patterns, non-obvious facts
+- **Related** — Links to other KB entries or references
 
-Report how many sessions were scanned, archived, already archived, and too small to archive.
+### Step 5: Rebuild Index
+
+```bash
+~/.claude/kb/search-kb.sh --rebuild-index 2>/dev/null || true
+```
+
+### Step 6: Report
+
+Report: what was archived (filename), what was skipped and why.

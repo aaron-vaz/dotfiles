@@ -1,14 +1,21 @@
 # Session Tracking Reference
 
-## Session Context (`~/.claude/sessions/current.md`)
+## Session Context — KB Entry Per Feature (not a global session file)
 
-Tracks work within a session for handoff between interactions.
+Previously used a single global `~/.claude/sessions/current.md` for handoff between interactions.
+**Dropped** — a single shared file collides across parallel sessions/worktrees (two
+features in flight at once overwrite each other's notes). KB entries are dated + named,
+so they're collision-free by construction. One file per feature now serves as both the
+working log and the permanent record — no separate handoff file, no duplication to keep in sync.
 
 ### How It Works
-- **Auto-rotates** — After conversation ends, session file moved to archive
-- **Auto-loaded** — New session starts with relevant context from `current.md`
-- **Handoff mechanism** — When pausing work mid-phase, save context manually to `current.md` (include branch, goal, next steps, blockers)
-- **Location** — `~/.claude/sessions/current.md` (active) → `archive/` (completed)
+- **Create immediately** — draft KB entry (`~/.claude/kb/entries/<date>-<slug>.md`)
+  as soon as a feature/investigation starts (per AGENTS.md Workflow Checkpoints)
+- **Update incrementally** — append findings, decisions, dead ends as they happen, not just
+  at the end (guards against losing work to context compaction mid-session)
+- **Resuming work** — `~/.claude/kb/search-kb.sh <keyword>` or `--tag <project>`, not a
+  session file
+- **No rotation needed** — the KB entry already IS the permanent record; nothing to archive
 
 ### What to Record
 
@@ -46,7 +53,7 @@ Workaround for tests: mock service in unit tests, use WireMock in integration te
 **Updated:** CLAUDE.md with this pattern
 ```
 
-### When to Update Session File
+### When to Update the KB Entry
 - Completing major architectural decisions
 - Discovering production limitations or quirks
 - Receiving code review feedback (especially corrections)
@@ -57,8 +64,7 @@ Workaround for tests: mock service in unit tests, use WireMock in integration te
 Use `end-session` skill to:
 1. Review changes against original task
 2. Run code quality checks (`self-review` skill)
-3. Offer to update CLAUDE.md with learnings
-4. Archive session context for reference
+3. Finalize the feature's KB entry (outcome, lessons learned) — no separate archive step needed
 
 ## Plan Writing
 
@@ -80,8 +86,8 @@ Plans follow 4-part format:
 
 ### Environment Setup in Plans
 Plans should document:
-- Required environment state (Java version, dependencies)
-- Expected tools/skills to use (GSD, debugging, etc.)
+- Required environment state (dependencies, versions)
+- Expected tools/skills to use
 - Key assumptions about codebase structure
 - Known constraints or workarounds
 
@@ -97,16 +103,10 @@ If verification can't confirm goal achievement, revise plan before executing.
 
 ## Creating a New Session (Start of Day)
 
-1. **Check for active session**: `cat ~/.claude/sessions/current.md`
-2. **If resuming mid-phase**: Use `gsd:resume-work` skill to restore context
+1. **Check for active work**: `~/.claude/kb/search-kb.sh --tag <project>` or by keyword
+2. **If resuming mid-phase**: Search KB for the feature, restore context from entry
 3. **If fresh start**:
-   - Review project MEMORY.md
+   - Review project MEMORY.md (if exists)
    - Check `.planning/` for incomplete phases
    - Decide: continue existing work or start new task
-4. **Record initial state**: Branch, goal, blockers in session file
-
-## Session Rotation
-
-- Active session: `~/.claude/sessions/current.md` (updated during conversation)
-- Completed sessions: `~/.claude/sessions/archive/{date}-{topic}.md`
-- Search archives: `grep -r "keyword" ~/.claude/sessions/archive/`
+4. **Record initial state**: Branch, goal, blockers in the feature's KB entry
