@@ -10,9 +10,6 @@ kb/index.tsv
 sessions/*.md
 sessions/.rename-request
 
-# Costs (auto-accumulated by statusline)
-costs/
-
 # Logs
 logs/
 

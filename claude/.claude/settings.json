@@ -102,16 +102,6 @@
             "command": "set +e; CMD=$(echo \"${CLAUDE_TOOL_INPUT:-{}}\" | jq -r '.command // empty' 2>/dev/null); [[ -n \"$CMD\" ]] && echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ): $CMD\" >> ~/.claude/command-log.txt 2>/dev/null; exit 0"
           }
         ]
-      },
-      {
-        "matcher": "Workflow|Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/track-subagent-tokens.sh",
-            "async": true
-          }
-        ]
       }
     ]
   },
