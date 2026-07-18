@@ -1,4 +1,15 @@
 {
+  "env": {
+    "ANTHROPIC_MODEL": "qwen3.7-plus",
+    "ANTHROPIC_DEFAULT_FABLE_MODE": "kimi-k3",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "qwen3.7-plus",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "qwen3.7-plus",
+    "ANTHROPIC_BASE_URL": "https://opencode.ai/zen/go/",
+    "ANTHROPIC_AUTH_TOKEN": "",
+    "ANTHROPIC_API_KEY": "sk-nBmJ7UqZE9DaDCh9g1OfboGkiSCiZQyLdTbtGMlkYRkGeS1nzRgjr3UQqmFqyphC"
+  },
   "permissions": {
     "allow": [
       "Bash(~/.claude/scripts/*)",
@@ -152,5 +163,6 @@
   },
   "effortLevel": "medium",
   "autoUpdatesChannel": "latest",
-  "theme": "dark-ansi"
+  "theme": "dark-ansi",
+  "model": "opusplan"
 }

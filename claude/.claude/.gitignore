@@ -9,11 +9,6 @@ kb/index.tsv
 # Sessions (ephemeral per-session state)
 sessions/*.md
 sessions/.rename-request
-sessions/.quality-check-last-run
-
-# Learnings (runtime error logs)
-learnings/*.log
-learnings/.last-analyzed-*
 
 # Costs (auto-accumulated by statusline)
 costs/

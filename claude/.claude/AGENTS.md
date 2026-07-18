@@ -23,16 +23,17 @@ Instructions for all AI coding agents acting for Aaron. Tool-specific files (`CL
 **Triggers for planning:** User says "plan", "design", or "explore".
 
 **Multi-model delegation** — use different models for different tasks:
-- Planning, research, architecture, brainstorming → most-capable reasoning model
-- Execution, code edits, file writes, builds → fast mid-tier model
-- Review, verification, adversarial analysis → different model than the one that did the work
+- Planning, research, architecture, brainstorming → `kimi-k2.7-code` (fable tier — coding-specialized reasoning)
+- Complex multi-file changes, large context, design docs → `deepseek-v4-pro` (opus tier — 384K output, high throughput)
+- Execution, code edits, file writes, builds → `qwen3.7-plus` (sonnet tier — balanced mid-tier)
+- Fast subagents, parallel tasks, lightweight reviews → `mimo-v2.5` (haiku tier — ultra-cheap, 30K+ req/5hr)
+- Adversarial review, verification → different model than the one that did the work (see adversarial-review skill)
 
 ## Information Placement Hierarchy
 
 1. Cross-project rules/user preferences → this file (`~/.claude/AGENTS.md`)
-2. Session-specific knowledge worth preserving → KB entry (`~/.claude/kb/entries/`)
-3. Project-specific facts needed every session → project `MEMORY.md` (sparingly)
-4. Ephemeral per-session state → `~/.claude/sessions/current.md`
+2. Feature-specific knowledge → KB entry (`~/.claude/kb/entries/`)
+3. Project-specific conventions → `<project>/AGENTS.md`
 
 ## Knowledge Base
 
@@ -130,12 +131,11 @@ Generating messages:
 |---------|-------|
 | Cross-model review of plans/investigations | `adversarial-review` |
 | Git commits | `conventional-commits` |
-| Ending session, quality checks | `end-session` |
 | Stress-test a plan or design | `grill-me` |
 | Starting investigation/feasibility/spike | `investigation-intake` |
 | Writing Jira from notes/bugs | `jira-writing` |
 | Review own code before PR | `self-review` |
-| Archive session to KB | `session-archiver` |
+| Archive session to KB (manual) | `session-archiver` |
 | Skills getting bloated | `skill-audit` |
 | Technical discovery documents | `tech-discovery` |
 | UI/a11y review | `web-design-guidelines` |
@@ -150,7 +150,7 @@ Generating messages:
 
 ## Workflow Checkpoints
 
-**When starting significant work:** create KB entry draft. Append progress throughout session.
+**When starting significant work:** create KB entry draft at `~/.claude/kb/entries/<YYYY-MM-DD>-<slug>.md`. Append progress throughout session — after each significant finding, decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
 
 **Before commit:** full build passes, not just tests.
 
@@ -164,12 +164,18 @@ Co-Authored-By: <Agent Name> <Model> <noreply@anthropic.com>
 ```
 Types: `feat` `fix` `docs` `refactor` `test` `chore` | `BREAKING CHANGE`
 
-## Session Context
+## Session Context — KB Is Source of Truth
 
-Record in `~/.claude/sessions/current.md`:
+No global `current.md` — a single shared file collides across parallel sessions/worktrees. Instead: KB entry (`~/.claude/kb/entries/`) per feature/ticket is both the working session log AND the permanent record — one file, no duplication, naturally collision-free (dated + named).
+
+Record in the feature's KB entry as you go:
 - Design decisions and why alternatives were rejected
 - Constraints discovered
-- **User corrections** — log under "Corrections Made by User" for learning-analyzer
+- **User corrections** — log under "Corrections Made by User"
+
+Resuming work: search KB for the feature (`~/.claude/kb/search-kb.sh <keyword>` or `--tag`), not a session file.
+
+See `~/.claude/references/session.md` for format details.
 
 ## Rules (auto-loaded)
 
@@ -193,7 +199,6 @@ NOT auto-loaded — read only when relevant.
 | Session tracking | `~/.claude/references/session.md` |
 | Agent best practices | `~/.claude/references/agent-best-practices.md` |
 | Skill authoring | `~/.claude/references/skill-authoring-patterns.md` |
-| Learning patterns | `~/.claude/references/learning-patterns.md` |
 | PR ready checklist | `~/.claude/references/pr-ready-checklist.md` |
 | Knowledge base search | `~/.claude/kb/search-kb.sh --list-tags` |
 

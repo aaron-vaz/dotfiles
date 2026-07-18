@@ -76,9 +76,11 @@ Agent(
 ```
 
 **Model selection guidance:**
-- If primary work is on a reasoning model → use a fast model for review (different perspective, faster)
-- If primary work is on a fast model → use a reasoning model for review (deeper analysis)
-- The key is **different model**, not necessarily bigger model
+- If primary work is on `qwen3.7-plus` (sonnet) → use `deepseek-v4-pro` (opus) or `kimi-k2.7-code` (fable) for review — different architecture catches different blind spots
+- If primary work is on `kimi-k2.7-code` (fable) → use `deepseek-v4-pro` (opus) for review — different reasoning style
+- If primary work is on `deepseek-v4-pro` (opus) → use `kimi-k2.7-code` (fable) for review — coding-specialized perspective
+- If primary work is on `mimo-v2.5` (haiku) → use `qwen3.7-plus` (sonnet) or `kimi-k2.7-code` (fable) for deeper analysis
+- The key is **different model**, not necessarily bigger model — different architectures have different failure modes
 
 ### Step 3 — Independent assessment first, then compare
 

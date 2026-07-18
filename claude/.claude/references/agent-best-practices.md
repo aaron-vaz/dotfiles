@@ -118,15 +118,3 @@ compile once → read ALL output → categorize all errors → fix all in one pa
 | Bulk change without showing user what would change | dry-run-mode |
 | Claiming done without running success criteria checklist | explicit-validation |
 | Same mistake the skill explicitly warns against | agent-error-guidance |
-
----
-
-## Integration with Learning Analyzer
-
-The learning-analyzer should check every session for violations of these patterns. Violations should be classified as:
-
-- **PATTERN_VIOLATION** (specific pattern number) - Agent violated a documented pattern
-- Action: Note violation, update skill anti-pattern section if not already documented
-- Priority: HIGH if user correction followed the violation, MEDIUM otherwise
-
-See `learning-patterns.md` for full classification system.
