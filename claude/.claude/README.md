@@ -41,7 +41,6 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | PreToolUse/Bash | `git commit` | Pre-commit review suggestion, planning file check, git usage validation |
 | PostToolUse/Edit+Write | After file edits | Async: runs tests |
 | PostToolUse/Bash | After any command | Logs command to command-log.txt |
-| PostToolUse/Workflow+Agent | After subagent completes | Async: tracks subagent tokens for cost display |
 
 ### Skills
 
