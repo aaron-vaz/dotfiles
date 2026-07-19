@@ -4,9 +4,7 @@ Execute the following immediately, then say "Ready" and wait for user input.
 
 ## 1. Load Session Context
 
-Execute these reads in parallel:
-- Read `~/.claude/sessions/current.md` to restore context from previous session (if exists)
-- Read `~/.claude/persona.md` for communication style
+Read `~/.claude/persona.md` for communication style.
 
 ## 1b. Offer Relevant KB Entries (if any surfaced)
 
@@ -22,7 +20,7 @@ Ready.
 
 ## 3. Rename Tmux Session
 
-Once you know what you're working on — after reading `sessions/current.md` or understanding the task — write a short kebab-case slug (2–4 words) to rename this tmux session:
+Once you know what you're working on — after understanding the task — write a short kebab-case slug (2–4 words) to rename this tmux session:
 
 ```bash
 echo 'feature-slug-here' > ~/.claude/sessions/.rename-request
