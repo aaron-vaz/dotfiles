@@ -6,9 +6,23 @@ Execute the following immediately, then say "Ready" and wait for user input.
 
 Read `~/.claude/persona.md` for communication style.
 
-## 1b. Offer Relevant KB Entries (if any surfaced)
+## 1b. Load KB Index (autonomous paging)
 
-If the SessionStart hook output included a `## KB entries possibly relevant to repo '<repo>'` block, do NOT load or summarize those entries yet — the hook only gave brief lines (date/slug/tags/outcome), not full content. Before saying "Ready", ask the user (via `AskUserQuestion`, multiSelect) which of the listed entries (if any) to load in full. Use their slugs as option labels. Only run `~/.claude/kb/search-kb.sh <slug> --full` for the ones they pick. If the hook produced no such block (no repo match), skip this step silently — do not mention KB at all.
+Read the KB index to know what entries exist:
+
+```bash
+cat ~/.claude/kb/index.tsv | head -30
+```
+
+Or use search:
+
+```bash
+~/.claude/kb/search-kb.sh --brief | head -20
+```
+
+**Do NOT load full entries yet.** Index is the cache; entries are main memory. Page in full entries via `~/.claude/kb/search-kb.sh <slug> --full` only when a task makes them relevant.
+
+**Do NOT ask user which entries to load.** Agent autonomously decides what to page in based on task context (thesis §5.1 — agent is the pager).
 
 ## 2. Acknowledge
 
