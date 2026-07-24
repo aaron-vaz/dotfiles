@@ -21,6 +21,7 @@ done
 TODAY=$(date +%Y-%m-%d)
 stale_count=0
 review_count=0
+untagged_count=0
 
 echo "=== Knowledge Base Audit: $TODAY ==="
 echo ""
@@ -32,8 +33,30 @@ for f in "$KB_DIR"/*.md; do
   frontmatter=$(awk '/^---$/{found++; next} found==1{print}' "$f")
   status=$(echo  "$frontmatter" | grep '^status:'  | sed 's/status: *//' || true)
   expires=$(echo "$frontmatter" | grep '^expires:' | sed 's/expires: *//' || true)
-  title=$(echo   "$frontmatter" | grep '^title:'   | sed 's/title: *"*//;s/"$//' || true)
+  title=$(echo   "$frontmatter" | grep '^name:'    | sed 's/name: *"*//;s/"$//' || true)
+  type=$(echo    "$frontmatter" | grep '^type:'    | sed 's/type: *//' || true)
+  tags=$(echo    "$frontmatter" | grep '^tags:'    | sed 's/tags: *\[//;s/\]//' || true)
   fname=$(basename "$f")
+
+  # A type:feedback/user/reference/preference entry with no tags is invisible to
+  # the --type + --tag trigger patterns in AGENTS.md (e.g. "--type feedback --tag
+  # slack") — it only surfaces via --type alone, which nothing in AGENTS.md queries
+  # bare. Flag it regardless of staleness rules below.
+  case "$type" in
+    feedback|user|reference|preference)
+      if [[ -z "$(echo "$tags" | tr -d '[:space:]')" ]]; then
+        echo "  UNTAGGED $type: $fname"
+        echo "         \"$title\""
+        echo "         No tags — invisible to --type + --tag trigger lookups"
+        echo ""
+        untagged_count=$((untagged_count + 1))
+      fi
+      ;;
+  esac
+
+  # feedback/user/reference entries are durable facts, not session logs — they
+  # don't decay on a 90-day clock, so skip staleness aging regardless of expires.
+  case "$type" in feedback|user|reference|preference) continue ;; esac
 
   # Check active entries past expiry
   if [[ "$status" == "active" ]] && [[ -n "$expires" ]] && [[ "$expires" < "$TODAY" ]]; then
@@ -65,6 +88,7 @@ done
 echo "=== Summary ==="
 echo "  Stale entries marked: $stale_count"
 echo "  Prune candidates:     $review_count"
+echo "  Untagged evergreen entries (invisible to trigger lookups): $untagged_count"
 if [[ "$DRY_RUN" == true ]] && [[ $stale_count -gt 0 ]]; then
   echo ""
   echo "  Run with --apply to mark stale entries."

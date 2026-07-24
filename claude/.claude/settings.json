@@ -1,14 +1,14 @@
 {
   "env": {
     "ANTHROPIC_MODEL": "qwen3.7-plus",
-    "ANTHROPIC_DEFAULT_FABLE_MODE": "kimi-k2.7-code",
+    "ANTHROPIC_DEFAULT_FABLE_MODE": "glm-5.2",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "qwen3.7-plus",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
     "CLAUDE_CODE_SUBAGENT_MODEL": "qwen3.7-plus",
     "ANTHROPIC_BASE_URL": "https://opencode.ai/zen/go/",
     "ANTHROPIC_AUTH_TOKEN": "",
-    "ANTHROPIC_API_KEY": "sk-nBmJ7UqZE9DaDCh9g1OfboGkiSCiZQyLdTbtGMlkYRkGeS1nzRgjr3UQqmFqyphC"
+    "ANTHROPIC_API_KEY": "sk-IkehiZ7zqwXQUBR9ZHsP1CGTX58xbptm916yYcnmys9NCXdppnqmnkW4JaPSBJvS"
   },
   "permissions": {
     "allow": [
@@ -43,16 +43,6 @@
   },
   "model": "opusplan",
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/kb/search-kb.sh --status active --medium 2>/dev/null | head -20 | { read -r line && echo '## Relevant KB entries:' && echo \"$line\" && cat; } || true"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "idle_prompt",
@@ -123,5 +113,6 @@
   },
   "effortLevel": "medium",
   "autoUpdatesChannel": "latest",
-  "theme": "dark-ansi"
+  "theme": "dark-ansi",
+  "skipWorkflowUsageWarning": true
 }
