@@ -140,17 +140,13 @@ process.stdin.on('end', () => {
     const line2Parts = [ctxSegment, fiveHourSegment, sevenDaySegment, teaSegment].filter(Boolean);
     const line2 = line2Parts.join(` ${DIM}|${RESET} `);
 
-    // Static footer hint. NOTE: this line normally comes from Claude Code's own
-    // input-box UI (based on live permission mode / vim mode), not from the
-    // statusLine stdin payload -- the schema has no permission-mode field to
-    // drive it dynamically. Kept here only because it was explicitly requested
-    // to match the reference screenshot; Claude Code may render its own copy
-    // of this hint immediately below, which can look duplicated.
-    const line3 = `${DIM}▶▶ auto mode on (shift+tab to cycle) · ← for agents${RESET}`;
+    // NOTE: the "auto mode on (shift+tab to cycle) ..." footer hint is rendered
+    // natively by Claude Code's own input-box UI (based on live permission mode),
+    // not by this script. It used to be duplicated here as a static line3, which
+    // caused it to appear twice on screen. Removed -- let Claude Code own it.
 
     const lines = [line1];
     if (line2) lines.push(line2);
-    lines.push(line3);
     process.stdout.write(lines.join('\n'));
   } catch (e) {
     // Silent fail - don't break statusline on parse errors
