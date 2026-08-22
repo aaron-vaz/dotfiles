@@ -4,17 +4,22 @@
 
 set -euo pipefail
 
-KB_DIR="$(cd "$(dirname "$0")/entries" && pwd)"
-LOG="$(dirname "$0")/audit-log.txt"
+KB_ROOT="$(cd "$(dirname "$0")" && pwd)"
+PUBLIC_DIR="$KB_ROOT/entries"
+PRIVATE_DIR="${KB_PRIVATE_DIR:-$KB_ROOT/private}"
+LOG="$KB_ROOT/audit-log.txt"
 DRY_RUN=true
 REPORT=false
+VISIBILITY=""  # "" = both | public | private
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --apply)    DRY_RUN=false; shift ;;
-    --dry-run)  DRY_RUN=true;  shift ;;
-    --report)   REPORT=true;   shift ;;
-    *)          shift ;;
+    --apply)        DRY_RUN=false; shift ;;
+    --dry-run)      DRY_RUN=true;  shift ;;
+    --report)       REPORT=true;   shift ;;
+    --no-private)   VISIBILITY="public";  shift ;;
+    --only-private) VISIBILITY="private"; shift ;;
+    *)              shift ;;
   esac
 done
 
@@ -26,7 +31,19 @@ untagged_count=0
 echo "=== Knowledge Base Audit: $TODAY ==="
 echo ""
 
-for f in "$KB_DIR"/*.md; do
+# Both entry stores — auditing only entries/ after the public/private split would
+# silently skip half the KB and report a clean bill of health for the other half.
+SCAN_DIRS=()
+for d in "$PUBLIC_DIR" "$PRIVATE_DIR"; do
+  [[ -d "$d" ]] || continue
+  v="public"; [[ "$d" == "$PRIVATE_DIR" ]] && v="private"
+  [[ -n "$VISIBILITY" ]] && [[ "$VISIBILITY" != "$v" ]] && continue
+  SCAN_DIRS+=("$d")
+done
+
+for dir in "${SCAN_DIRS[@]}"; do
+vis="public"; [[ "$dir" == "$PRIVATE_DIR" ]] && vis="private"
+for f in "$dir"/*.md; do
   [[ -f "$f" ]] || continue
   [[ "$(basename "$f")" == ".gitkeep" ]] && continue
 
@@ -37,6 +54,7 @@ for f in "$KB_DIR"/*.md; do
   type=$(echo    "$frontmatter" | grep '^type:'    | sed 's/type: *//' || true)
   tags=$(echo    "$frontmatter" | grep '^tags:'    | sed 's/tags: *\[//;s/\]//' || true)
   fname=$(basename "$f")
+  [[ "$vis" == "private" ]] && fname="$fname [private]"
 
   # A type:feedback/user/reference/preference entry with no tags is invisible to
   # the --type + --tag trigger patterns in AGENTS.md (e.g. "--type feedback --tag
@@ -84,8 +102,10 @@ for f in "$KB_DIR"/*.md; do
     fi
   fi
 done
+done
 
 echo "=== Summary ==="
+echo "  Scanned: $(for d in "${SCAN_DIRS[@]}"; do basename "$d"; done | tr '\n' ' ')"
 echo "  Stale entries marked: $stale_count"
 echo "  Prune candidates:     $review_count"
 echo "  Untagged evergreen entries (invisible to trigger lookups): $untagged_count"

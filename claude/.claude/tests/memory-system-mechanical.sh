@@ -4,12 +4,36 @@ PASS=0; FAIL=0
 ok()   { echo "PASS: $1"; PASS=$((PASS+1)); }
 bad()  { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
 
+# The KB has two stores since 2026-08-22: entries/ (public, may be tracked in the
+# public dotfiles repo) and private/ (never tracked). search-kb.sh reads both by
+# default, so every expectation derived from raw files must scan both — counting
+# only entries/ made T1/T7 disagree with the tool rather than with reality.
+KB_STORES=("$HOME/.claude/kb/entries" "$HOME/.claude/kb/private")
+
+# Files across both stores matching a frontmatter grep. Prints one path per line.
+kb_files_matching() {
+  local pattern="$1" d
+  for d in "${KB_STORES[@]}"; do
+    [[ -d "$d" ]] || continue
+    grep -l "$pattern" "$d"/*.md 2>/dev/null || true
+  done
+}
+
+# Resolve an entry slug to a path in whichever store holds it.
+kb_entry_path() {
+  local slug="$1" d
+  for d in "${KB_STORES[@]}"; do
+    [[ -f "$d/$slug.md" ]] && { echo "$d/$slug.md"; return 0; }
+  done
+  return 1
+}
+
 echo "=== T1: --type filter correctness ==="
 FB_TMP=$(mktemp)
 ~/.claude/kb/search-kb.sh --type feedback --brief > "$FB_TMP" 2>&1
 FB_RC=$?
 FB=$(wc -l < "$FB_TMP" | tr -d ' ')
-EXPECTED_FB=$(grep -l '^type: feedback$' ~/.claude/kb/entries/*.md 2>/dev/null | wc -l | tr -d ' ')
+EXPECTED_FB=$(kb_files_matching '^type: feedback$' | wc -l | tr -d ' ')
 if [[ "$FB_RC" -ne 0 ]]; then
   bad "T1a: search-kb.sh --type feedback --brief crashed (rc=$FB_RC): $(cat "$FB_TMP")"
 elif [[ "$FB" -eq "$EXPECTED_FB" ]]; then
@@ -23,7 +47,7 @@ PRJ_TMP=$(mktemp)
 ~/.claude/kb/search-kb.sh --type project --brief > "$PRJ_TMP" 2>&1
 PRJ_RC=$?
 PRJ=$(wc -l < "$PRJ_TMP" | tr -d ' ')
-EXPECTED_PRJ=$(grep -l '^type: project$' ~/.claude/kb/entries/*.md 2>/dev/null | wc -l | tr -d ' ')
+EXPECTED_PRJ=$(kb_files_matching '^type: project$' | wc -l | tr -d ' ')
 if [[ "$PRJ_RC" -ne 0 ]]; then
   bad "T1b: search-kb.sh --type project --brief crashed (rc=$PRJ_RC): $(cat "$PRJ_TMP")"
 elif [[ "$PRJ" -eq "$EXPECTED_PRJ" ]]; then
@@ -56,11 +80,12 @@ fi
 echo ""
 echo "=== T4: cross-links in feedback entries resolve ==="
 DANGLING=0
-for f in ~/.claude/kb/entries/never-guess-identifiers.md ~/.claude/kb/entries/never-assume-library-versions.md; do
+for slug in never-guess-identifiers never-assume-library-versions; do
+  f=$(kb_entry_path "$slug") || continue
   [[ -f "$f" ]] || continue
   links=$(grep -o '\[\[[a-z-]*\]\]' "$f" | tr -d '[]')
   for l in $links; do
-    [[ -f "$HOME/.claude/kb/entries/${l}.md" ]] || { echo "  dangling: $l (from $(basename "$f"))"; DANGLING=$((DANGLING+1)); }
+    kb_entry_path "$l" >/dev/null || { echo "  dangling: $l (from $(basename "$f"))"; DANGLING=$((DANGLING+1)); }
   done
 done
 [[ "$DANGLING" -eq 0 ]] && ok "T4: all Related: [[wikilinks]] in feedback entries resolve to real files" || bad "T4: $DANGLING dangling link(s)"
@@ -73,7 +98,8 @@ TAGCOUNT=$(~/.claude/kb/search-kb.sh --list-tags | wc -l | tr -d ' ')
 echo ""
 echo "=== T6: feedback entries have Why/How to apply ==="
 MISSING_SCHEMA=0
-for f in ~/.claude/kb/entries/never-guess-identifiers.md ~/.claude/kb/entries/never-assume-library-versions.md; do
+for slug in never-guess-identifiers never-assume-library-versions; do
+  f=$(kb_entry_path "$slug") || continue
   [[ -f "$f" ]] || continue
   if ! grep -q "^\*\*Why:\*\*" "$f"; then
     echo "  missing Why: in $(basename "$f")"
@@ -92,7 +118,7 @@ DR_TMP=$(mktemp)
 ~/.claude/kb/search-kb.sh --type feedback --tag domain-rules --brief > "$DR_TMP" 2>&1
 DR_RC=$?
 DR=$(wc -l < "$DR_TMP" | tr -d ' ')
-EXPECTED_DR=$(grep -l '^type: feedback$' ~/.claude/kb/entries/*.md 2>/dev/null | xargs grep -l 'domain-rules' 2>/dev/null | wc -l | tr -d ' ')
+EXPECTED_DR=$(kb_files_matching '^type: feedback$' | xargs grep -l 'domain-rules' 2>/dev/null | wc -l | tr -d ' ')
 if [[ "$DR_RC" -ne 0 ]]; then
   bad "T7: search-kb.sh --type feedback --tag domain-rules --brief crashed (rc=$DR_RC): $(cat "$DR_TMP")"
 elif [[ "$DR" -eq "$EXPECTED_DR" ]]; then
@@ -101,6 +127,47 @@ else
   bad "T7: expected $EXPECTED_DR, got $DR"
 fi
 rm -f "$DR_TMP"
+
+echo ""
+echo "=== T8: public/private KB split holds ==="
+# The whole point of the split: the public store is the one that may end up
+# tracked in a PUBLIC repo, so nothing employer- or private-product-specific may
+# sit in it, and the private store must never become reachable from the repo.
+PUB="$HOME/.claude/kb/entries"
+PRIV="$HOME/.claude/kb/private"
+
+if [[ -d "$PRIV" ]] && [[ ! -L "$PRIV" ]]; then
+  ok "T8a: private store exists and is a real dir, not a symlink into a repo"
+else
+  bad "T8a: $PRIV missing, or is a symlink (it must never point into a tracked repo)"
+fi
+
+# Default search must include private — excluding it by default recreates the
+# exact failure mode the split was made to prevent (knowledge search can't see).
+BOTH=$(~/.claude/kb/search-kb.sh --all --brief 2>/dev/null | wc -l | tr -d ' ')
+PUBONLY=$(~/.claude/kb/search-kb.sh --all --no-private --brief 2>/dev/null | wc -l | tr -d ' ')
+PRIVONLY=$(~/.claude/kb/search-kb.sh --all --only-private --brief 2>/dev/null | wc -l | tr -d ' ')
+if [[ "$BOTH" -eq $((PUBONLY + PRIVONLY)) ]] && [[ "$BOTH" -gt 0 ]]; then
+  ok "T8b: default search covers both stores ($PUBONLY public + $PRIVONLY private = $BOTH)"
+else
+  bad "T8b: default=$BOTH but public=$PUBONLY + private=$PRIVONLY"
+fi
+
+# Private rows must be visually marked, or private content can be copied outward
+# without anyone noticing what it was.
+if [[ "$PRIVONLY" -eq 0 ]] || ~/.claude/kb/search-kb.sh --all --only-private --brief 2>/dev/null | grep -q '^\*'; then
+  ok "T8c: private rows are marked with a leading * in brief output"
+else
+  bad "T8c: private rows are not marked — they are indistinguishable from public ones"
+fi
+
+# Nothing naming the employer may sit in the public store.
+LEAK=$(grep -rilE 'REDACTED|REDACTED|REDACTED|REDACTED|@REDACTEDgroup' "$PUB" 2>/dev/null || true)
+if [[ -z "$LEAK" ]]; then
+  ok "T8d: no employer references in the public KB store"
+else
+  bad "T8d: employer references in public store: $LEAK"
+fi
 
 echo ""
 echo "=================================="
