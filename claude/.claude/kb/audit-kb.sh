@@ -27,6 +27,7 @@ TODAY=$(date +%Y-%m-%d)
 stale_count=0
 review_count=0
 untagged_count=0
+nested_count=0
 
 echo "=== Knowledge Base Audit: $TODAY ==="
 echo ""
@@ -55,6 +56,22 @@ for f in "$dir"/*.md; do
   tags=$(echo    "$frontmatter" | grep '^tags:'    | sed 's/tags: *\[//;s/\]//' || true)
   fname=$(basename "$f")
   [[ "$vis" == "private" ]] && fname="$fname [private]"
+
+  # An entry carrying `metadata:\n  type: X` instead of a top-level `type: X` is
+  # invisible to search-kb.sh's --type/--tag filters AND to this audit's own
+  # checks below, which both read the flat key. That schema comes from Claude
+  # Code's built-in auto-memory format; entries written or migrated from it slip
+  # through with a real rule nobody can retrieve. never-commit-to-main sat like
+  # that and never surfaced under the `--type feedback` lookup AGENTS.md marks MUST.
+  if [[ -z "$type" ]] && echo "$frontmatter" | grep -qE '^[[:space:]]+type:'; then
+    nested=$(echo "$frontmatter" | grep -E '^[[:space:]]+type:' | sed 's/.*type: *//' | head -1)
+    echo "  NESTED SCHEMA: $fname"
+    echo "         \"$title\""
+    echo "         type is nested under metadata: (found '$nested') — invisible to --type/--tag lookups."
+    echo "         Fix: move it to a top-level 'type: $nested' key."
+    echo ""
+    nested_count=$((nested_count + 1))
+  fi
 
   # A type:feedback/user/reference/preference entry with no tags is invisible to
   # the --type + --tag trigger patterns in AGENTS.md (e.g. "--type feedback --tag
@@ -109,6 +126,7 @@ echo "  Scanned: $(for d in "${SCAN_DIRS[@]}"; do basename "$d"; done | tr '\n' 
 echo "  Stale entries marked: $stale_count"
 echo "  Prune candidates:     $review_count"
 echo "  Untagged evergreen entries (invisible to trigger lookups): $untagged_count"
+echo "  Nested-schema entries (type: under metadata:, invisible to --type):  $nested_count"
 if [[ "$DRY_RUN" == true ]] && [[ $stale_count -gt 0 ]]; then
   echo ""
   echo "  Run with --apply to mark stale entries."
