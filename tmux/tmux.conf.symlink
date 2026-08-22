@@ -1,5 +1,5 @@
 # improve colors
-set -g default-terminal 'screen-256color'
+set -g default-terminal 'tmux-256color'
 
 # start window numbers at 1 to match keyboard order with tmux window order
 set -g base-index 1
@@ -7,6 +7,12 @@ set-window-option -g pane-base-index 1
 
 # increase scrollback lines
 set -g history-limit 100000
+
+set -as terminal-features ",*:hyperlinks"
+set -as terminal-features ",*:extkeys"
+set -g extended-keys on
+set -g allow-passthrough on
+set-environment -g TERM_PROGRAM ghostty
 
 # Local config
 if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'
