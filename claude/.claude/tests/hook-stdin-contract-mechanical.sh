@@ -147,6 +147,58 @@ else
 fi
 
 echo ""
+echo "=== T8: run-claude-config-tests.sh gate fires from an unrelated cwd ==="
+# Regression guard for the second instance of the same bug class: hooks run in
+# the *session's* cwd, not the cwd of a `cd X && git commit` compound command,
+# so a bare `git diff --cached` in the gate reads the wrong index and the gate
+# silently never fires. It shipped that way and let two failing-test commits
+# through. Run from an unrelated repo and assert it still resolves the config
+# repo and denies when a test fails.
+# Isolated: the gate resolves its config repo from its own file location, so a
+# synthetic repo containing a copy of it exercises the real resolution logic
+# without reading (or touching) the live index.
+FAKE_CONFIG="$TMPROOT/fakeconfig"
+mkdir -p "$FAKE_CONFIG/claude/.claude/hooks"
+git -C "$FAKE_CONFIG" init -q
+cp "$HOOKS_DIR/run-claude-config-tests.sh" "$FAKE_CONFIG/claude/.claude/hooks/"
+GATE="$FAKE_CONFIG/claude/.claude/hooks/run-claude-config-tests.sh"
+
+FAKE_TESTS="$TMPROOT/faketests"
+mkdir -p "$FAKE_TESTS"
+printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKE_TESTS/always-fails.sh"
+chmod +x "$FAKE_TESTS/always-fails.sh"
+
+UNRELATED="$TMPROOT/unrelated"
+mkdir -p "$UNRELATED" && git -C "$UNRELATED" init -q
+cd "$UNRELATED"
+
+# Nothing staged in the fake config repo yet — gate must stay silent.
+OUT=$(printf '{"tool_input":{"command":"git commit -m x"}}' \
+      | CLAUDE_CONFIG_TESTS_DIR="$FAKE_TESTS" bash "$GATE" 2>/dev/null)
+[[ -z "$OUT" ]] && ok "T8a: silent when no config files are staged" \
+                || bad "T8a: fired with nothing staged: $OUT"
+
+# Stage a config file — gate must now run the (failing) tests and deny, despite
+# cwd being an entirely different repo. This is the regression that shipped:
+# a bare `git diff --cached` here reads $UNRELATED's index and matches nothing.
+echo x > "$FAKE_CONFIG/claude/.claude/some-config.md"
+git -C "$FAKE_CONFIG" add -A >/dev/null 2>&1
+OUT=$(printf '{"tool_input":{"command":"git commit -m x"}}' \
+      | CLAUDE_CONFIG_TESTS_DIR="$FAKE_TESTS" bash "$GATE" 2>/dev/null)
+if echo "$OUT" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1; then
+  ok "T8b: denies from an unrelated cwd when a config test fails"
+else
+  bad "T8b: gate did not deny — it is a no-op from a foreign cwd. Got: ${OUT:-<empty>}"
+fi
+
+# Non-commit commands stay free.
+OUT=$(printf '{"tool_input":{"command":"git status"}}' \
+      | CLAUDE_CONFIG_TESTS_DIR="$FAKE_TESTS" bash "$GATE" 2>/dev/null)
+[[ -z "$OUT" ]] && ok "T8c: ignores non-commit git commands" \
+                || bad "T8c: fired on git status: $OUT"
+cd - >/dev/null
+
+echo ""
 echo "=================================="
 echo "RESULT: $PASS passed, $FAIL failed"
 echo "=================================="
