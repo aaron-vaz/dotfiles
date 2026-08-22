@@ -1,13 +1,6 @@
 ---
 name: kotlin-review
 description: Use when reviewing PRs, code changes, or after writing Kotlin code to check for idiomatic patterns and anti-patterns.
-hooks:
-  PostToolUse:
-    - matcher: "Edit|Write"
-      hooks:
-        - type: command
-          command: "if [[ \"$CLAUDE_FILE_PATH\" == *.kt ]]; then ./gradlew spotlessApply -q 2>/dev/null || true; fi"
-          timeout: 30
 ---
 
 # Kotlin Code Review
