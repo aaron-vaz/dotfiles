@@ -29,7 +29,7 @@ for f in AGENTS.md CLAUDE.md persona.md settings.json mcp.json .gitignore README
 done
 
 # Directories
-for d in rules hooks agents skills references scripts startup; do
+for d in rules hooks agents skills references scripts startup tests workflows; do
   if [ -d "$CLAUDE_SRC/$d" ]; then
     ln -sfn "$CLAUDE_SRC/$d" "$HOME/.claude/$d"
     success "$d/ directory symlinked"
@@ -58,6 +58,7 @@ success '~/.mcp.json symlinked'
 chmod +x "$HOME/.claude/hooks/"*.sh 2>/dev/null || true
 chmod +x "$HOME/.claude/kb/"*.sh 2>/dev/null || true
 chmod +x "$HOME/.claude/scripts/"*.sh 2>/dev/null || true
+chmod +x "$HOME/.claude/tests/"*.sh 2>/dev/null || true
 success 'scripts made executable'
 
 success 'Claude Code configuration installed'
