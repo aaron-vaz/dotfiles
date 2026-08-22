@@ -192,6 +192,7 @@ Generating messages:
 | Stress-test a plan or design | `grill-me` |
 | Starting investigation/feasibility/spike | `investigation-intake` |
 | Writing Jira from notes/bugs | `jira-writing` |
+| Reviewing/writing Kotlin | `kotlin-review` |
 | Review own code before PR | `self-review` |
 | Archive session to KB (manual) | `session-archiver` |
 | Skills getting bloated | `skill-audit` |
