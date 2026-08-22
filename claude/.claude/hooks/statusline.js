@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Claude Code Statusline
-// Line 1: [model]  folder-icon dirname  |  branch-icon git-branch
+// Line 1: [model] (effort-level)  folder-icon dirname  |  branch-icon git-branch
 // Line 2: context-used %  |  5h rate limit (orange, time left)  |  7d rate limit (green)  |  tea-timer (gray, session elapsed)
 // Line 3: static auto-mode footer hint (approximation — see note at bottom of file)
 
@@ -54,7 +54,11 @@ process.stdin.on('end', () => {
       }
     }
 
-    let line1 = `${BOLD}[${model}]${RESET} ${folderIcon} ${DIM}${dirname}${RESET}`;
+    const effortLevel = data.effort?.level || '';
+
+    let line1 = `${BOLD}[${model}]${RESET}`;
+    if (effortLevel) line1 += ` ${DIM}(${effortLevel})${RESET}`;
+    line1 += ` ${folderIcon} ${DIM}${dirname}${RESET}`;
     if (branch) line1 += ` ${DIM}|${RESET} 🌿 ${GREEN}${branch}${RESET}`;
 
     // ---- Context window usage (shows USED percentage scaled to usable context) ----
