@@ -39,7 +39,7 @@ compile once → read ALL output → categorize all errors → fix all in one pa
 **Rule:** Cache verified knowledge in reference files. Don't make agents rediscover what someone already paid to learn.
 
 **ROI:** 87x-174x time savings vs. re-discovering
-**In this config:** `~/.claude/references/`, `~/.claude/kb/`
+**In this config:** `~/.claude/references/`, `~/.agents/kb/`
 
 #### 5. code-first-analysis
 **Rule:** Read actual code/config before forming conclusions. Never assume structure.

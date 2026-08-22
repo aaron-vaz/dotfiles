@@ -18,8 +18,8 @@ Fetch the ticket/issue. Follow every linked doc, design doc, related issue. Read
 ### 2. Check KB + prior context
 
 ```bash
-~/.claude/kb/search-kb.sh <keyword> --brief
-~/.claude/kb/search-kb.sh --tag <relevant-tag> --brief
+~/.agents/kb/search-kb.sh <keyword> --brief
+~/.agents/kb/search-kb.sh --tag <relevant-tag> --brief
 ```
 
 Also check `~/.claude/sessions/current.md`. Surface anything relevant before grilling.

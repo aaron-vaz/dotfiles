@@ -75,4 +75,4 @@ Before marking tests passing:
 
 1. **Gradle build cache false passes** — cache key unchanged after dependency upgrade, Gradle skips tests. Fix: `./gradlew clean test`
 2. **WireMock fixture staleness** — upgraded lib changes serialization format, old fixtures break. Fix: run with `--info`, compare actual vs fixture, update. Use `ignoreExtraElements: true`.
-3. **Spotless version constraints (REDACTED)** — Spotless 8.2.1 correct version (8.3.0+ not in REDACTED, 8.0.0 breaks with Spring Boot 4).
+3. **Spotless version constraints** — pin deliberately: a newer Spotless may not be present in the repo's configured artifact mirror, and an older one can break against the project's Spring Boot major. Check what the project already resolves before bumping.

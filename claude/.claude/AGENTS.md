@@ -45,7 +45,7 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 ## Information Placement Hierarchy
 
 1. Cross-project rules/user preferences → this file (`~/.claude/AGENTS.md`)
-2. Feature-specific knowledge → KB entry (`~/.claude/kb/entries/`)
+2. Feature-specific knowledge → KB entry (`~/.agents/kb/entries/`)
 3. Project-specific conventions → `<project>/AGENTS.md`
 
 **Information placement routing** (when saving durable facts):
@@ -54,8 +54,8 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 
 **Before saving anything, check this file first** — grep/read relevant section to see if already covered before writing new entry anywhere.
 
-1. **Correction, standing rule, durable user/reference fact** (don't do X / always do Y / who I am / where to find Z) → **IMMEDIATELY write same turn, unprompted**, as `type: feedback`/`user`/`reference` KB entry using `~/.claude/kb/TEMPLATE-feedback.md` schema (frontmatter, `**Why:**`, `**How to apply:**`, `Related: [[wikilinks]]`). **DO NOT** just verbally acknowledge — capture now or re-teach next session. Add one-line pointer here only if high-frequency enough to justify always-loaded cost (rare — most rules belong paged-in).
-2. **Session-specific knowledge worth preserving** → KB entry (`~/.claude/kb/private/` by default; `entries/` only if it names nothing employer- or private-product-specific — see Knowledge Base below)
+1. **Correction, standing rule, durable user/reference fact** (don't do X / always do Y / who I am / where to find Z) → **IMMEDIATELY write same turn, unprompted**, as `type: feedback`/`user`/`reference` KB entry using `~/.agents/kb/TEMPLATE-feedback.md` schema (frontmatter, `**Why:**`, `**How to apply:**`, `Related: [[wikilinks]]`). **DO NOT** just verbally acknowledge — capture now or re-teach next session. Add one-line pointer here only if high-frequency enough to justify always-loaded cost (rare — most rules belong paged-in).
+2. **Session-specific knowledge worth preserving** → KB entry (`~/.agents/kb/private/` by default; `entries/` only if it names nothing employer- or private-product-specific — see Knowledge Base below)
    - **After completing significant work:** save KB entry with full session detail. Include: problem statement, step-by-step investigation, root cause, fix applied, validation. Detailed enough to reproduce or hand off without re-deriving.
 3. **Project-specific facts needed every session** → target repo's own `AGENTS.md` (sparingly)
    - **When working in repo with `AGENTS.md`:** append discoveries throughout session — after each significant finding, schema discovery, architectural decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
@@ -64,8 +64,8 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 
 **Before answering questions about past work, decisions, domain topics — search KB first:**
 ```
-~/.claude/kb/search-kb.sh --tag <tag> --brief
-~/.claude/kb/search-kb.sh <keyword> --brief
+~/.agents/kb/search-kb.sh --tag <tag> --brief
+~/.agents/kb/search-kb.sh <keyword> --brief
 ```
 
 **KB search triggers:**
@@ -87,8 +87,8 @@ location is a disclosure decision, not filing preference:
 
 | Store | Path | Contents |
 |-------|------|----------|
-| public | `~/.claude/kb/entries/` | Generic, publishable lessons. May be tracked in the dotfiles repo. |
-| private | `~/.claude/kb/private/` | Anything naming an employer, a private product, internal hosts/endpoints, or a private repo's internals. Never tracked, never symlinked into a repo. |
+| public | `~/.agents/kb/entries/` | Generic, publishable lessons. May be tracked in the dotfiles repo. |
+| private | `~/.agents/kb/private/` | Anything naming an employer, a private product, internal hosts/endpoints, or a private repo's internals. Never tracked, never symlinked into a repo. |
 
 - **Search reads both by default.** Private rows are marked with a leading `*`
   in `--brief`/`--medium`, and `--full` prefixes them with a `PRIVATE KB ENTRY`
@@ -99,8 +99,8 @@ location is a disclosure decision, not filing preference:
   only after checking it names nothing employer- or private-product-specific.
 - `kb/index.tsv` carries private descriptions and is gitignored — keep it so.
 
-**Full content:** `~/.claude/kb/search-kb.sh <slug> --full` (resolves either
-store) or read `~/.claude/kb/{entries,private}/<slug>.md`.
+**Full content:** `~/.agents/kb/search-kb.sh <slug> --full` (resolves either
+store) or read `~/.agents/kb/{entries,private}/<slug>.md`.
 
 ## Domain Rules
 
@@ -113,7 +113,7 @@ store) or read `~/.claude/kb/{entries,private}/<slug>.md`.
 **1. Write at moment of insight (MUST)**
 When user states correction, preference, or standing rule ("never do X", "always do Y", "we don't use Z"):
 - **IMMEDIATELY create `type: feedback` KB entry** (same turn, before responding)
-- Use `~/.claude/kb/TEMPLATE-feedback.md` schema: frontmatter, `**Why:**`, `**How to apply:**`
+- Use `~/.agents/kb/TEMPLATE-feedback.md` schema: frontmatter, `**Why:**`, `**How to apply:**`
 - **DO NOT** just verbally acknowledge and move on
 - **DO NOT** inline rule into AGENTS.md prose (belongs in paged KB entry)
 - **DO NOT** wait to be asked — capture now or re-teach next session
@@ -127,7 +127,7 @@ When asked "what repos/projects do I have", "where is X repo", "show me my works
 
 **3. KB search for standing rules (MUST)**
 When asked about standing rules, corrections, domain rules, "what are our rules about X":
-- **MUST use `~/.claude/kb/search-kb.sh --type feedback`** (with optional `--tag <tag>`)
+- **MUST use `~/.agents/kb/search-kb.sh --type feedback`** (with optional `--tag <tag>`)
 - **DO NOT** answer from AGENTS.md content alone (AGENTS.md summarizes, KB has full Why/How)
 - **DO NOT** use `--tag` or keyword search alone for rule lookups — `--type feedback` is primary filter
 - Rationale: feedback entries are evergreen standing rules, AGENTS.md Domain Rules section is summary
@@ -227,20 +227,20 @@ Generating messages:
 
 ## Session Context — KB Is Source of Truth
 
-No global `current.md` — single shared file collides across parallel sessions/worktrees. Instead: KB entry (`~/.claude/kb/entries/`) per feature/ticket is both working session log AND permanent record — one file, no duplication, naturally collision-free (dated + named).
+No global `current.md` — single shared file collides across parallel sessions/worktrees. Instead: KB entry (`~/.agents/kb/entries/`) per feature/ticket is both working session log AND permanent record — one file, no duplication, naturally collision-free (dated + named).
 
 Record in feature's KB entry as you go:
 - Design decisions and why alternatives rejected
 - Constraints discovered
 - **User corrections** — log under "Corrections Made by User"
 
-Resuming work: search KB for feature (`~/.claude/kb/search-kb.sh <keyword>` or `--tag`), not session file.
+Resuming work: search KB for feature (`~/.agents/kb/search-kb.sh <keyword>` or `--tag`), not session file.
 
 See `~/.claude/references/session.md` for format details.
 
 ## Workflow Checkpoints
 
-**When starting significant work:** create KB entry draft at `~/.claude/kb/entries/<YYYY-MM-DD>-<slug>.md`. Append progress throughout session — after each significant finding, decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
+**When starting significant work:** create KB entry draft at `~/.agents/kb/entries/<YYYY-MM-DD>-<slug>.md`. Append progress throughout session — after each significant finding, decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
 
 **Before commit:** full build passes, not just tests.
 
@@ -283,7 +283,7 @@ NOT auto-loaded — read only when relevant.
 | Agent best practices | `~/.claude/references/agent-best-practices.md` |
 | Skill authoring | `~/.claude/references/skill-authoring-patterns.md` |
 | PR ready checklist | `~/.claude/references/pr-ready-checklist.md` |
-| Knowledge base search | `~/.claude/kb/search-kb.sh --list-tags` |
+| Knowledge base search | `~/.agents/kb/search-kb.sh --list-tags` |
 
 ## Troubleshooting
 
@@ -291,8 +291,8 @@ NOT auto-loaded — read only when relevant.
 |-------|----------|
 | Build fails: multiple errors | Read ALL errors, fix ALL in one pass, rebuild once |
 | Git command fails | Use plain `git` in repo CWD; `git -C <path>` only for cross-directory |
-| Find past session knowledge | `~/.claude/kb/search-kb.sh --tag <tag>` |
-| Can't find memory/conversation | `grep -r` in `~/.claude/sessions/` or `~/.claude/kb/entries/` |
+| Find past session knowledge | `~/.agents/kb/search-kb.sh --tag <tag>` |
+| Can't find memory/conversation | `grep -r` in `~/.claude/sessions/` or `~/.agents/kb/entries/` |
 | Hook not firing | `chmod +x ~/.claude/hooks/*.sh`; check settings.json hook syntax |
-| KB search not found | `~/.claude/kb/search-kb.sh --rebuild-index` |
+| KB search not found | `~/.agents/kb/search-kb.sh --rebuild-index` |
 | `git add kb/index.tsv` rejected | `kb/index.tsv` is gitignored — auto-generated. Stage only `kb/entries/*.md` |

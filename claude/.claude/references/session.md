@@ -9,11 +9,11 @@ so they're collision-free by construction. One file per feature now serves as bo
 working log and the permanent record — no separate handoff file, no duplication to keep in sync.
 
 ### How It Works
-- **Create immediately** — draft KB entry (`~/.claude/kb/entries/<date>-<slug>.md`)
+- **Create immediately** — draft KB entry (`~/.agents/kb/entries/<date>-<slug>.md`)
   as soon as a feature/investigation starts (per AGENTS.md Workflow Checkpoints)
 - **Update incrementally** — append findings, decisions, dead ends as they happen, not just
   at the end (guards against losing work to context compaction mid-session)
-- **Resuming work** — `~/.claude/kb/search-kb.sh <keyword>` or `--tag <project>`, not a
+- **Resuming work** — `~/.agents/kb/search-kb.sh <keyword>` or `--tag <project>`, not a
   session file
 - **No rotation needed** — the KB entry already IS the permanent record; nothing to archive
 
@@ -40,8 +40,8 @@ Workaround for tests: mock service in unit tests, use WireMock in integration te
 #### Key File Locations
 ```markdown
 ## Important Files
-- `/server/src/main/kotlin/REDACTED.kt` — Application entry point
-- `/readout/src/main/kotlin/processors/` — Extensible processor pattern
+- `/server/src/main/kotlin/MyServiceApplication.kt` — Application entry point
+- `/core/src/main/kotlin/processors/` — Extensible processor pattern
 ```
 
 #### Corrections Made by User
@@ -103,7 +103,7 @@ If verification can't confirm goal achievement, revise plan before executing.
 
 ## Creating a New Session (Start of Day)
 
-1. **Check for active work**: `~/.claude/kb/search-kb.sh --tag <project>` or by keyword
+1. **Check for active work**: `~/.agents/kb/search-kb.sh --tag <project>` or by keyword
 2. **If resuming mid-phase**: Search KB for the feature, restore context from entry
 3. **If fresh start**:
    - Review project MEMORY.md (if exists)

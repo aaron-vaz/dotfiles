@@ -16,7 +16,7 @@ Work through these in order. Don't mark ready until all are green.
 
 5. **Perf/staging verified** — depends on the repo:
    - Repos with good integration tests: CI green is sufficient, ask if unsure
-   - Repos requiring manual verification (e.g. REDACTED, data pipelines): run in prod-perf, check output against prod, spot-check key instances — CI does not cover this
+   - Repos requiring manual verification (e.g. batch/data pipelines): run in a pre-production environment, check output against production, spot-check key instances — CI does not cover this
    - **Don't assume CI covers it** — confirm with the user which category the repo falls into
 
 6. **Follow-up items noted** — anything out of scope goes in a separate ticket/issue, not as a TODO in the code. Note them in the PR description or a comment.

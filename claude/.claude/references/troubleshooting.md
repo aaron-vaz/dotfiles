@@ -4,7 +4,7 @@
 |-------|----------|
 | Build fails: multiple errors | Read ALL errors, fix ALL in one pass, rebuild once |
 | Git command fails | Use plain `git` in repo CWD; `git -C <path>` only for cross-directory |
-| Find past session knowledge | `~/.claude/kb/search-kb.sh --tag <tag>` |
+| Find past session knowledge | `~/.agents/kb/search-kb.sh --tag <tag>` |
 | Can't find memory/conversation | `~/.claude/scripts/search-memories.sh` or `grep -r` in `~/.claude/sessions/` |
 | Subagent Bash permission denied | Subagents have sandboxed Bash; set CWD to target dir or have parent handle cross-dir ops |
 | `Cannot create agent worktree: not in a git repository` | Task tool needs git repo CWD. From non-git scratch dir, `cd` into real repo before dispatching, or work inline in parent. |
@@ -20,4 +20,4 @@
 | Grep/Glob fails: `ENOENT: posix_spawn 'rg'` | `rg` (ripgrep) not on PATH. Fall back to `Bash` with `grep -r` or `find` |
 | `'utf-8' codec can't decode byte 0xXX` | Subprocess captured with `text=True` (system locale) instead of `encoding="utf-8", errors="replace"`. Fix: `subprocess.run(..., capture_output=True, encoding="utf-8", errors="replace")` |
 | Hook not firing | `chmod +x ~/.claude/hooks/*.sh`; check settings.json hook syntax |
-| KB search not found | `~/.claude/kb/search-kb.sh --rebuild-index` |
+| KB search not found | `~/.agents/kb/search-kb.sh --rebuild-index` |

@@ -55,7 +55,7 @@ grep -E "languageVersion|sourceCompatibility" build.gradle.kts
 ## Available JDKs
 
 Installed versions (last indexed 2026-03-11):
-- `temurin@25` - Java 25 (e.g., REDACTED)
+- `temurin@25` - Java 25
 - `temurin@24.0.2` - Java 24
 - `temurin@21.0.8` - Java 21 (latest LTS)
 - `temurin@17.0.16` - Java 17 (LTS)

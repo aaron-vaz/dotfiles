@@ -60,10 +60,10 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 ### Knowledge Base
 
 ```bash
-~/.claude/kb/search-kb.sh "keyword"          # search
-~/.claude/kb/search-kb.sh --tag debugging     # by tag
-~/.claude/kb/search-kb.sh --project myproject # by project
-~/.claude/kb/audit-kb.sh                      # find stale entries
+~/.agents/kb/search-kb.sh "keyword"          # search
+~/.agents/kb/search-kb.sh --tag debugging     # by tag
+~/.agents/kb/search-kb.sh --project myproject # by project
+~/.agents/kb/audit-kb.sh                      # find stale entries
 ```
 
 ## Setup
@@ -78,7 +78,7 @@ ln -s ~/.claude-personal ~/.claude
 ln -sf ~/.claude/mcp.json ~/.mcp.json
 
 # 3. Make scripts executable
-chmod +x ~/.claude/hooks/*.sh ~/.claude/kb/*.sh ~/.claude/scripts/*.sh
+chmod +x ~/.claude/hooks/*.sh ~/.agents/kb/*.sh ~/.claude/scripts/*.sh
 
 # 4. Add MCP servers to ~/.claude/mcp.json as needed
 

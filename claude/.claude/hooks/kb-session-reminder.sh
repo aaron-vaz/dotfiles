@@ -5,7 +5,7 @@ set -euo pipefail
 
 # Overridable for tests; default to the real files in normal use.
 COMMAND_LOG="${COMMAND_LOG:-$HOME/.claude/command-log.txt}"
-KB_ENTRIES_DIR="${KB_ENTRIES_DIR:-$HOME/.claude/kb/entries}"
+KB_ENTRIES_DIR="${KB_ENTRIES_DIR:-$HOME/.agents/kb/entries}"
 
 # command-log.txt lines look like: "2026-07-18T14:42:31Z: <command>" (ISO,
 # from the PostToolUse/Bash hook's `date -u +%Y-%m-%dT%H:%M:%SZ`) — anchor to
@@ -20,6 +20,6 @@ fi
 [[ "$COMMITTED_TODAY" == "false" ]] && exit 0
 
 if ! find "$KB_ENTRIES_DIR" -name "*.md" -mtime -1 2>/dev/null | grep -q .; then
-  echo "⚠️  Commits made today but no KB entry created/updated in the last 24h (~/.claude/kb/entries/). If this session had lasting decisions or context, capture them before closing out."
+  echo "⚠️  Commits made today but no KB entry created/updated in the last 24h (~/.agents/kb/entries/). If this session had lasting decisions or context, capture them before closing out."
 fi
 exit 0
