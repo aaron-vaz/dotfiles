@@ -48,48 +48,36 @@ git diff --stat main...HEAD    # Files changed
 - Why these changes?
 - What's the blast radius?
 
-### 3. Run Review Agents (Parallel)
+### 3. Run /code-review
 
-Run ALL relevant agents. No shortcuts.
-
-**Always run:**
-- `pr-review-toolkit:code-reviewer` - General code quality, CLAUDE.md compliance
-- `pr-review-toolkit:silent-failure-hunter` - Error handling, silent failures
-
-**Conditional (based on changes):**
-- `pr-review-toolkit:pr-test-analyzer` - If test files changed
-- `pr-review-toolkit:comment-analyzer` - If significant comments/docs added
-- `pr-review-toolkit:type-design-analyzer` - If new types added (TypeScript/Kotlin)
-- `pr-review-toolkit:code-simplifier` - If complex logic (after other reviews pass)
-
-**Language-specific:**
-- `kotlin-review` - If Kotlin files changed
-- `web-design-guidelines` - If React/Next.js files changed
-
-**Launch agents in parallel:**
+Invoke:
 ```
-Use the Task tool with multiple agent invocations in a single message
+Skill(code-review, "high --fix")
 ```
+Effort `high` = broad coverage, may include uncertain findings. `--fix` applies findings to working tree after review completes.
 
-### 4. Manual Architecture Review
+### 4. Rule-Compliance Pass (manual, don't skip — /code-review doesn't know project-local rules)
 
-While agents run, manually review for architecture, edge cases, performance, maintainability, and security.
+/code-review hunts correctness/simplification/efficiency bugs generically. It does NOT enforce project-specific style rules unless they happen to be visible in the code it read. After it finishes, manually diff changed files against:
 
-### 5. Synthesize Findings
+- Project `AGENTS.md`/`CLAUDE.md` (Code Style, Conventions, Anti-Patterns sections)
+- `~/.claude/rules/code-style.md`, `~/.claude/rules/testing.md` (global — Given/When/Then labels, guard clauses, `final` usage, boolean naming, file-naming conventions, PR description style)
+- Language rule file matching changed file types (`~/.claude/rules/python.md`, etc.)
 
-Wait for all agents to complete. Then:
+Watch for what generic review tends to miss: Given/When/Then test labels present and never empty, no `is` prefix on booleans, `Real*`/concern-named files not `*Extensions.kt`, `assertEquals` not `assertTrue(x==y)`, FQN imports over aliases, comments always on their own line. Flag violations same as any other finding.
 
-**Combine agent findings + manual review:**
+### 5. Manual Architecture Review
+
+Review for architecture, edge cases, performance, maintainability, and security beyond what tooling caught.
+
+### 6. Synthesize Findings
+
+**Combine /code-review findings + rule-compliance findings + manual review:**
 - Group by severity: Blocking → Important → Suggestions
-- Remove false positives (agents can be wrong — especially for Kotlin operators and extension properties; verify agent findings against actual code before including)
+- Remove false positives — verify against actual code before including
 - Add context: explain WHY something matters
 - Reference file:line for all issues
 
 ## Model Selection
 
-**Use Opus** for this workflow.
-
-**Agents can use their own models:**
-- code-reviewer: sonnet (pattern matching)
-- silent-failure-hunter: sonnet (error flow analysis)
-- Test-analyzer: sonnet (behavioral coverage)
+**Use Opus** for this workflow (steps 4-6 need staff-level judgment). `/code-review` picks its own model internally.
