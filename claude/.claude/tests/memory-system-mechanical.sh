@@ -161,6 +161,22 @@ else
   bad "T8c: private rows are not marked — they are indistinguishable from public ones"
 fi
 
+# Index staleness must survive a DELETE, not just an add/edit. `-newer` alone
+# only ever sees additions and modifications, so a removed or moved entry left
+# its row in the index forever — search kept returning a file that no longer
+# existed. `find -L` matters too: entries/ is a symlink into the dotfiles repo,
+# and plain `find` does not follow a symlinked start point.
+PROBE="$PUB/zz-staleness-probe.md"
+printf -- '---\nname: zz-staleness-probe\ndate: 2026-01-01\ndescription: probe\ntype: reference\ntags: [probe]\nstatus: active\n---\nbody\n' > "$PROBE"
+AFTER_ADD=$(~/.claude/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+rm -f "$PROBE"
+AFTER_DEL=$(~/.claude/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+if [[ "$AFTER_ADD" -eq 1 ]] && [[ "$AFTER_DEL" -eq 0 ]]; then
+  ok "T8e: index picks up an added entry through the symlink and drops a deleted one"
+else
+  bad "T8e: add saw $AFTER_ADD (want 1), delete saw $AFTER_DEL (want 0) — index is not self-healing"
+fi
+
 # Nothing naming the employer may sit in the public store.
 LEAK=$(grep -rilE 'REDACTED|REDACTED|REDACTED|REDACTED|@REDACTEDgroup' "$PUB" 2>/dev/null || true)
 if [[ -z "$LEAK" ]]; then
