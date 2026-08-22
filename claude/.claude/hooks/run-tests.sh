@@ -21,8 +21,27 @@ cd "$PROJECT_ROOT" || exit 0
 
 # Detect project type and run appropriate test command
 if [[ -f "build.gradle.kts" ]] || [[ -f "build.gradle" ]]; then
-  # Gradle/Kotlin/Java
-  ./gradlew test --quiet 2>&1 | tail -3
+  # Gradle/Kotlin/Java. Scope to the module that owns the edited file rather
+  # than running the whole reactor on every keystroke — rules/testing.md and
+  # validate-test-scope.sh both say run from the correct module scope, and a
+  # multi-module root `test` after each edit is minutes of work for one file.
+  REL="${FILE_PATH#"$PROJECT_ROOT"/}"
+  MODULE=""
+  DIR="$(dirname "$REL")"
+  while [[ "$DIR" != "." && -n "$DIR" ]]; do
+    if [[ -f "$PROJECT_ROOT/$DIR/build.gradle.kts" || -f "$PROJECT_ROOT/$DIR/build.gradle" ]]; then
+      MODULE=":${DIR//\//:}"
+      break
+    fi
+    DIR="$(dirname "$DIR")"
+  done
+
+  if [[ -n "$MODULE" ]]; then
+    ./gradlew "${MODULE}:test" --quiet 2>&1 | tail -3
+  else
+    # File isn't inside a module (root-level source set) — fall back to root.
+    ./gradlew test --quiet 2>&1 | tail -3
+  fi
 elif [[ -f "package.json" ]]; then
   # Node/TypeScript
   npm test --silent 2>&1 | tail -3
