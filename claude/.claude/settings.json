@@ -31,8 +31,18 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opusplan",
+  "model": "opus",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "REPO=\"$(basename \"$PWD\")\"; OUT=\"$(~/.claude/kb/search-kb.sh --project \"$REPO\" --brief 2>/dev/null | head -8)\"; if [[ -n \"$OUT\" ]]; then echo \"## KB entries possibly relevant to repo '$REPO' — ask the user which (if any) to load in full via search-kb.sh --full, do not dump all of them:\"; echo \"$OUT\"; fi; true"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "idle_prompt",
@@ -50,6 +60,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.claude/hooks/run-claude-config-tests.sh",
+            "statusMessage": "Running ~/.claude config tests before commit..."
+          },
+          {
+            "type": "command",
             "command": "~/.claude/hooks/pre-commit-review.sh"
           },
           {
@@ -59,6 +74,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/validate-git-usage.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-test-scope.sh"
           }
         ]
       }
@@ -72,6 +91,10 @@
             "command": "~/.claude/hooks/run-tests.sh",
             "timeout": 60,
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/skill-md-review-reminder.sh"
           }
         ]
       },
@@ -80,7 +103,36 @@
         "hooks": [
           {
             "type": "command",
-            "command": "set +e; CMD=$(echo \"${CLAUDE_TOOL_INPUT:-{}}\" | jq -r '.command // empty' 2>/dev/null); [[ -n \"$CMD\" ]] && echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ): $CMD\" >> ~/.claude/command-log.txt 2>/dev/null; exit 0"
+            "command": "set +e; CMD=$(jq -r '.tool_input.command // empty' 2>/dev/null); [[ -n \"$CMD\" ]] && echo \"$(date -u +%Y-%m-%dT%H:%M:%SZ): $CMD\" >> ~/.claude/command-log.txt 2>/dev/null; exit 0"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-tool-calls.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/plan-model-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/kb-session-reminder.sh"
           }
         ]
       }
@@ -101,8 +153,38 @@
       }
     }
   },
-  "effortLevel": "medium",
+  "effortLevel": "high",
+  "advisorModel": "opus",
   "autoUpdatesChannel": "latest",
+  "skipWorkflowUsageWarning": true,
   "theme": "dark-ansi",
-  "skipWorkflowUsageWarning": true
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: AWS (SNS used for push notifications per README; terraform/prod/ directory holds production AWS infrastructure)",
+      "**Repository visibility**: private (social-sync-tech/social-sync-api, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: main (default). No classic branch protection listed; rulesets marked \"not queryable here\" so protection status is unconfirmed — treat main as protected out of caution",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Source control**: The trusted repo (social-sync-tech/social-sync-api) and its origin remote only (no additional orgs configured)",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar. Local .env* files and *.keystore files (gitignored) likely hold credentials — treat as sensitive",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment — this repo's terraform/prod/ directory is an explicit example of such a namespace",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic (terraform/prod/ qualifies)",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment — this repo's terraform/prod/ directory falls under this scope",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (Kotlin/Spring Boot API work in social-sync-api, using OpenSpec workflow for change proposals)",
+      "**Trusted repo**: /Users/aaronvaz/Code/kotlin/social-sync-api (github.com:social-sync-tech/social-sync-api.git, private) — confidential material OK to commit here; content ported from outside this repo is not its own work",
+      "**Org-specific CLIs**: openspec (heavily used, 189×), graphify (44×) — both project/personal tooling, not org-restricted",
+      "routine under social-sync-api/ prefix: openspec and gradlew invocations for this repo's change-management and build workflow"
+    ]
+  }
 }

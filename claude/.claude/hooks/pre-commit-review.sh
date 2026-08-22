@@ -3,8 +3,15 @@
 
 set -euo pipefail
 
+# Tool input arrives as JSON on stdin — see validate-git-usage.sh for the
+# contract note. `|| true` on the jq line matters under set -e: malformed or
+# empty stdin makes jq exit non-zero, and an unguarded `CMD=$(...)` failure
+# kills the script right here (this is exactly how this hook used to crash).
+CMD="$(jq -r '.tool_input.command // empty' 2>/dev/null || true)"
+CMD="${CMD:-${CLAUDE_BASH_COMMAND:-}}"
+
 # Only run if git commit command detected
-if ! echo "$CLAUDE_BASH_COMMAND" | grep -q "git commit"; then
+if ! echo "$CMD" | grep -q "git commit"; then
   exit 0
 fi
 
@@ -35,11 +42,10 @@ if [[ "$LINES_CHANGED" -gt "$MIN_LINES" ]]; then
 Files staged: $STAGED_FILES
 Lines changed: $LINES_CHANGED
 
-💡 RECOMMENDATION: Run code review before committing
+💡 RECOMMENDATION: Review before committing
 
-To review:
-  1. Use Agent tool with subagent_type: "pr-review-toolkit:code-reviewer"
-  2. Or invoke: Read ~/.claude/skills/pre-commit-reviewer/SKILL.md
+  1. /code-review high
+  2. self-review skill (staff-engineer pass over your own diff)
 
 To skip review and commit anyway:
   - Continue with commit (review can happen later)

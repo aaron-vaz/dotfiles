@@ -3,14 +3,21 @@
 
 set +e
 
+# Tool input arrives as JSON on stdin — see validate-git-usage.sh for the
+# contract note. This hook previously read $CLAUDE_FILE_PATH, which is never
+# set, so both `!=` tests below were always true and it exited 0 without ever
+# running a test.
+FILE_PATH="$(jq -r '.tool_input.file_path // empty' 2>/dev/null)"
+FILE_PATH="${FILE_PATH:-${CLAUDE_FILE_PATH:-}}"
+
+# Only run if a source file was modified
+if [[ "$FILE_PATH" != *"/src/"* ]] && [[ "$FILE_PATH" != *"/lib/"* ]]; then
+  exit 0
+fi
+
 # Get the project root (where git repo is)
 PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 cd "$PROJECT_ROOT" || exit 0
-
-# Only run if a source file was modified
-if [[ "$CLAUDE_FILE_PATH" != *"/src/"* ]] && [[ "$CLAUDE_FILE_PATH" != *"/lib/"* ]]; then
-  exit 0
-fi
 
 # Detect project type and run appropriate test command
 if [[ -f "build.gradle.kts" ]] || [[ -f "build.gradle" ]]; then
