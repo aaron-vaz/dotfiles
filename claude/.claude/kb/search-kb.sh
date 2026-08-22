@@ -104,15 +104,28 @@ build_index() {
 # The column-count floor must track the schema: it was 8 before visibility was
 # added, and a stale 8-column index against a 9-column schema would pass an
 # `-lt 8` test and silently misalign every field.
+# `find -L` is required, not cosmetic: entries/ is a symlink into the dotfiles
+# repo, and plain `find` does not follow a symlinked start point — it returned
+# zero matches, so no public entry could ever trigger a rebuild.
 newer_entries=""
+file_count=0
 for dir in "$PUBLIC_DIR" "$PRIVATE_DIR"; do
   [[ -d "$dir" ]] || continue
-  newer_entries+="$(find "$dir" -name '*.md' -newer "$INDEX" 2>/dev/null)"
+  newer_entries+="$(find -L "$dir" -name '*.md' -newer "$INDEX" 2>/dev/null)"
+  file_count=$(( file_count + $(find -L "$dir" -name '*.md' 2>/dev/null | wc -l) ))
 done
+
+# `-newer` only ever detects additions and edits. A deleted or moved entry
+# leaves its row behind forever — which is exactly what happened when an entry
+# was deduped and six were promoted from private to public: search kept
+# returning a file that no longer existed. Compare counts as well as mtimes.
+index_rows=0
+[[ -f "$INDEX" ]] && index_rows=$(( $(wc -l < "$INDEX") - 1 ))
 
 if [[ "$REBUILD" == true ]] || \
    [[ ! -f "$INDEX" ]] || \
    [[ -n "$newer_entries" ]] || \
+   [[ "$index_rows" -ne "$file_count" ]] || \
    [[ "$(head -1 "$INDEX" 2>/dev/null | awk -F'\t' '{print NF}')" -lt 9 ]]; then
   build_index
 fi

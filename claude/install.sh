@@ -29,7 +29,7 @@ for f in AGENTS.md CLAUDE.md persona.md settings.json mcp.json .gitignore README
 done
 
 # Directories
-for d in rules hooks agents skills references scripts startup tests workflows; do
+for d in rules hooks agents skills references scripts startup tests workflows kb/entries; do
   if [ -d "$CLAUDE_SRC/$d" ]; then
     ln -sfn "$CLAUDE_SRC/$d" "$HOME/.claude/$d"
     success "$d/ directory symlinked"
@@ -37,14 +37,16 @@ for d in rules hooks agents skills references scripts startup tests workflows; d
 done
 
 # KB scripts + template.
-#   entries/ — public store. Runtime dir today; safe to track later if wanted.
-#   private/ — private store. NEVER symlinked into the dotfiles repo and never
-#              tracked: this repo is public, and these entries name employers,
-#              private products, internal hosts and private repo internals.
-#              It lives outside the repo tree on purpose — a gitignored path
-#              inside the repo can still be committed with `git add -f` or swept
-#              in by a broad `git add <dir>`; a path that isn't in the repo cannot.
-mkdir -p ~/.claude/kb/entries ~/.claude/kb/private
+#   entries/ — public store, symlinked into this repo above and therefore
+#              TRACKED AND PUBLISHED. Only entries reviewed as naming no
+#              employer, private product, internal host, or private repo
+#              internals belong here.
+#   private/ — private store. NEVER symlinked, never tracked. It lives outside
+#              the repo tree on purpose — a gitignored path inside the repo can
+#              still be committed with `git add -f` or swept in by a broad
+#              `git add <dir>` (which happened twice while this was built); a
+#              path that isn't in the repo cannot.
+mkdir -p ~/.claude/kb/private
 for f in search-kb.sh audit-kb.sh TEMPLATE.md; do
   if [ -f "$CLAUDE_SRC/kb/$f" ]; then
     ln -sf "$CLAUDE_SRC/kb/$f" "$HOME/.claude/kb/$f"
