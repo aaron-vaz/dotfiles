@@ -55,7 +55,7 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 **Before saving anything, check this file first** — grep/read relevant section to see if already covered before writing new entry anywhere.
 
 1. **Correction, standing rule, durable user/reference fact** (don't do X / always do Y / who I am / where to find Z) → **IMMEDIATELY write same turn, unprompted**, as `type: feedback`/`user`/`reference` KB entry using `~/.claude/kb/TEMPLATE-feedback.md` schema (frontmatter, `**Why:**`, `**How to apply:**`, `Related: [[wikilinks]]`). **DO NOT** just verbally acknowledge — capture now or re-teach next session. Add one-line pointer here only if high-frequency enough to justify always-loaded cost (rare — most rules belong paged-in).
-2. **Session-specific knowledge worth preserving** → KB entry (`~/.claude/kb/entries/`)
+2. **Session-specific knowledge worth preserving** → KB entry (`~/.claude/kb/private/` by default; `entries/` only if it names nothing employer- or private-product-specific — see Knowledge Base below)
    - **After completing significant work:** save KB entry with full session detail. Include: problem statement, step-by-step investigation, root cause, fix applied, validation. Detailed enough to reproduce or hand off without re-deriving.
 3. **Project-specific facts needed every session** → target repo's own `AGENTS.md` (sparingly)
    - **When working in repo with `AGENTS.md`:** append discoveries throughout session — after each significant finding, schema discovery, architectural decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
@@ -82,7 +82,25 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 
 New entries: pick type matching content, don't default to `project`.
 
-**Full content:** `~/.claude/kb/search-kb.sh <slug> --full` or read `~/.claude/kb/entries/<slug>.md`.
+**Two stores — public and private.** The dotfiles repo is PUBLIC, so entry
+location is a disclosure decision, not filing preference:
+
+| Store | Path | Contents |
+|-------|------|----------|
+| public | `~/.claude/kb/entries/` | Generic, publishable lessons. May be tracked in the dotfiles repo. |
+| private | `~/.claude/kb/private/` | Anything naming an employer, a private product, internal hosts/endpoints, or a private repo's internals. Never tracked, never symlinked into a repo. |
+
+- **Search reads both by default.** Private rows are marked with a leading `*`
+  in `--brief`/`--medium`, and `--full` prefixes them with a `PRIVATE KB ENTRY`
+  banner.
+- **`--no-private` when output is headed anywhere public** — a PR comment, an
+  issue, a commit message, a shared doc. `--only-private` for the inverse.
+- **When writing a new entry, default to `private/`.** Move it to `entries/`
+  only after checking it names nothing employer- or private-product-specific.
+- `kb/index.tsv` carries private descriptions and is gitignored — keep it so.
+
+**Full content:** `~/.claude/kb/search-kb.sh <slug> --full` (resolves either
+store) or read `~/.claude/kb/{entries,private}/<slug>.md`.
 
 ## Domain Rules
 

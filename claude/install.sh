@@ -36,8 +36,15 @@ for d in rules hooks agents skills references scripts startup tests workflows; d
   fi
 done
 
-# KB scripts + template (entries/ is runtime, not symlinked)
-mkdir -p ~/.claude/kb/entries
+# KB scripts + template.
+#   entries/ — public store. Runtime dir today; safe to track later if wanted.
+#   private/ — private store. NEVER symlinked into the dotfiles repo and never
+#              tracked: this repo is public, and these entries name employers,
+#              private products, internal hosts and private repo internals.
+#              It lives outside the repo tree on purpose — a gitignored path
+#              inside the repo can still be committed with `git add -f` or swept
+#              in by a broad `git add <dir>`; a path that isn't in the repo cannot.
+mkdir -p ~/.claude/kb/entries ~/.claude/kb/private
 for f in search-kb.sh audit-kb.sh TEMPLATE.md; do
   if [ -f "$CLAUDE_SRC/kb/$f" ]; then
     ln -sf "$CLAUDE_SRC/kb/$f" "$HOME/.claude/kb/$f"
