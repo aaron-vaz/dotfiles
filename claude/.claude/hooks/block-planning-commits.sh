@@ -1,15 +1,20 @@
 #!/bin/bash
 set +e
 
+# Tool input arrives as JSON on stdin — see validate-git-usage.sh for the
+# contract note. CLAUDE_BASH_COMMAND kept only as a fallback.
+CMD="$(jq -r '.tool_input.command // empty' 2>/dev/null)"
+CMD="${CMD:-${CLAUDE_BASH_COMMAND:-}}"
+
 # Check if command contains git commit
-if ! echo "$CLAUDE_BASH_COMMAND" | grep -q "git commit"; then
+if ! echo "$CMD" | grep -q "git commit"; then
   exit 0
 fi
 
 # Extract files from git staging area
 REPO_PATH="."
-if echo "$CLAUDE_BASH_COMMAND" | grep -q "git -C"; then
-  REPO_PATH=$(echo "$CLAUDE_BASH_COMMAND" | sed -n 's/.*git -C \([^ ]*\).*/\1/p')
+if echo "$CMD" | grep -q "git -C"; then
+  REPO_PATH=$(echo "$CMD" | sed -n 's/.*git -C \([^ ]*\).*/\1/p')
 fi
 
 # Check staged files for planning artifacts
