@@ -8,7 +8,7 @@ bad()  { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
 # public dotfiles repo) and private/ (never tracked). search-kb.sh reads both by
 # default, so every expectation derived from raw files must scan both — counting
 # only entries/ made T1/T7 disagree with the tool rather than with reality.
-KB_STORES=("$HOME/.claude/kb/entries" "$HOME/.claude/kb/private")
+KB_STORES=("$HOME/.agents/kb/entries" "$HOME/.agents/kb/private")
 
 # Files across both stores matching a frontmatter grep. Prints one path per line.
 kb_files_matching() {
@@ -30,7 +30,7 @@ kb_entry_path() {
 
 echo "=== T1: --type filter correctness ==="
 FB_TMP=$(mktemp)
-~/.claude/kb/search-kb.sh --type feedback --brief > "$FB_TMP" 2>&1
+~/.agents/kb/search-kb.sh --type feedback --brief > "$FB_TMP" 2>&1
 FB_RC=$?
 FB=$(wc -l < "$FB_TMP" | tr -d ' ')
 EXPECTED_FB=$(kb_files_matching '^type: feedback$' | wc -l | tr -d ' ')
@@ -44,7 +44,7 @@ fi
 rm -f "$FB_TMP"
 
 PRJ_TMP=$(mktemp)
-~/.claude/kb/search-kb.sh --type project --brief > "$PRJ_TMP" 2>&1
+~/.agents/kb/search-kb.sh --type project --brief > "$PRJ_TMP" 2>&1
 PRJ_RC=$?
 PRJ=$(wc -l < "$PRJ_TMP" | tr -d ' ')
 EXPECTED_PRJ=$(kb_files_matching '^type: project$' | wc -l | tr -d ' ')
@@ -92,7 +92,7 @@ done
 
 echo ""
 echo "=== T5: --list-tags still works (no regression) ==="
-TAGCOUNT=$(~/.claude/kb/search-kb.sh --list-tags | wc -l | tr -d ' ')
+TAGCOUNT=$(~/.agents/kb/search-kb.sh --list-tags | wc -l | tr -d ' ')
 [[ "$TAGCOUNT" -gt 5 ]] && ok "T5: --list-tags returns tag set ($TAGCOUNT tags)" || bad "T5: only $TAGCOUNT tags"
 
 echo ""
@@ -115,7 +115,7 @@ done
 echo ""
 echo "=== T7: retrieval-trigger — domain-rules tag surfaces feedback entries ==="
 DR_TMP=$(mktemp)
-~/.claude/kb/search-kb.sh --type feedback --tag domain-rules --brief > "$DR_TMP" 2>&1
+~/.agents/kb/search-kb.sh --type feedback --tag domain-rules --brief > "$DR_TMP" 2>&1
 DR_RC=$?
 DR=$(wc -l < "$DR_TMP" | tr -d ' ')
 EXPECTED_DR=$(kb_files_matching '^type: feedback$' | xargs grep -l 'domain-rules' 2>/dev/null | wc -l | tr -d ' ')
@@ -133,8 +133,8 @@ echo "=== T8: public/private KB split holds ==="
 # The whole point of the split: the public store is the one that may end up
 # tracked in a PUBLIC repo, so nothing employer- or private-product-specific may
 # sit in it, and the private store must never become reachable from the repo.
-PUB="$HOME/.claude/kb/entries"
-PRIV="$HOME/.claude/kb/private"
+PUB="$HOME/.agents/kb/entries"
+PRIV="$HOME/.agents/kb/private"
 
 if [[ -d "$PRIV" ]] && [[ ! -L "$PRIV" ]]; then
   ok "T8a: private store exists and is a real dir, not a symlink into a repo"
@@ -144,9 +144,9 @@ fi
 
 # Default search must include private — excluding it by default recreates the
 # exact failure mode the split was made to prevent (knowledge search can't see).
-BOTH=$(~/.claude/kb/search-kb.sh --all --brief 2>/dev/null | wc -l | tr -d ' ')
-PUBONLY=$(~/.claude/kb/search-kb.sh --all --no-private --brief 2>/dev/null | wc -l | tr -d ' ')
-PRIVONLY=$(~/.claude/kb/search-kb.sh --all --only-private --brief 2>/dev/null | wc -l | tr -d ' ')
+BOTH=$(~/.agents/kb/search-kb.sh --all --brief 2>/dev/null | wc -l | tr -d ' ')
+PUBONLY=$(~/.agents/kb/search-kb.sh --all --no-private --brief 2>/dev/null | wc -l | tr -d ' ')
+PRIVONLY=$(~/.agents/kb/search-kb.sh --all --only-private --brief 2>/dev/null | wc -l | tr -d ' ')
 if [[ "$BOTH" -eq $((PUBONLY + PRIVONLY)) ]] && [[ "$BOTH" -gt 0 ]]; then
   ok "T8b: default search covers both stores ($PUBONLY public + $PRIVONLY private = $BOTH)"
 else
@@ -155,7 +155,7 @@ fi
 
 # Private rows must be visually marked, or private content can be copied outward
 # without anyone noticing what it was.
-if [[ "$PRIVONLY" -eq 0 ]] || ~/.claude/kb/search-kb.sh --all --only-private --brief 2>/dev/null | grep -q '^\*'; then
+if [[ "$PRIVONLY" -eq 0 ]] || ~/.agents/kb/search-kb.sh --all --only-private --brief 2>/dev/null | grep -q '^\*'; then
   ok "T8c: private rows are marked with a leading * in brief output"
 else
   bad "T8c: private rows are not marked — they are indistinguishable from public ones"
@@ -168,9 +168,9 @@ fi
 # and plain `find` does not follow a symlinked start point.
 PROBE="$PUB/zz-staleness-probe.md"
 printf -- '---\nname: zz-staleness-probe\ndate: 2026-01-01\ndescription: probe\ntype: reference\ntags: [probe]\nstatus: active\n---\nbody\n' > "$PROBE"
-AFTER_ADD=$(~/.claude/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+AFTER_ADD=$(~/.agents/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
 rm -f "$PROBE"
-AFTER_DEL=$(~/.claude/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+AFTER_DEL=$(~/.agents/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
 if [[ "$AFTER_ADD" -eq 1 ]] && [[ "$AFTER_DEL" -eq 0 ]]; then
   ok "T8e: index picks up an added entry through the symlink and drops a deleted one"
 else

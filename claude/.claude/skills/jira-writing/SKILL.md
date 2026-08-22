@@ -53,9 +53,10 @@ description: Use when creating Jira issues from tech docs, meeting notes, one-li
 
 ## Jira Creation Settings
 
-**Default values:**
-- Cloud ID: `REDACTED`
-- Project: `EGEXP` (can be overridden)
+**Default values** — read the Cloud ID and project key from `~/.localrc`
+(machine-specific, untracked); this repo is public, so they don't live here:
+- Cloud ID: `$JIRA_CLOUD_ID`
+- Project: `$JIRA_PROJECT_KEY` (can be overridden per issue)
 - Issue type: `Story` (can be changed to Task, Bug, Epic)
 - Assignee: Unset (uses project default)
 

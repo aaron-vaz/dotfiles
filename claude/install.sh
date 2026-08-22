@@ -29,30 +29,16 @@ for f in AGENTS.md CLAUDE.md persona.md settings.json mcp.json .gitignore README
 done
 
 # Directories
-for d in rules hooks agents skills references scripts startup tests workflows kb/entries; do
+for d in rules hooks agents skills references scripts startup tests workflows; do
   if [ -d "$CLAUDE_SRC/$d" ]; then
     ln -sfn "$CLAUDE_SRC/$d" "$HOME/.claude/$d"
     success "$d/ directory symlinked"
   fi
 done
 
-# KB scripts + template.
-#   entries/ — public store, symlinked into this repo above and therefore
-#              TRACKED AND PUBLISHED. Only entries reviewed as naming no
-#              employer, private product, internal host, or private repo
-#              internals belong here.
-#   private/ — private store. NEVER symlinked, never tracked. It lives outside
-#              the repo tree on purpose — a gitignored path inside the repo can
-#              still be committed with `git add -f` or swept in by a broad
-#              `git add <dir>` (which happened twice while this was built); a
-#              path that isn't in the repo cannot.
-mkdir -p ~/.claude/kb/private
-for f in search-kb.sh audit-kb.sh TEMPLATE.md; do
-  if [ -f "$CLAUDE_SRC/kb/$f" ]; then
-    ln -sf "$CLAUDE_SRC/kb/$f" "$HOME/.claude/kb/$f"
-    success "kb/$f symlinked"
-  fi
-done
+# The knowledge base is NOT installed from here — it is harness-agnostic and
+# owned by the top-level `kb/` topic, which symlinks ~/.claude/kb -> ~/.agents/kb
+# for whichever harnesses are present. See kb/install.sh.
 
 # Runtime directories (create if missing, don't symlink)
 for d in sessions learnings logs ideas costs; do
@@ -65,7 +51,7 @@ success '~/.mcp.json symlinked'
 
 # Make scripts executable
 chmod +x "$HOME/.claude/hooks/"*.sh 2>/dev/null || true
-chmod +x "$HOME/.claude/kb/"*.sh 2>/dev/null || true
+chmod +x "$HOME/.agents/kb/"*.sh 2>/dev/null || true
 chmod +x "$HOME/.claude/scripts/"*.sh 2>/dev/null || true
 chmod +x "$HOME/.claude/tests/"*.sh 2>/dev/null || true
 success 'scripts made executable'

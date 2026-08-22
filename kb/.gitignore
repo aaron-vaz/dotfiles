@@ -1,0 +1,11 @@
+# Generated search index. It carries every entry's description — including the
+# PRIVATE store's — so it must never be tracked in this public repo.
+index.tsv
+
+# Audit log (per-machine)
+audit-log.txt
+
+# Private KB store. It lives at ~/.agents/kb/private/, outside this repo, and is
+# never symlinked in — that, not this line, is what keeps it out. This is a
+# belt-and-braces guard in case the directory is ever recreated inside the repo.
+private/

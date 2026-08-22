@@ -26,26 +26,31 @@ doWork(user)
 - **Assertions:** Check existing test files first — follow repo pattern.
   - Some projects use `kotlin.test` (`kotlin.test.assertEquals`, `kotlin.test.assertTrue`, etc.)
   - Some projects use JUnit5 directly (`org.junit.jupiter.api.Assertions.assertEquals`, etc.)
-  - **REDACTED:** JUnit 5 directly (no `kotlin.test` dependency)
-  - **REDACTED:** `kotlin.test`
+  - Pick per repo by looking at a neighbouring test, not by preference — a repo without a
+    `kotlin.test` dependency can only use JUnit 5
 - **`@Test` annotation:** `org.junit.jupiter.api.Test` (not `kotlin.test.Test`)
 - **No wildcard imports** — explicit only; never `import kotlin.test.*` or `import org.junit.jupiter.api.Assertions.*`
 
-### Mockk unit test structure (REDACTED)
+### Mockk unit test structure
 
 - **Class-level:** mocks with default stubs (returns empty/false) + service under test
-- **Per-test:** all data variables — `experimentId`, `instanceId`, `qualified`, etc. declared inside test, never class fields
+- **Per-test:** all data variables — ids, flags, etc. declared inside the test, never as class fields
 - **Test data objects:** single `data` variable of full type, reference `data.field` in verify — do NOT split into separate field variables
   ```kotlin
-  val data = InsightsAndRecommendations(
-      insights = mapOf("INSTANCE" to listOf<Any>()),
+  val data = ReportPayload(
+      sections = mapOf("SUMMARY" to listOf<Any>()),
       recommendations = emptyMap(),
   )
-  coEvery { fetchService.insightsAndRecommendations(instanceId, qualified, baselineBucketId) } returns data
+  coEvery { fetchService.buildPayload(entityId, enabled, baselineId) } returns data
   // ...
-  coVerify { repo.upsert(Learnings(experimentId, instanceId, qualified, data.insights, emptyMap())) }
+  coVerify { repo.upsert(Report(runId, entityId, enabled, data.sections, emptyMap())) }
   ```
 - **Structure:** `// Given / When / Then` comments in every test
+
+## Kotlin Import Style
+- Normal `import` by default. Inline FQN only for actual name collisions, not habit.
+- Bad: `java.util.concurrent.atomic.AtomicInteger(0)` inline with no colliding import.
+- Good: `import java.util.concurrent.atomic.AtomicInteger` then `AtomicInteger(0)`.
 
 ## Kotlin Boolean Naming
 - Properties: NO `is` prefix — use `qualified`, `beforeMinDuration`, `sampleSizeCallable`

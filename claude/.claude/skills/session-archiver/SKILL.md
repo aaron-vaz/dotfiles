@@ -22,7 +22,7 @@ Skip `current.md`.
 ### Step 2: Check for Duplicates
 
 ```bash
-~/.claude/kb/search-kb.sh --brief <keyword-from-session>
+~/.agents/kb/search-kb.sh --brief <keyword-from-session>
 ```
 
 If an existing entry already covers the same decision/root cause, skip or note as a follow-up.
@@ -54,7 +54,7 @@ If an existing entry already covers the same decision/root cause, skip or note a
 
 ### Step 4: Create KB Entry
 
-Write to `~/.claude/kb/entries/<date>-<slug>.md` with YAML frontmatter:
+Write to `~/.agents/kb/entries/<date>-<slug>.md` with YAML frontmatter:
 ```yaml
 ---
 name: <short-slug>
@@ -75,7 +75,7 @@ Sections:
 ### Step 5: Rebuild Index
 
 ```bash
-~/.claude/kb/search-kb.sh --rebuild-index 2>/dev/null || true
+~/.agents/kb/search-kb.sh --rebuild-index 2>/dev/null || true
 ```
 
 ### Step 6: Report

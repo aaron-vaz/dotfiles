@@ -44,7 +44,7 @@ globs: ["*.py", "**/*.py"]
 
 ## Subprocess
 
-- **Capturing third-party tool output: use `encoding="utf-8", errors="replace"` — not `text=True`.** `text=True` decodes with system locale; non-UTF-8 locales (or any binary byte) raise `UnicodeDecodeError` mid-stream. Tools emitting en-dashes, smart quotes, unicode citations (REDACTED/REDACTED, gh, jq output) crash on first multibyte char. `errors="replace"` keeps substitution char `<EFBFBD>` instead of losing whole call.
+- **Capturing third-party tool output: use `encoding="utf-8", errors="replace"` — not `text=True`.** `text=True` decodes with system locale; non-UTF-8 locales (or any binary byte) raise `UnicodeDecodeError` mid-stream. Tools emitting en-dashes, smart quotes, or unicode citations (search/AI CLIs, `gh`, `jq` output) crash on the first multibyte char. `errors="replace"` keeps substitution char `<EFBFBD>` instead of losing whole call.
 - Long-running external CLIs need explicit `timeout=` — never inherit parent timeout. Return structured error string on `subprocess.TimeoutExpired` rather than letting it bubble.
 
 ## Dependencies

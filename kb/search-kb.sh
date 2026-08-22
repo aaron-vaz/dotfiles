@@ -3,7 +3,7 @@
 # Usage: search-kb.sh [--tag TAG] [--type TYPE] [--project NAME] [--status STATUS]
 #                     [--brief|--medium|--full] [--no-private|--only-private] [QUERY]
 # TYPE is the frontmatter `type:` field — one of: user, preference, feedback, project, reference, knowledge.
-# See ~/.claude/kb/TEMPLATE-feedback.md for the feedback/user/reference entry shape.
+# See ~/.agents/kb/TEMPLATE-feedback.md for the feedback/user/reference entry shape.
 #
 # Two entry stores:
 #   entries/   public  — safe to track in the (public) dotfiles repo

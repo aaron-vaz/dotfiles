@@ -11,16 +11,16 @@ Read `~/.claude/persona.md` for communication style.
 Read the KB index to know what entries exist:
 
 ```bash
-cat ~/.claude/kb/index.tsv | head -30
+cat ~/.agents/kb/index.tsv | head -30
 ```
 
 Or use search:
 
 ```bash
-~/.claude/kb/search-kb.sh --brief | head -20
+~/.agents/kb/search-kb.sh --brief | head -20
 ```
 
-**Do NOT load full entries yet.** Index is the cache; entries are main memory. Page in full entries via `~/.claude/kb/search-kb.sh <slug> --full` only when a task makes them relevant.
+**Do NOT load full entries yet.** Index is the cache; entries are main memory. Page in full entries via `~/.agents/kb/search-kb.sh <slug> --full` only when a task makes them relevant.
 
 **Do NOT ask user which entries to load.** Agent autonomously decides what to page in based on task context (thesis §5.1 — agent is the pager).
 
