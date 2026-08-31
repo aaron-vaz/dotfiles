@@ -1,5 +1,17 @@
 # Claude Code shell functions — sourced by dotfiles zshrc glob
 
+# mcc — throwaway Claude Code session in a fresh temp dir. No session
+# tracking, no resume prompt — ad-hoc scratch work only.
+mcc() {
+  local tmp_dir
+  tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/cc-XXXXXX") || return 1
+  cd "$tmp_dir" || return 1
+  echo "📁 throwaway dir: $tmp_dir" >&2
+
+  local session_name="mcc-$(date +%H%M%S)"
+  tmux new-session -s "$session_name" claude --model 'sonnet[1m]' --verbose "$@"
+}
+
 cc() {
   local base_args=(--verbose)
   local force_new=0

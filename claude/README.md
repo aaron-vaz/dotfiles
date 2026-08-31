@@ -23,7 +23,7 @@ bash ~/Code/shell/dotfiles/claude/install.sh
 - `persona.md` — Communication style (blunt, peer-to-peer)
 - `settings.json` — Hooks, permissions, model config
 - `mcp.json` — MCP server registrations (also symlinked to `~/.mcp.json`)
-- `functions.zsh` — `cc` launcher function (tmux session management)
+- `functions.zsh` — `cc` launcher function (tmux session management), `mcc` throwaway-session launcher
 
 ## `cc` Launcher
 
@@ -44,6 +44,10 @@ Auto-features:
 - In-session rename: write to `~/.claude/sessions/.rename-request` → tmux renames automatically
 
 For direct launch without tmux, use `cla` (alias for `claude`).
+
+## `mcc` — Throwaway Session
+
+`mcc` launches Claude in a fresh `mktemp -d` scratch dir — no session tracking, no resume prompt. Use for ad-hoc/one-off work you don't want polluting a real project's session history. Args pass through to `claude`.
 
 ## Structure
 
