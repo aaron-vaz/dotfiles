@@ -52,6 +52,28 @@ doWork(user)
 - Bad: `java.util.concurrent.atomic.AtomicInteger(0)` inline with no colliding import.
 - Good: `import java.util.concurrent.atomic.AtomicInteger` then `AtomicInteger(0)`.
 
+## Kotlin Constants — No `companion object`
+- **Top-level `const val` in the same file**, not a `companion object` wrapping constants.
+- `private const val` by default; drop `private` only when something outside the file genuinely
+  needs it (a test asserting the bound, another class in the module).
+- A `companion object` holding only constants is a Java habit — it creates a real object and an
+  extra indirection for something the compiler can inline. Reserve `companion object` for things
+  that actually need an instance: factory functions, interface implementations, `@JvmStatic` interop.
+
+```kotlin
+// Bad — object exists solely to hold a number
+class NoteValidator {
+    companion object {
+        const val MAX_LENGTH = 500
+    }
+}
+
+// Good — top-level, file-scoped
+private const val MAX_LENGTH = 500
+
+class NoteValidator { /* ... */ }
+```
+
 ## Kotlin Boolean Naming
 - Properties: NO `is` prefix — use `qualified`, `beforeMinDuration`, `sampleSizeCallable`
 - Local variables: NO `is` prefix — use `confirmed`, `skewPrevented`

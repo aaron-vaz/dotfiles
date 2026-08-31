@@ -1,6 +1,6 @@
 ---
 name: default-runtest-over-runblocking-in-new-coroutine-tests
-description: Use runTest, not runBlocking, for a new coroutine test. The only sanctioned reason for runBlocking is a real clock for real polling, since runTest's virtual clock skips delay(). Covers the two traps — copying a neighbouring file, and runTest returning TestResult rather than the lambda's value.
+description: Use runTest, not runBlocking, for a new coroutine test, and use exactly one runTest encompassing the whole test body. The only sanctioned reason for runBlocking is a real clock for real polling, since runTest's virtual clock skips delay(). Covers the traps — copying a neighbouring file, runTest returning TestResult rather than the lambda's value, and splitting one test across several builders.
 type: feedback
 tags: [kotlin, coroutines, testing, kotlinx-coroutines-test]
 status: active
@@ -93,27 +93,54 @@ fun `does the thing`() = runTest {
 A blocking HTTP/test-client call inside `runTest` is fine — there is no `delay` for the virtual
 clock to skip.
 
-## The two shapes worth copying
+## One `runTest` per test, encompassing the whole body
+
+`runTest` is the test's coroutine scope, not a helper for bridging individual suspend calls. Sprinkling
+several through one test body is wrong even though it compiles and passes: each call builds its own
+`TestScope` and scheduler, so the arrangement, the action and the assertions run in three unrelated
+scopes with three separate virtual clocks, and nothing structurally ties them together.
 
 ```kotlin
-// A: builder only around suspend setup; test bodies stay plain functions.
-@BeforeEach
-fun clean() = runTest { repository.deleteAll() }
-
+// Wrong — three scopes in one test, each with its own clock.
 @Test
-fun `rejects a bad request`() {          // no builder at all
-    client.post().uri("/things").bodyValue("{}").exchange().expectStatus().isBadRequest
+fun `leaving removes the row`() {
+    // Given
+    runTest { repository.insert(id) }
+
+    // When
+    client.delete().uri("/things/$id").exchange().expectStatus().isNoContent
+
+    // Then
+    runTest { assertNull(repository.findById(id)) }
 }
 
-// B: builder around the whole test, when the body needs suspend calls of its own.
+// Right — one scope, whole test. Suspend calls are made directly.
 @Test
-fun `stores the record`() = runTest {
-    val id = insertRow()
-    client.get().uri("/things/$id").exchange().expectStatus().isOk
+fun `leaving removes the row`() = runTest {
+    // Given
+    repository.insert(id)
+
+    // When
+    client.delete().uri("/things/$id").exchange().expectStatus().isNoContent
+
+    // Then
+    assertNull(repository.findById(id))
 }
 ```
 
-Pick A when only setup suspends, B when the test body does. Both keep `runBlocking` out.
+A blocking HTTP/test-client call sitting inside that scope is fine — there is no `delay` for the
+virtual clock to skip.
+
+The one legitimately separate builder is `@BeforeEach`, which is its own JUnit callback rather than
+part of the test body:
+
+```kotlin
+@BeforeEach
+fun clean() = runTest { repository.deleteAll() }
+```
+
+A test whose body suspends nowhere needs no builder at all; leave it a plain function rather than
+wrapping it for symmetry.
 
 ## Related
 
