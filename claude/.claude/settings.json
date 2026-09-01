@@ -39,6 +39,10 @@
           {
             "type": "command",
             "command": "REPO=\"$(basename \"$PWD\")\"; OUT=\"$(~/.claude/kb/search-kb.sh --project \"$REPO\" --brief 2>/dev/null | head -8)\"; if [[ -n \"$OUT\" ]]; then echo \"## KB entries possibly relevant to repo '$REPO' — ask the user which (if any) to load in full via search-kb.sh --full, do not dump all of them:\"; echo \"$OUT\"; fi; true"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/checkpoint-pickup-suggest.sh"
           }
         ]
       }
@@ -133,6 +137,16 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/kb-session-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/checkpoint-reminder.sh"
           }
         ]
       }

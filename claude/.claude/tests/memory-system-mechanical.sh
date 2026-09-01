@@ -19,6 +19,19 @@ kb_files_matching() {
   done
 }
 
+# Files across both stores matching a frontmatter type pattern AND explicit
+# status: active — mirrors search-kb.sh's default STATUS=active filter. Using
+# kb_files_matching alone (type only) drifts out of sync the moment any entry
+# of that type is legitimately marked resolved/archived, since search-kb.sh's
+# actual output excludes those but a type-only count doesn't.
+kb_active_files_matching() {
+  local pattern="$1" f
+  kb_files_matching "$pattern" | while IFS= read -r f; do
+    [[ -z "$f" ]] && continue
+    grep -q '^status: active$' "$f" 2>/dev/null && echo "$f"
+  done
+}
+
 # Resolve an entry slug to a path in whichever store holds it.
 kb_entry_path() {
   local slug="$1" d
@@ -33,7 +46,7 @@ FB_TMP=$(mktemp)
 ~/.agents/kb/search-kb.sh --type feedback --brief > "$FB_TMP" 2>&1
 FB_RC=$?
 FB=$(wc -l < "$FB_TMP" | tr -d ' ')
-EXPECTED_FB=$(kb_files_matching '^type: feedback$' | wc -l | tr -d ' ')
+EXPECTED_FB=$(kb_active_files_matching '^type: feedback$' | wc -l | tr -d ' ')
 if [[ "$FB_RC" -ne 0 ]]; then
   bad "T1a: search-kb.sh --type feedback --brief crashed (rc=$FB_RC): $(cat "$FB_TMP")"
 elif [[ "$FB" -eq "$EXPECTED_FB" ]]; then
@@ -47,7 +60,7 @@ PRJ_TMP=$(mktemp)
 ~/.agents/kb/search-kb.sh --type project --brief > "$PRJ_TMP" 2>&1
 PRJ_RC=$?
 PRJ=$(wc -l < "$PRJ_TMP" | tr -d ' ')
-EXPECTED_PRJ=$(kb_files_matching '^type: project$' | wc -l | tr -d ' ')
+EXPECTED_PRJ=$(kb_active_files_matching '^type: project$' | wc -l | tr -d ' ')
 if [[ "$PRJ_RC" -ne 0 ]]; then
   bad "T1b: search-kb.sh --type project --brief crashed (rc=$PRJ_RC): $(cat "$PRJ_TMP")"
 elif [[ "$PRJ" -eq "$EXPECTED_PRJ" ]]; then

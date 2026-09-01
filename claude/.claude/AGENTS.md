@@ -206,6 +206,8 @@ Generating messages:
 | Trigger | Skill |
 |---------|-------|
 | Cross-model review of plans/investigations | `adversarial-review` |
+| Save in-progress session state before context clear/compaction | `checkpoint` |
+| Resume session state saved by `checkpoint` | `pickup` |
 | Git commits | `conventional-commits` |
 | Stress-test a plan or design | `grill-me` |
 | Starting investigation/feasibility/spike | `investigation-intake` |
@@ -224,6 +226,8 @@ Generating messages:
 - "Let me review this PR" → review inline, not summary
 - "Starting an investigation" → `investigation-intake`
 - "Let me write this code" → consider `self-review` after
+- Long session about to wrap up, or a natural milestone reached mid-task with more left to do → `checkpoint` unprompted
+- New session opens and a `checkpoint-pickup-suggest.sh` SessionStart hook surfaced an active checkpoint for this project → offer `/pickup` before starting fresh
 
 ## Session Context — KB Is Source of Truth
 
