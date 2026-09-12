@@ -11,9 +11,9 @@ not on internals of the framework mechanism that happens to be involved. If the 
 observe that behavior is disabled by default in the test environment, turn it on selectively for
 one isolated test — don't retreat to testing the mechanism in isolation instead.
 
-**Why:** Fixed a real bug in social-sync-api: `UserTrackClient`'s cache wasn't evicted correctly on
-a track change, so `GET /blocks` kept listing a track-inappropriate block as already-completed.
-First test attempt (`UserTrackCacheKeyMatchingTest`) wired the real `UserTrackClient` bean into a
+**Why:** Fixed a real bug in a work repo: a per-user cache wasn't evicted correctly on a change to
+the key it was derived from, so a list endpoint kept showing a stale, now-inapplicable entry as
+already-completed. The first test attempt wired the real cache client bean into a
 Spring context and asserted on the mock gRPC stub's *call count* (1 load, cache hit, evict, 1 more
 load) — still fundamentally testing "does Spring's key generator agree with itself," not "does the
 reported bug stay fixed." User pushed back three times, each one sharper: first "isn't that just
@@ -25,8 +25,8 @@ true here — every module IT in this codebase runs with `spring.cache.type=none
 default IT setup; the mechanism-level unit test could never have been replaced by "just do it at IT
 level" without first fixing that. The actual fix: a **new, isolated IT class** overriding
 `@IntegrationTest(properties = ["spring.cache.type=caffeine"])` (the codebase's own documented,
-context-cache-safe override mechanism — see `QuestionnaireLocaleIT`'s KDoc), asserting only on the
-real `GET /blocks` response body (does the stale block disappear), never on cache internals.
+context-cache-safe override mechanism), asserting only on the real endpoint's response body (does
+the stale entry disappear), never on cache internals.
 Verified it actually catches the regression by temporarily reverting the fix and confirming the
 test failed at the expected line, then restoring the fix and confirming green.
 

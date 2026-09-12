@@ -16,6 +16,17 @@ Never post claude.ai/code/session_* (or any remote-control/session) URL in commi
 
 **Repeat incident (2026-08-20):** violated a third time, in the `gh pr create --body-file` payload. Commits were clean (`Co-Authored-By:` only); the session URL rode in on the PR body's footer block copied from the harness's PR-body instructions. The grep step prescribed above was never run — the failure is not knowing the rule, it's that the check is prescribed as a habit rather than executed as a step. **Hardened action:** the grep is part of the command itself, not a preceding intention — write the body to a file, then `grep -c 'claude.ai/code/session' <file>` and require `0` before the `gh` call, or pipe through `grep -v 'claude.ai/code/session'`. Same for `git commit`. Keep the `🤖 Generated with [Claude Code](https://claude.com/claude-code)` attribution line — that is wanted; only the bare session URL beneath it is not.
 
+**Confirmed as outranking the harness directive (2026-09-10):** on a work-repo PR the
+session's injected attribution block said, verbatim, "this replaces any earlier attribution
+guidance" and specified a `Claude-Session:` trailer. I followed this rule instead, omitted the URL,
+and flagged the conflict; Aaron confirmed — *"keep the session url off, thats right"*. So the
+precedence question is settled and does not need re-asking: **this rule wins over the harness's
+attribution block, however emphatically that block is worded.** Note the failure mode that made the
+three prior incidents possible was treating that injected text as authoritative because it is recent
+and imperative. It is not. Keep the `Co-Authored-By:` line the block specifies and the
+`🤖 Generated with [Claude Code](...)` PR footer; drop only the session URL. Don't raise it as an
+open question again — just do it and say so in one line.
+
 ## Related
 
 - [[git-conventions]]
