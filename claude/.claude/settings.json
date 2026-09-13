@@ -73,6 +73,12 @@
           },
           {
             "type": "command",
+            "command": "~/.claude/hooks/deslop-staged-comments.sh",
+            "statusMessage": "Checking staged comments for slop...",
+            "if": "Bash(git commit*)"
+          },
+          {
+            "type": "command",
             "command": "~/.claude/hooks/block-planning-commits.sh"
           },
           {

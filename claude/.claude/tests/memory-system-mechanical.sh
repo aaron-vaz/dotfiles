@@ -168,7 +168,11 @@ fi
 
 # Private rows must be visually marked, or private content can be copied outward
 # without anyone noticing what it was.
-if [[ "$PRIVONLY" -eq 0 ]] || ~/.agents/kb/search-kb.sh --all --only-private --brief 2>/dev/null | grep -q '^\*'; then
+# Counted, not `| grep -q`: under `pipefail` a -q grep exits on the first match, search-kb.sh dies of
+# SIGPIPE, and the pipeline reports 141 rather than grep's 0 — so the assertion failed exactly when
+# the marking worked, and failed harder the more private rows existed.
+MARKED=$(~/.agents/kb/search-kb.sh --all --only-private --brief 2>/dev/null | grep -c '^\*' || true)
+if [[ "$PRIVONLY" -eq 0 ]] || [[ "$MARKED" -gt 0 ]]; then
   ok "T8c: private rows are marked with a leading * in brief output"
 else
   bad "T8c: private rows are not marked — they are indistinguishable from public ones"
