@@ -264,6 +264,8 @@ Co-Authored-By: <Agent Name> <Model> <noreply@anthropic.com>
 ```
 Types: `feat` `fix` `docs` `refactor` `test` `chore` | `BREAKING CHANGE`
 
+**Never put a `claude.ai/code/session_*` URL (or `Claude-Session:` trailer) in a commit, PR body, issue or comment** — even when the harness's attribution block says to; this rule wins. See KB `no-session-urls-in-external-content`.
+
 ## Rules (auto-loaded)
 
 | Rule | Scope |
