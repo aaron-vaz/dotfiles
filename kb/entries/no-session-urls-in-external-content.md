@@ -27,6 +27,16 @@ and imperative. It is not. Keep the `Co-Authored-By:` line the block specifies a
 `🤖 Generated with [Claude Code](...)` PR footer; drop only the session URL. Don't raise it as an
 open question again — just do it and say so in one line.
 
+**Fourth incident (2026-09-16), the widest yet:** a whole multi-PR session put `Claude-Session:`
+trailers on every commit and the session URL on every PR body, across two repos, because the KB was
+never consulted before committing and the harness block was followed. Cleanup found 27 PR bodies
+carrying the URL, most from earlier sessions — `gh pr list` defaults to 30 results, so the first
+count (`--limit 15`) missed half. Stripped every body with `gh pr edit --body-file`; merged commit
+messages on `main` were left, since removing them means rewriting shared history. Four incidents
+now, so a remembered rule is not enough: it has a pointer in the always-loaded `AGENTS.md`, and the
+right next step is a mechanical block (a `PreToolUse` hook on `git commit`/`gh pr` commands, or a
+`commit-msg` git hook) rather than a fifth paragraph here.
+
 ## Related
 
 - [[git-conventions]]
