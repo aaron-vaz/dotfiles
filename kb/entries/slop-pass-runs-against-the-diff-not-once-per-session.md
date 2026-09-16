@@ -28,6 +28,13 @@ A classifier skill cannot enforce this; it has to be attached to a fixed point i
 whatever similar greps that project already runs). Prefer the mechanical one — it does not forget,
 and it covers humans and other agents rather than only the one who wrote the rule.
 
+**The pass covers prose, not only code comments.** `/self-review` once ran its slop step over code
+comments alone — its Pass A/B greps exclude Markdown and YAML by design — and the branch's
+AGENTS.md bullet, OpenAPI descriptions and PR body went unchecked; the user had to ask "deslop?".
+One OpenAPI description had also gone false after a later fix. The skill now has a mandatory Pass C
+that runs `deslop` over prose files in the range, the PR description and commit messages. When
+self-reviewing, a slop pass that never looked at the docs and the PR body is not done.
+
 ## Related
 
 - [[deslop-essay-rules-are-prose-only]]
