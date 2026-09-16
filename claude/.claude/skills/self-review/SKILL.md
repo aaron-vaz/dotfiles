@@ -92,7 +92,7 @@ Watch for what generic review tends to miss: Given/When/Then test labels present
 
 Review for architecture, edge cases, performance, maintainability, and security beyond what tooling caught.
 
-### 6. AI Slop / Commentary Comment Removal
+### 6. AI Slop Pass — Code Comments and Prose
 
 **Runs last, after every other step's edits have landed.** Not a preference — steps 3 and 5 both write code, and code they write carries comments. `/code-review --fix` applies its findings to the working tree and step 5's manual fixes land there too, so a slop pass running before either scans a snapshot that predates the comments most likely to be sloppy. Step 1's range already covers the working tree; this step just has to run after the writes.
 
@@ -106,7 +106,7 @@ git diff <review range> -U0 -- '*.kt' '*.kts' '*.java' '*.py' '*.ts' '*.tsx' '*.
 Three details that are each load-bearing, not incidental:
 - `^\+[[:space:]]*\*` is what catches **block-comment interiors**. A pattern matching only `/*` openers sees the first line of a KDoc/Javadoc block and none of its prose — which in a doc-comment-heavy repo is most of the comment text in the diff.
 - `\+\+\+ ` and `@@` are kept so the output carries **file and line attribution**. Filtering to `+` lines alone yields anonymous comment text, and step 7 requires `file:line` on every finding.
-- The pathspec keeps Markdown and YAML out. Without it, `#` matches every added Markdown heading and YAML comment, and any repo whose convention is "update the docs in the same PR" floods this list. **Both passes therefore treat prose files as out of scope** — a sloppy comment added to `AGENTS.md` or an OpenAPI spec is step 4's business, not this step's. Deliberate: this step's criteria are about comments explaining code, and in a prose file every line is prose.
+- The pathspec keeps Markdown and YAML out. Without it, `#` matches every added Markdown heading and YAML comment, and any repo whose convention is "update the docs in the same PR" floods this list. **Passes A and B therefore treat prose files as out of scope** — their criteria are about comments explaining code, and in a prose file every line is prose. Prose is Pass C's, below; it is not skipped.
 
 One known false positive: `+val url = "https://..."` matches on the `//` inside the string. Cheaper to eyeball than to exclude.
 
@@ -157,13 +157,25 @@ For everything else, sort into two bands:
 
 Keep a comment only when it states something a future reader could not get by re-reading the code: a hidden constraint, a non-obvious invariant, a specific library/framework gotcha, a genuine "why," not a "what" or a "when did this change." If the project's own AGENTS.md/CLAUDE.md defines a comment policy, that policy is authoritative over the generic criteria above where the two disagree — check it explicitly, don't assume silence means agreement.
 
+**Pass C — prose the branch wrote. Not optional.** Invoke `Skill(deslop)` and apply it to every piece of prose this branch produced, which Passes A and B deliberately cannot see:
+
+- Prose files in the review range — Markdown, YAML descriptions (OpenAPI), specs, `AGENTS.md`/`CLAUDE.md` additions:
+  ```bash
+  git diff <review range> -- '*.md' '*.yaml' '*.yml' '*.properties' | grep -E '^(\+\+\+ |\+[^+])'
+  ```
+- The PR description, if a PR exists (`gh pr view --json body`), and the branch's commit messages (`git log --format='%h%n%B' origin/main..HEAD`).
+
+Same bands as Pass A, with `deslop`'s criteria: added prose in the range is auto-fixed (rewrite, don't delete a sentence carrying a real fact); the PR description is edited only after the user has seen the proposed change, since it is published; pushed commit messages are reported, not rewritten — say they get replaced at squash-merge. `deslop`'s "What this deliberately omits" list holds here too: reference docs keep their invariants, bold-first bullets and absolutes. Check prose claims against the code as it now stands — a description written before step 3 or 5 changed behaviour is the most likely thing in the diff to be false, not just sloppy.
+
+If anything is written after this pass — a fix from step 7, a reworded PR body — re-run Pass C over what changed before declaring the review done.
+
 Auto-fixed edits and reported findings both get a line in step 7's synthesis (file:line, what changed or what's proposed) — this is the one step performing edits on prose rather than logic, so the user's only chance to catch a wrong call is seeing it listed.
 
 ### 7. Synthesize Findings
 
 **Combine /code-review findings + rule-compliance findings + manual review + comment-removal edits/findings (step 6):**
 - Group by severity: Blocking → Important → Suggestions
-- Three separate lists from step 6, never merged: Pass A auto-fixed (already applied, shown for visibility/veto), Pass A reported-but-not-yet-applied, and Pass B — the last touches lines this review never wrote, so acting on it widens the diff and is the user's call, not yours
+- Four separate lists from step 6, never merged: Pass A auto-fixed (already applied, shown for visibility/veto), Pass A reported-but-not-yet-applied, Pass B — which touches lines this review never wrote, so acting on it widens the diff and is the user's call, not yours — and Pass C (prose auto-fixed, and proposed PR-description/commit-message changes)
 - Remove false positives — verify against actual code before including
 - Add context: explain WHY something matters
 - Reference file:line for all issues
