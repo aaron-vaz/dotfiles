@@ -32,6 +32,9 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "attribution": {
+    "sessionUrl": false
+  },
   "hooks": {
     "SessionStart": [
       {
@@ -80,6 +83,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/block-planning-commits.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-session-urls.sh"
           },
           {
             "type": "command",
