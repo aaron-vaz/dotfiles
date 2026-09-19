@@ -31,7 +31,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "attribution": {
     "sessionUrl": false
   },
@@ -77,8 +77,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/deslop-staged-comments.sh",
-            "statusMessage": "Checking staged comments for slop...",
-            "if": "Bash(git commit*)"
+            "if": "Bash(git commit*)",
+            "statusMessage": "Checking staged comments for slop..."
           },
           {
             "type": "command",
