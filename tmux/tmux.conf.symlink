@@ -11,6 +11,7 @@ set -g history-limit 100000
 set -as terminal-features ",*:hyperlinks"
 set -as terminal-features ",*:extkeys"
 set -g extended-keys on
+set -g extended-keys-format csi-u
 set -g allow-passthrough on
 set-environment -g TERM_PROGRAM ghostty
 
