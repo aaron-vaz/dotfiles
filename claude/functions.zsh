@@ -1,15 +1,34 @@
 # Claude Code shell functions — sourced by dotfiles zshrc glob
 
+# _cc_update_claude — bring the claude binary up to date before a session
+# starts. Shared by cc and mcc. Never blocks launch on failure.
+_cc_update_claude() {
+  command -v claude >/dev/null 2>&1 || return 0
+  echo "🔄 claude: checking for updates..." >&2
+  claude update >&2 2>&1 || echo "⚠️  claude update failed — continuing" >&2
+}
+
+# _cc_env_prefix — forward CC_MAIN_EDITS (delegation-hook escape hatch) into the
+# claude process. tmux gives new sessions the server's environment, not this
+# shell's, so the variable has to ride on the command itself via env(1).
+# Usage: CC_MAIN_EDITS=1 cc
+_cc_env_prefix() {
+  [[ -n "${CC_MAIN_EDITS:-}" ]] && print -r -- env "CC_MAIN_EDITS=$CC_MAIN_EDITS"
+}
+
 # mcc — throwaway Claude Code session in a fresh temp dir. No session
 # tracking, no resume prompt — ad-hoc scratch work only.
 mcc() {
+  _cc_update_claude
+
   local tmp_dir
   tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/cc-XXXXXX") || return 1
   cd "$tmp_dir" || return 1
   echo "📁 throwaway dir: $tmp_dir" >&2
 
   local session_name="mcc-$(date +%H%M%S)"
-  tmux new-session -s "$session_name" claude --model 'sonnet[1m]' --verbose "$@"
+  local -a env_prefix=(${(z)$(_cc_env_prefix)})
+  tmux new-session -s "$session_name" "${env_prefix[@]}" claude --model 'sonnet[1m]' --verbose "$@"
 }
 
 cc() {
@@ -20,6 +39,8 @@ cc() {
   [[ "$1" == "-n" || "$1" == "--new" ]] && { force_new=1; shift; }
   [[ "$1" == "-r" || "$1" == "--pick" ]] && { pick_mode=1; shift; }
   [[ $force_new -eq 1 && $# -gt 0 && "$1" != -* ]] && { explicit_name="$1"; shift; }
+
+  _cc_update_claude
 
   # ---- ~/.claude git pull (non-blocking, only if updates available) -------
   if git -C "$HOME/.claude" fetch --quiet 2>/dev/null; then
@@ -36,7 +57,8 @@ cc() {
   local base_name
   base_name=$(basename "$(pwd)" | sed 's/[^a-zA-Z0-9_-]/_/g')
 
-  local claude_cmd=(claude --model 'sonnet[1m]' "${base_args[@]}")
+  local -a env_prefix=(${(z)$(_cc_env_prefix)})
+  local claude_cmd=("${env_prefix[@]}" claude --model 'sonnet[1m]' "${base_args[@]}")
 
   # ---- Session naming helpers ---------------------------------------------
   _cc_new_session_name() {
