@@ -53,7 +53,7 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 ## Information Placement Hierarchy
 
 1. Cross-project rules/user preferences → this file (`~/.claude/AGENTS.md`)
-2. Feature-specific knowledge → KB entry (`~/.agents/kb/entries/`)
+2. Feature-specific knowledge → KB entry (`~/.agents/kb/private/` by default; `entries/` only if publishable — see Knowledge Base)
 3. Project-specific conventions → `<project>/AGENTS.md`
 
 **Information placement routing** (when saving durable facts):
@@ -239,7 +239,7 @@ Generating messages:
 
 ## Session Context — KB Is Source of Truth
 
-No global `current.md` — single shared file collides across parallel sessions/worktrees. Instead: KB entry (`~/.agents/kb/entries/`) per feature/ticket is both working session log AND permanent record — one file, no duplication, naturally collision-free (dated + named).
+No global `current.md` — single shared file collides across parallel sessions/worktrees. Instead: KB entry (`~/.agents/kb/private/` by default, see Knowledge Base) per feature/ticket is both working session log AND permanent record — one file, no duplication, naturally collision-free (dated + named).
 
 Record in feature's KB entry as you go:
 - Design decisions and why alternatives rejected
@@ -252,7 +252,7 @@ See `~/.claude/references/session.md` for format details.
 
 ## Workflow Checkpoints
 
-**When starting significant work:** create KB entry draft at `~/.agents/kb/entries/<YYYY-MM-DD>-<slug>.md`. Append progress throughout session — after each significant finding, decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
+**When starting significant work:** create KB entry draft at `~/.agents/kb/private/<YYYY-MM-DD>-<slug>.md` (public `entries/` only if publishable). Append progress throughout session — after each significant finding, decision, or constraint. Don't wait until end. Guards against context compaction losing work mid-session.
 
 **Before commit:** full build passes, not just tests.
 
@@ -308,7 +308,7 @@ NOT auto-loaded — read only when relevant.
 | Build fails: multiple errors | Read ALL errors, fix ALL in one pass, rebuild once |
 | Git command fails | Use plain `git` in repo CWD; `git -C <path>` only for cross-directory |
 | Find past session knowledge | `~/.agents/kb/search-kb.sh --tag <tag>` |
-| Can't find memory/conversation | `grep -r` in `~/.claude/sessions/` or `~/.agents/kb/entries/` |
+| Can't find memory/conversation | `grep -r` in `~/.claude/sessions/`, `~/.agents/kb/private/`, or `~/.agents/kb/entries/` |
 | Hook not firing | `chmod +x ~/.claude/hooks/*.sh`; check settings.json hook syntax |
 | KB search not found | `~/.agents/kb/search-kb.sh --rebuild-index` |
 | `git add kb/index.tsv` rejected | `kb/index.tsv` is gitignored — auto-generated. Stage only `kb/entries/*.md` |

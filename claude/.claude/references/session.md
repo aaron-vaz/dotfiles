@@ -9,7 +9,7 @@ so they're collision-free by construction. One file per feature now serves as bo
 working log and the permanent record — no separate handoff file, no duplication to keep in sync.
 
 ### How It Works
-- **Create immediately** — draft KB entry (`~/.agents/kb/entries/<date>-<slug>.md`)
+- **Create immediately** — draft KB entry (`~/.agents/kb/private/<date>-<slug>.md`; public `entries/` only if publishable)
   as soon as a feature/investigation starts (per AGENTS.md Workflow Checkpoints)
 - **Update incrementally** — append findings, decisions, dead ends as they happen, not just
   at the end (guards against losing work to context compaction mid-session)
