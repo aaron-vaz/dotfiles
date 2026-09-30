@@ -1,6 +1,6 @@
 ---
 name: default-runtest-over-runblocking-in-new-coroutine-tests
-description: Use runTest, not runBlocking, for a new coroutine test, and use exactly one runTest encompassing the whole test body. The only sanctioned reason for runBlocking is a real clock for real polling, since runTest's virtual clock skips delay(). Covers the traps — copying a neighbouring file, runTest returning TestResult rather than the lambda's value, and splitting one test across several builders.
+description: "New coroutine tests use exactly one runTest wrapping the whole body, not runBlocking; runBlocking only when a real clock is needed (runTest's virtual clock skips delay). Covers traps: copying a neighbour's runBlocking, runTest returning TestResult, several builders per test."
 type: feedback
 tags: [kotlin, coroutines, testing, kotlinx-coroutines-test]
 status: active

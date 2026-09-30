@@ -1,6 +1,6 @@
 ---
 name: 2026-09-06-assertthrows-belongs-in-then
-description: assertThrows is an assertion and goes under `// Then`, never `// When` — the When block captures the action as a lambda (`val action = { ... }` / `suspend { ... }`), Then does `val thrown = assertThrows<X> { action() }` and inspects it. Applies to non-suspend code too, not just the runTest case the testing rule documents. Aaron's correction on the change-signal tests.
+description: "assertThrows goes under // Then, never // When: When captures the action as a lambda (`val action = { ... }` or `suspend { ... }`), Then does `val thrown = assertThrows<X> { action() }` and inspects it. Applies to non-suspend tests too."
 type: feedback
 tags: [testing, kotlin, junit, given-when-then, assertions]
 status: active
