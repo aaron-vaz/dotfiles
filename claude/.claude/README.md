@@ -41,6 +41,8 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | PreToolUse/Bash | `git commit` | Pre-commit review suggestion, planning file check, git usage validation |
 | PostToolUse/Edit+Write | After file edits | Async: runs tests |
 | PostToolUse/Bash | After any command | Logs command to command-log.txt |
+| PreToolUse/Edit+Write+NotebookEdit | Main-thread file edit | `enforce-delegation.sh` denies it and points at `impl-orchestrator` (exempt: `.claude/`, `~/.agents/`, temp dirs, `CC_MAIN_EDITS=1`) |
+| SubagentStart | Any subagent spawn | `subagent-track.sh` records agent_id → agent_type for the subagent status line |
 
 ### Skills
 
@@ -56,6 +58,28 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | `skill-audit` | Remove token-wasteful content from skills |
 | `tech-discovery` | Technical discovery documents |
 | `web-design-guidelines` | UI/a11y review |
+
+### Delegation (subagents)
+
+Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits code goes to `impl-orchestrator`.
+
+| Agent | Tier | Role |
+|-------|------|------|
+| `impl-orchestrator` | opus | Plans, splits, dispatches, verifies. No Edit/Write; can spawn workers |
+| `implementer` | sonnet | One scoped unit of work (≤ ~5 files), builds and tests before reporting |
+| `quick-editor` | sonnet | Mechanical edit, hard limit 3 files |
+| `scout` | sonnet | Read-only locator, returns `path:line` evidence |
+| `test-runner` | sonnet | Runs build/tests/lint, categorizes every failure, no edits |
+| `change-reviewer` | opus | Independent read-only diff review (must differ from implementer's model) |
+
+- **Enforcement:** `hooks/enforce-delegation.sh` (PreToolUse). `agent_id` in the payload exists only inside subagents, so a missing one means main thread. Don't run the main session with `--agent`.
+- **Bypass:** `CC_MAIN_EDITS=1 cc` — `cc`/`mcc` forward it through tmux via `env`, since tmux sessions don't inherit the launching shell's environment.
+- **Don't pass `model`** when spawning these agents: a per-call `model` beats the definition's tier.
+- **No haiku:** auto mode does not support Haiku, so every worker is sonnet or above.
+- **Depth:** `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=2` in `settings.json` (main → orchestrator → workers). `Agent(type)` allowlists in a subagent's `tools:` are ignored by Claude Code, so the orchestrator's worker list is enforced by its prompt; workers simply have no `Agent` tool.
+- **Status line:** `subagentStatusLine` → `hooks/subagent-statusline.js`. Row: status glyph, agent type, model tier (colored), elapsed, context %, tokens, sparkline, effort, label.
+- **Tests:** `tests/delegation-mechanical.sh`.
+- **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch).
 
 ### Knowledge Base
 

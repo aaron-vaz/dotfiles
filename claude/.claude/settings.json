@@ -1,5 +1,10 @@
 {
-  "env": {},
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2"
+  },
+  "attribution": {
+    "sessionUrl": false
+  },
   "permissions": {
     "allow": [
       "Bash(~/.claude/scripts/*)",
@@ -32,9 +37,6 @@
     "defaultMode": "auto"
   },
   "model": "opus",
-  "attribution": {
-    "sessionUrl": false
-  },
   "hooks": {
     "SessionStart": [
       {
@@ -46,6 +48,16 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/checkpoint-pickup-suggest.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/subagent-track.sh"
           }
         ]
       }
@@ -62,6 +74,15 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/enforce-delegation.sh"
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [
@@ -169,6 +190,10 @@
     "type": "command",
     "command": "node \"$HOME/.claude/hooks/statusline.js\""
   },
+  "subagentStatusLine": {
+    "type": "command",
+    "command": "node \"$HOME/.claude/hooks/subagent-statusline.js\""
+  },
   "enabledPlugins": {
     "caveman@caveman": true,
     "swift-lsp@claude-plugins-official": true
@@ -184,6 +209,12 @@
   "effortLevel": "high",
   "modelSettings": {
     "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    },
+    "claude-sonnet-5-5": {
       "effortLevel": "high"
     }
   },

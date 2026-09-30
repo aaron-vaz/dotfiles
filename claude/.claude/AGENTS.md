@@ -42,6 +42,14 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 - Fast subagents, parallel tasks, lightweight reviews → `mimo-v2.5` (haiku tier — ultra-cheap, 30K+ req/5hr)
 - Adversarial review, verification → different model than the one that did the work (see adversarial-review skill)
 
+**Delegation in Claude Code (enforced)** — the main session stays open for ad-hoc questions (reads, searches, explanations, small analysis — answer directly). Any task that edits code is delegated; "execute directly" above means dispatch immediately, not edit in the main thread.
+- **Implementation** → spawn `impl-orchestrator` (opus) with a full brief: goal, constraints, acceptance criteria, relevant paths. It cannot edit; it splits work across `scout` (sonnet, locate), `quick-editor` (sonnet, 1–3 file mechanical), `implementer` (sonnet, standard units), `test-runner` (sonnet, verify), `change-reviewer` (opus, independent review). Defs in `~/.claude/agents/`. No haiku anywhere in the chain — auto mode does not support it.
+- **Never pass a `model` param when spawning these custom agents** — a per-call `model` overrides the tier in the definition. Built-in agents (`Plan`, `Explore`, `general-purpose`) have no fixed tier, so pick one per the tier list above.
+- `hooks/enforce-delegation.sh` denies main-thread Edit/Write/NotebookEdit outside `.claude/`, `~/.agents/`, and temp dirs. Deliberate direct edits: launch with `CC_MAIN_EDITS=1 cc`. Bash is not gated, but never use it to dodge the hook (`sed -i`, heredocs, `python`/`tee` writes) — delegate instead.
+- Do not run the main session with `--agent` / the `agent` setting — it breaks the main-vs-subagent check (`agent_id` present only inside subagents).
+- Nesting depth is capped at 2 (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`): main → orchestrator → workers. Workers have no `Agent` tool.
+- Subagent panel rows are rendered by `hooks/subagent-statusline.js` (`subagentStatusLine`); `hooks/subagent-track.sh` (SubagentStart) supplies the agent type.
+
 ## Information Placement Hierarchy
 
 1. Cross-project rules/user preferences → this file (`~/.claude/AGENTS.md`)
