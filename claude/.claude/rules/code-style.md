@@ -21,71 +21,6 @@ if (!user.hasPermission) return
 doWork(user)
 ```
 
-## Kotlin Test Style (JVM / JUnit5 projects)
-
-- **Assertions:** Check existing test files first — follow repo pattern.
-  - Some projects use `kotlin.test` (`kotlin.test.assertEquals`, `kotlin.test.assertTrue`, etc.)
-  - Some projects use JUnit5 directly (`org.junit.jupiter.api.Assertions.assertEquals`, etc.)
-  - Pick per repo by looking at a neighbouring test, not by preference — a repo without a
-    `kotlin.test` dependency can only use JUnit 5
-- **`@Test` annotation:** `org.junit.jupiter.api.Test` (not `kotlin.test.Test`)
-- **No wildcard imports** — explicit only; never `import kotlin.test.*` or `import org.junit.jupiter.api.Assertions.*`
-
-### Mockk unit test structure
-
-- **Class-level:** mocks with default stubs (returns empty/false) + service under test
-- **Per-test:** all data variables — ids, flags, etc. declared inside the test, never as class fields
-- **Test data objects:** single `data` variable of full type, reference `data.field` in verify — do NOT split into separate field variables
-  ```kotlin
-  val data = ReportPayload(
-      sections = mapOf("SUMMARY" to listOf<Any>()),
-      recommendations = emptyMap(),
-  )
-  coEvery { fetchService.buildPayload(entityId, enabled, baselineId) } returns data
-  // ...
-  coVerify { repo.upsert(Report(runId, entityId, enabled, data.sections, emptyMap())) }
-  ```
-- **Structure:** `// Given / When / Then` comments in every test
-
-## Kotlin Import Style
-- Normal `import` by default. Inline FQN only for actual name collisions, not habit.
-- Bad: `java.util.concurrent.atomic.AtomicInteger(0)` inline with no colliding import.
-- Good: `import java.util.concurrent.atomic.AtomicInteger` then `AtomicInteger(0)`.
-
-## Kotlin Constants — No `companion object`
-- **Top-level `const val` in the same file**, not a `companion object` wrapping constants.
-- `private const val` by default; drop `private` only when something outside the file genuinely
-  needs it (a test asserting the bound, another class in the module).
-- A `companion object` holding only constants is a Java habit — it creates a real object and an
-  extra indirection for something the compiler can inline. Reserve `companion object` for things
-  that actually need an instance: factory functions, interface implementations, `@JvmStatic` interop.
-
-```kotlin
-// Bad — object exists solely to hold a number
-class NoteValidator {
-    companion object {
-        const val MAX_LENGTH = 500
-    }
-}
-
-// Good — top-level, file-scoped
-private const val MAX_LENGTH = 500
-
-class NoteValidator { /* ... */ }
-```
-
-## Kotlin Boolean Naming
-- Properties: NO `is` prefix — use `qualified`, `beforeMinDuration`, `sampleSizeCallable`
-- Local variables: NO `is` prefix — use `confirmed`, `skewPrevented`
-- Kotlin auto-generates `is` getters; adding it yourself creates `isIsFoo()` in Java interop
-
-## Kotlin File Naming (from kotlinx.coroutines, OkHttp, Ktor)
-- **Concern-named files** for top-level functions — `Errors.kt`, `Transform.kt`, not `ReadoutUtils.kt`
-- **No `*Extensions.kt`** — fold extension functions into concern-named files
-- **`Real*` prefix** for internal implementations of public interfaces (`RealReadoutCaptor`)
-- **`internal/` subdirectory** for implementation details hidden from module consumers
-- **File-level factory functions** over companion object factories — `fun ReadoutClient(...): ReadoutClient` at file level
-
 ## PR Description Style
 
 - **`## Summary`** — bullet list for simple PRs; named `##` sections (e.g. `## Primary`, `## Toolchain`) for complex PRs
@@ -100,31 +35,6 @@ class NoteValidator { /* ... */ }
 After PR creation, post inline comments on specific diff lines — rationale for non-obvious choices, constraints, areas needing careful review.
 
 Use `gh api repos/{owner}/{repo}/pulls/{number}/reviews` with `comments` array (each with `path`, `line`, `body`) to batch-post diff comments. Separate from PR description — draws reviewer attention to specific lines.
-
-## Java Logging (Lombok)
-Use `@Slf4j` annotation — no manual `Logger` fields.
-
-## Java `final` — Use Liberally
-Apply `final` to all method parameters and all local variable declarations unless the variable is intentionally reassigned.
-
-```java
-// Good
-public void process(final String id, final int count) {
-    final MetricConfig config = metricConfigMap.get(id);
-    final boolean skip = shouldSkip(config);
-}
-
-// Bad — missing final on params and locals
-public void process(String id, int count) {
-    MetricConfig config = metricConfigMap.get(id);
-    boolean skip = shouldSkip(config);
-}
-```
-
-Exception: loop variables being incremented (`for (int i = 0; ...)`), variables reassigned in branches.
-
-## Java Braces
-Always use braces for `if`, `else`, `for`, `while` — even single-line bodies.
 
 ## General Principles
 - Prefer immutability (`val` over `var`, immutable collections)

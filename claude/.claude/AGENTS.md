@@ -282,7 +282,9 @@ Types: `feat` `fix` `docs` `refactor` `test` `chore` | `BREAKING CHANGE`
 | `rules/testing.md` | Always |
 | `rules/git.md` | Always |
 | `rules/shell.md` | Always |
-| `rules/python.md` | `*.py` files only |
+| `rules/kotlin.md` | `*.kt`, `*.kts` files only (via `paths:`) |
+| `rules/java.md` | `*.java` files only (via `paths:`) |
+| `rules/python.md` | `*.py` files only (via `paths:`) |
 
 ## References (re-read when needed)
 

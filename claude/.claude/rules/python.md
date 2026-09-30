@@ -1,5 +1,7 @@
 ---
-globs: ["*.py", "**/*.py"]
+paths:
+  - "*.py"
+  - "**/*.py"
 ---
 
 # Python Code Style (FastAPI/asyncio)
