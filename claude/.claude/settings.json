@@ -19,14 +19,14 @@
       "Bash(rm -rf ~/)",
       "Bash(rm -rf /Users/aaronvaz/)",
       "Bash(rm -rf /Users/aaronvaz/.claude/)",
-      "Read(file_path:/Users/aaronvaz/.ssh/**)",
-      "Read(file_path:/Users/aaronvaz/.gnupg/**)",
-      "Read(file_path:/Users/aaronvaz/.kube/**)",
-      "Read(file_path:/Users/aaronvaz/Library/**)",
-      "Read(file_path:/Users/aaronvaz/.netrc)",
-      "Read(file_path:/Users/aaronvaz/.npmrc)",
-      "Read(file_path:/Users/aaronvaz/.pypirc)",
-      "Read(file_path:/Users/aaronvaz/.docker/config.json)"
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.kube/**)",
+      "Read(~/Library/**)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.pypirc)",
+      "Read(~/.docker/config.json)"
     ],
     "ask": [
       "Bash(git push --force*)",
