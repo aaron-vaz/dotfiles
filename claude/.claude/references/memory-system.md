@@ -2,7 +2,7 @@
 
 ## Knowledge Base
 
-Curated feature/session knowledge at `~/.agents/kb/entries/`.
+Curated feature/session knowledge in two stores: private `~/.agents/kb/private/` (default for new entries) and public `~/.agents/kb/entries/` (only entries naming nothing employer- or private-product-specific).
 
 ### Search
 
@@ -42,14 +42,14 @@ active (default) → stale (expires date passed) → promoted (graduated to skil
 
 ### Adding New Entries
 
-Use `~/.agents/kb/TEMPLATE.md`. Fill in frontmatter, set `expires` to 90 days out, write to `kb/entries/YYYY-MM-DD-<slug>.md`.
+Use `~/.agents/kb/TEMPLATE.md`. Fill in frontmatter, set `expires` to 90 days out, write to `kb/private/YYYY-MM-DD-<slug>.md` (move to `kb/entries/` only if publishable).
 
 Or invoke `/session-archiver` to archive a valuable session manually.
 
 ## Information Placement
 
 1. **Cross-project rules/preferences** → `~/.claude/AGENTS.md`
-2. **Feature-specific knowledge** → KB entry (`~/.agents/kb/entries/`)
+2. **Feature-specific knowledge** → KB entry (`~/.agents/kb/private/` by default; `entries/` only if publishable)
 3. **Project-specific conventions** → `<project>/AGENTS.md`
 
 ## Ideas & Brainstorming

@@ -54,7 +54,7 @@ If an existing entry already covers the same decision/root cause, skip or note a
 
 ### Step 4: Create KB Entry
 
-Write to `~/.agents/kb/entries/<date>-<slug>.md` with YAML frontmatter:
+Write to `~/.agents/kb/private/<date>-<slug>.md` (use public `~/.agents/kb/entries/` only for entries confirmed publishable) with YAML frontmatter:
 ```yaml
 ---
 name: <short-slug>
