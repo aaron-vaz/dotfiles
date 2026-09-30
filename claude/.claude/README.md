@@ -41,6 +41,7 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | PreToolUse/Bash | `git commit` | Pre-commit review suggestion, planning file check, git usage validation |
 | PostToolUse/Edit+Write | After file edits | Async: runs tests |
 | PostToolUse/Bash | After any command | Logs command to command-log.txt |
+| PreToolUse/Bash | Any shell command | `guard-sensitive-paths.sh` denies commands naming `~/.ssh`, `~/.gnupg`, `~/.kube`, `~/Library`, `~/.netrc`, `~/.npmrc`, `~/.pypirc`, `~/.docker/config.json` (Bash-side twin of the `Read(~/...)` deny rules). Text match only: catches explicit references, not obfuscation, and can false-positive on commands that merely mention a path. Implicit use (`git push`, `ssh`) is unaffected; a project-level `./.npmrc` is allowed |
 | PreToolUse/Edit+Write+NotebookEdit | Main-thread file edit | `enforce-delegation.sh` denies it and points at `impl-orchestrator` (exempt: `.claude/`, `~/.agents/`, temp dirs, `CC_MAIN_EDITS=1`) |
 | SubagentStart | Any subagent spawn | `subagent-track.sh` records agent_id → agent_type for the subagent status line |
 

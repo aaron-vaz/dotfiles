@@ -88,6 +88,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.claude/hooks/guard-sensitive-paths.sh"
+          },
+          {
+            "type": "command",
             "command": "~/.claude/hooks/run-claude-config-tests.sh",
             "statusMessage": "Running ~/.claude config tests before commit..."
           },
