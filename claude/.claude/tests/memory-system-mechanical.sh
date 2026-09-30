@@ -184,10 +184,10 @@ fi
 # existed. `find -L` matters too: entries/ is a symlink into the dotfiles repo,
 # and plain `find` does not follow a symlinked start point.
 PROBE="$PUB/zz-staleness-probe.md"
-printf -- '---\nname: zz-staleness-probe\ndate: 2026-01-01\ndescription: probe\ntype: reference\ntags: [probe]\nstatus: active\n---\nbody\n' > "$PROBE"
-AFTER_ADD=$(~/.agents/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+printf -- '---\nname: zz-staleness-probe\ndate: 2026-01-01\ndescription: probe\ntype: reference\ntags: [zz-staleness-probe]\nstatus: active\n---\nbody\n' > "$PROBE"
+AFTER_ADD=$(~/.agents/kb/search-kb.sh --all --tag zz-staleness-probe --brief 2>/dev/null | wc -l | tr -d ' ')
 rm -f "$PROBE"
-AFTER_DEL=$(~/.agents/kb/search-kb.sh --all --tag probe --brief 2>/dev/null | wc -l | tr -d ' ')
+AFTER_DEL=$(~/.agents/kb/search-kb.sh --all --tag zz-staleness-probe --brief 2>/dev/null | wc -l | tr -d ' ')
 if [[ "$AFTER_ADD" -eq 1 ]] && [[ "$AFTER_DEL" -eq 0 ]]; then
   ok "T8e: index picks up an added entry through the symlink and drops a deleted one"
 else
