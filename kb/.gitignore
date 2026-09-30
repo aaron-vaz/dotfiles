@@ -2,6 +2,10 @@
 # PRIVATE store's — so it must never be tracked in this public repo.
 index.tsv
 
+# Usage log (per-machine). It records the slugs of PRIVATE entries that were
+# opened, so it must never be tracked in this public repo.
+usage.log
+
 # Audit log (per-machine)
 audit-log.txt
 
