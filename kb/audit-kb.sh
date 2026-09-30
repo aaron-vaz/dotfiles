@@ -28,6 +28,9 @@ stale_count=0
 review_count=0
 untagged_count=0
 nested_count=0
+missing_count=0
+long_desc_count=0
+MAX_DESC_CHARS=300
 
 echo "=== Knowledge Base Audit: $TODAY ==="
 echo ""
@@ -56,6 +59,35 @@ for f in "$dir"/*.md; do
   tags=$(echo    "$frontmatter" | grep '^tags:'    | sed 's/tags: *\[//;s/\]//' || true)
   fname=$(basename "$f")
   [[ "$vis" == "private" ]] && fname="$fname [private]"
+
+  # search-kb.sh --brief shows the description as the only routing text, --type
+  # filters on type, and name is the slug. An entry missing any of them is
+  # effectively unroutable, so this is the one check that fails the audit. Empty
+  # means empty after stripping quotes/whitespace (`name: ""` counts). Runs before
+  # the evergreen `continue` below so every entry type is covered.
+  desc=$(echo "$frontmatter" | grep '^description:' | sed 's/description: *"*//;s/"$//' || true)
+  missing=""
+  [[ -z "$(printf '%s' "$title" | tr -d "[:space:]\"'")" ]] && missing="$missing name"
+  [[ -z "$(printf '%s' "$type"  | tr -d "[:space:]\"'")" ]] && missing="$missing type"
+  [[ -z "$(printf '%s' "$desc"  | tr -d "[:space:]\"'")" ]] && missing="$missing description"
+  if [[ -n "$missing" ]]; then
+    echo "  MISSING METADATA: $fname"
+    echo "         Missing or empty:${missing}"
+    echo "         Unroutable — search-kb.sh needs name (slug), type (--type) and description (--brief)."
+    echo ""
+    missing_count=$((missing_count + 1))
+  fi
+
+  # Long descriptions bloat every --brief result row, which is the routing text
+  # loaded into context. Warn only. Count characters, not bytes: descriptions
+  # carry em-dashes and BSD awk `length` counts bytes.
+  desc_len=$(printf '%s' "$desc" | LC_ALL=en_US.UTF-8 wc -m | tr -d ' ')
+  if [[ "$desc_len" -gt "$MAX_DESC_CHARS" ]]; then
+    echo "  LONG DESCRIPTION: $fname"
+    echo "         ${desc_len} chars (max ${MAX_DESC_CHARS}) — sharpen to the load-bearing point."
+    echo ""
+    long_desc_count=$((long_desc_count + 1))
+  fi
 
   # An entry carrying `metadata:\n  type: X` instead of a top-level `type: X` is
   # invisible to search-kb.sh's --type/--tag filters AND to this audit's own
@@ -127,6 +159,8 @@ echo "  Stale entries marked: $stale_count"
 echo "  Prune candidates:     $review_count"
 echo "  Untagged evergreen entries (invisible to trigger lookups): $untagged_count"
 echo "  Nested-schema entries (type: under metadata:, invisible to --type):  $nested_count"
+echo "  Missing metadata (name/type/description absent or empty, FAILS audit): $missing_count"
+echo "  Long descriptions (> $MAX_DESC_CHARS chars, warning only): $long_desc_count"
 if [[ "$DRY_RUN" == true ]] && [[ $stale_count -gt 0 ]]; then
   echo ""
   echo "  Run with --apply to mark stale entries."
@@ -134,3 +168,6 @@ fi
 echo ""
 echo "  Promotion note: Review stale entries. If content is fully captured"
 echo "  in a skill or reference, update status: promoted and promoted_to: <path>."
+
+# Only missing metadata fails the audit; every other check is informational.
+[[ $missing_count -eq 0 ]] || exit 1

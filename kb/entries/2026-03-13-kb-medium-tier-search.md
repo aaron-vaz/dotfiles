@@ -1,5 +1,8 @@
 ---
 title: "KB System: Medium-tier search, non-project hook, ad-hoc search rules"
+name: 2026-03-13-kb-medium-tier-search
+type: project
+description: "Added --medium mode and summary field to search-kb.sh (L0/L1/L2 idea from OpenViking), unscoped the SessionStart hook to all KB entries, added KB search triggers to CLAUDE.md; grep-exit-1 under pipefail gotcha. Open when changing KB search or hook."
 date: 2026-03-13
 project: claude-misc
 tags: [knowledge-base, search, hooks, session-start, shell-scripts, openviking]

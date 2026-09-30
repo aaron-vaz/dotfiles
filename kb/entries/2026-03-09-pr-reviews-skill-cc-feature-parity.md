@@ -1,5 +1,8 @@
 ---
 title: "PR Reviews Skill: CC Code Review Feature Parity"
+name: 2026-03-09-pr-reviews-skill-cc-feature-parity
+type: project
+description: "Updated the pr-reviews skill to match CC Code Review features (unavailable on Bedrock): REVIEW.md/copilot-instructions checks, GraphQL resolveReviewThread for addressed threads, pre-existing severity. Open when changing pr-reviews or resolving review threads."
 date: 2026-03-09
 project: claude-misc
 tags: [pr-review, skills, github, graphql, automation, bedrock]

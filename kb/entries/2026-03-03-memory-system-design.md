@@ -1,5 +1,8 @@
 ---
 title: "Building Global Conversation Archives"
+name: 2026-03-03-memory-system-design
+type: project
+description: "Design of the original markdown conversation-archive system (by-topic/by-date dirs, INDEX, symlinks, grep search) built to survive compaction cheaply; superseded by the kb/ system. Open for the rationale and when-to-archive guidance."
 date: 2026-03-03
 project: claude-misc
 tags: ["memory", "compaction", "search", "architecture", "knowledge-management"]

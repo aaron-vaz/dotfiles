@@ -1,6 +1,6 @@
 ---
 name: test-behavior-not-framework-mechanism
-description: A test must assert on product-observable behavior, not on whether a framework mechanism (cache hit/miss counts, key generation) agrees with itself — if the test environment disables what you need (e.g. caching off in ITs), override it selectively for one isolated test rather than downgrading to a lower-level test of the mechanism
+description: "Regression tests must assert product-observable behavior, not framework mechanism (cache hit counts, key generation). If the test env disables the mechanism (e.g. spring.cache.type=none), override it in one isolated IT class rather than downgrading to a mechanism test."
 type: feedback
 tags: [testing, spring, caching]
 status: active

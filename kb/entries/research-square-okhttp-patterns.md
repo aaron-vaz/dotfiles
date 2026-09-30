@@ -1,3 +1,9 @@
+---
+name: research-square-okhttp-patterns
+type: knowledge
+description: "Idiomatic Kotlin patterns from Square OkHttp/Retrofit: immutable builder + copy constructor, fun interface + invoke, @JvmName lambda overloads, ReplaceWith(ERROR) deprecation, null-object + operator plus, reified extensions, factory chains. Open when designing client/builder APIs."
+---
+
 # Square OkHttp / Retrofit: Idiomatic Kotlin Patterns
 
 **Sources:** `OkHttpClient.kt`, `Interceptor.kt`, `Response.kt`, `EventListener.kt`, `Retrofit.java`, `KotlinExtensions.kt`

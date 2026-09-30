@@ -1,6 +1,6 @@
 ---
 name: 2026-09-05-kotlin-daemon-oom-global-gradle-props
-description: Kotlin compile daemon dies with "GC overhead limit exceeded" on full builds of multi-module Kotlin repos, always in whichever module compiles last; fixed machine-wide with kotlin.daemon.jvmargs=-Xmx4g -XX:+UseParallelGC in ~/.gradle/gradle.properties. Aaron's call to make it global rather than per-repo.
+description: "Kotlin compile daemon OOM ('GC overhead limit exceeded') on multi-module builds: fixed machine-wide with kotlin.daemon.jvmargs=-Xmx4g -XX:+UseParallelGC in ~/.gradle/gradle.properties (org.gradle.jvmargs does not reach it). Check first when the compiler OOMs."
 type: reference
 tags: [gradle, kotlin, build, oom, environment, macos]
 status: active

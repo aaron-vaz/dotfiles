@@ -1,6 +1,6 @@
 ---
 name: 2026-09-06-no-redundant-type-arguments
-description: Never write an explicit type argument Kotlin can infer — `ChangeChannel(name, UUID::toString, UUID::fromString)`, not `ChangeChannel<UUID>(...)`; `listOf(a, b)`, not `listOf<String>(a, b)`. Explicit args only where inference genuinely fails (empty collections, `mockk<T>()` with no declared type, a `MutableSharedFlow<T>()` with no seed). Aaron's standing correction.
+description: "Never write a Kotlin type argument the compiler can infer (`ChangeChannel(name, UUID::toString, UUID::fromString)`, `listOf(a, b)`); keep it only where inference fails: empty collections, untyped `mockk<T>()`, `MutableSharedFlow<T>()` with no seed."
 type: feedback
 tags: [kotlin, code-style, type-inference, generics]
 status: active

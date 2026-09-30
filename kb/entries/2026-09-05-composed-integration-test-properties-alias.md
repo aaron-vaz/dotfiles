@@ -1,6 +1,6 @@
 ---
 name: 2026-09-05-composed-integration-test-properties-alias
-description: A composed @IntegrationTest annotation that wraps @SpringBootTest must expose a `properties` attribute aliased onto SpringBootTest.properties; tests set properties there, never by stacking @TestPropertySource on top of the composed annotation. Aaron's correction on a set of live-update integration tests.
+description: "A composed @IntegrationTest wrapping @SpringBootTest must expose a `properties` attribute aliased to SpringBootTest.properties; tests set properties there, never by stacking @TestPropertySource on it. Open for default-vs-override precedence pitfalls."
 type: feedback
 tags: [spring-boot, testing, integration-test, annotations, kotlin]
 status: active

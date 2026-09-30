@@ -1,4 +1,7 @@
 ---
+name: ""
+description: ""
+type: project
 title: ""
 date: YYYY-MM-DD
 project: ""

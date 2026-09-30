@@ -1,5 +1,8 @@
 ---
 title: "Session Quality Automation System"
+name: 2026-03-03-session-quality-automation
+type: project
+description: "Design of the team-agent session quality automation: startup-spawned end-session-agent, code-review timing fix (pre-commit hook, not next-session retrospective), summary-capture hook, knowledge-flow diagram. Open when touching session hooks or end-session skills."
 date: 2026-03-03
 project: claude-misc
 tags: ["architecture", "automation", "quality-system", "agents", "session-management"]

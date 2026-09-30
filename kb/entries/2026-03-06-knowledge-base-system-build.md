@@ -1,5 +1,8 @@
 ---
 title: "Knowledge Base System Design and Build"
+name: 2026-03-06-knowledge-base-system-build
+type: project
+description: "Build log of the kb/ system replacing the passive conversations/ archive: flat entries/, YAML frontmatter, TSV index, search-kb.sh, audit-kb.sh, SessionStart hook, 90-day expiry. Open for why it is shaped this way and the subagent/hook gotchas."
 date: 2026-03-06
 project: claude-misc
 tags: [architecture, knowledge-base, knowledge-management, search, shell-scripts, subagent-driven-development]
