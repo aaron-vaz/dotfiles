@@ -84,7 +84,19 @@ file (see Testing).
   they fit — don't hand-roll the backing field.
 - Backing property (`_items` private mutable, `items` public read-only) to expose a read-only view of mutable state.
 
-### Constants — No `companion object`
+### Top-Level Constants and Functions — Not `companion object` or Util `object`s
+
+**Constants, helper functions and factories are top-level declarations.** Never a `companion object` that only holds
+them, and never an `object FooUtils`/`FooHelper` (or `class` with `@JvmStatic` statics) that only holds functions —
+both are Java `static` habits. Kotlin has no statics; the file is the namespace.
+
+- Constants: top-level `const val` (or `val` for non-primitive) in the same file as the class using them.
+- Helpers used by one class: `private` top-level functions in that file. Used wider: top-level or extension functions
+  in a concern/type-named file (see File Organization).
+- Factories and default instances: top-level `fun Foo(...): Foo` / top-level `val` (see below).
+- `object` is for a real singleton with identity or state; `companion object` is for what genuinely needs an instance.
+
+Details for constants:
 
 - **Top-level `const val` in the same file**, not a `companion object` wrapping constants.
 - `private const val` by default; drop `private` only when something outside the file genuinely needs it (a test
