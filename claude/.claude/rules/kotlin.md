@@ -38,6 +38,9 @@ file (see Testing).
 
 - `val` over `var`, immutable collection types (`List`, `Set`, `Map`) over mutable ones, `copy()` over mutation.
 - Mutable collections may be held in a `val` — mutability is of the contents.
+- **Read-only is not immutable.** `List`/`Set`/`Map` are read-only *views*; the caller may still hold the mutable
+  original. Take a defensive copy (`toList()`, `toSet()`, `toMap()`) when storing a collection received from outside or
+  returning internal mutable state — never expose a `MutableList` through a `List` return type without copying.
 - Value carriers are `data class` with `val` properties. No getters/setters, no builders, no `equals`/`hashCode`
   written by hand. Use named arguments plus defaults instead of a builder.
 - Single-field wrapper for type safety is an `@JvmInline value class` (`EmployeeId`, `CustomerId`), not a `data class`.
@@ -55,8 +58,10 @@ file (see Testing).
   named and positional in one call.
 - Single-expression bodies (`fun answer() = 42`) when the body is one expression. Declare the return type explicitly
   for public API and for non-trivial expression bodies.
-- Extension functions and top-level functions over `object SomeUtils` or static-style helpers. An extension on the
-  receiver is discoverable via autocomplete: `context.registry`, not `ResourceUtils.getRegistry(context)`.
+- **Extension functions and top-level functions over util classes** — in any form: `object SomeUtils`, a class with a
+  private constructor and statics, a `companion object` of helpers. Operating on a type means an extension on it; a
+  function with no natural receiver is just top-level. An extension is discoverable via autocomplete:
+  `context.registry`, not `ResourceUtils.getRegistry(context)`.
 - Properties with a custom getter over `getX()` functions when the value is cheap and side-effect free.
 - Trailing lambda syntax; name the parameter when `it` would be unclear or the lambda is nested (never nest `it`).
 - Don't write a function that only forwards its arguments, and don't wrap a stdlib call in a one-line helper.
@@ -307,6 +312,97 @@ remove it.**
   `emptyList()`, `new Foo()` → `Foo()`, `getX()` → `x`, anonymous `Runnable` → lambda, `synchronized` blocks →
   coroutine `Mutex` or `@Synchronized` only on a Java-facing method.
 
+## Logging
+
+- The logger is a **top-level `private val`** in the file, not a `companion object` field (same rule as constants):
+  `private val log = LoggerFactory.getLogger("com.example.Foo")` or the repo's KotlinLogging equivalent
+  (`private val log = KotlinLogging.logger {}`). Match the repo's logging library.
+- Never `println`/`print`/`printStackTrace` in committed code. Use the logger, with the exception as the last argument
+  (`log.warn("msg", e)`).
+- Use parameterized messages (`log.info("saved {}", id)`) or the lambda form your library offers
+  (`log.debug { "expensive $x" }`) so disabled levels don't build the string.
+
+## Time
+
+- Inject a `java.time.Clock` (or the repo's equivalent) and read time from it. Never call `Instant.now()`,
+  `LocalDate.now()`, `System.currentTimeMillis()` or `Clock.systemUTC()` inside logic; tests can't control them.
+- `kotlin.time.Duration` (`5.seconds`, `Duration.ofMinutes(5)` at Java boundaries) over raw `Long`/`Int` millis or
+  seconds in signatures and constants. A bare number whose unit isn't in the type must carry it in the name
+  (`timeoutMillis`).
+- `Instant` for points in time, `LocalDate`/`LocalDateTime` only for calendar values without a zone; never `Date` or
+  `Calendar`.
+
+## Data Classes, Entities & Equality
+
+- `data class` is for value objects/DTOs. Its generated `equals`/`hashCode`/`toString` use *all* constructor
+  properties — wrong for identity-based or lazily-loaded types.
+- **JPA/Hibernate entities are not `data class`es** (equality over lazy proxies and generated ids breaks, and `copy`
+  bypasses persistence state). Use a regular class with the no-arg/all-open compiler plugins (`kotlin-jpa`,
+  `kotlin-spring`) and explicit identity-based `equals`/`hashCode` only if the persistence layer needs them.
+- No arrays (`ByteArray`, `Array<T>`) as `data class` properties — they compare by reference. Use `List<T>`, or
+  override `equals`/`hashCode` with `contentEquals`/`contentHashCode`.
+- Keep properties `val` and the constructor the only way to build a valid instance; validate in `init` with `require`.
+- A `data class` with a `private` constructor still exposes `copy()` — don't rely on privacy to enforce invariants
+  unless the compiler warning for it is addressed (check the repo's Kotlin version).
+
+## Banned in Committed Code
+
+- `TODO()` and `println` (use the logger; leave no `TODO()` throwing at runtime — open a ticket instead).
+- Blanket `@Suppress`, and `@Suppress("UNCHECKED_CAST")` where a `reified` type parameter, `as?` or a restructured API
+  works. If a suppression is truly needed, narrowest scope plus a one-line reason.
+- `Any`/`Any?`-typed APIs where a generic or sealed type works; `as` casts that a smart cast or `when (x) { is ... }`
+  could replace.
+- `!!` without a guaranteed invariant (see Null Safety); `lateinit` for domain data; mutable top-level state.
+- `GlobalScope`, `runBlocking` in production, `Thread.sleep` (use `delay`) in coroutine code.
+- Commented-out code and dead `private` functions/properties.
+
+## Formatting & Lint Tools Decide
+
+- ktlint/Spotless/detekt (whichever the repo configures) are authoritative for formatting and style. Don't hand-format
+  against them, don't reflow a file you aren't changing, and don't add `@Suppress`/`.editorconfig` exceptions just to
+  pass a check. Run the formatter task (`spotlessApply` or `ktlintFormat`) rather than editing whitespace by hand.
+- When this file and the repo's configured rules disagree on something the tool enforces, the tool wins; when the tool is
+  silent, this file applies.
+
+## Serialization
+
+Use whichever library the repo already uses (check the build manifest — Jackson with the Kotlin module, or
+`kotlinx.serialization`); don't introduce the other.
+
+- Map nullability and defaults in the type: `val x: String? = null` / `val x: Int = 0` rather than annotating every
+  property. With Jackson's Kotlin module, constructor properties bind by name — no `@JsonProperty` boilerplate unless
+  the JSON name differs; `@field:`/`@get:` use-site targets for annotations that must land on the field/getter.
+- Prefer `data class` DTOs with `val` properties and defaults over mutable beans, builders or `@JsonCreator` factories.
+- With `kotlinx.serialization`: `@Serializable` on the class, `@SerialName` for differing names, `@Transient` for
+  excluded properties (needs a default), sealed hierarchies for polymorphism.
+- Enums: serialize by stable name, never by ordinal; unknown-value handling is a deliberate decision.
+- Test both `null` and absent for optional fields (see Testing).
+
+## Newer Language Features
+
+Features land in Kotlin versions the repo may not have. **Read the Kotlin version from the build manifest
+(`build.gradle.kts`/version catalog/`pom.xml`) before using any of these**, and never assume it from memory:
+
+- `when` guard conditions (`is Foo if cond ->`), explicit backing fields, context parameters, name-based destructuring,
+  `kotlin.uuid.Uuid`, newer `kotlin.time` APIs (`Clock`/`Instant`), and `data object` (`1.9+`).
+- If the version supports a feature that removes a workaround (e.g. `entries` over `values()`, `..<` over `until`), use it;
+  if the project is on an older version, don't, and don't "upgrade" the build to get it.
+- Experimental APIs (`@OptIn`, `@ExperimentalXxx`) need an explicit decision and the narrowest opt-in scope — never a
+  module-wide `-opt-in` flag to silence a warning.
+
+## Gradle Kotlin DSL (`*.gradle.kts`, `*.kts`)
+
+Build scripts are Kotlin too — the same top-level/immutability/naming rules apply, plus:
+
+- Dependencies and plugin versions come from the **version catalog** (`libs.versions.toml`); no hard-coded versions or
+  string coordinates scattered across modules.
+- Type-safe accessors (`libs.foo`, `project.the<...>()`, `tasks.named<Test>("test")`) over string lookups.
+- Lazy task APIs: `tasks.register` over `tasks.create`, `tasks.named` over `tasks.getByName`, `configureEach` over
+  `all`/`afterEvaluate`.
+- Shared build logic lives in convention plugins (`buildSrc` or `build-logic`), not copy-pasted blocks between modules.
+- Pin the toolchain (`kotlin { jvmToolchain(N) }`) and treat compiler warnings as errors where the repo already does.
+- Scripts stay declarative: no I/O or network at configuration time, no mutable top-level `var`s for state.
+
 ## Java Interop
 
 Applies only when Java code calls this Kotlin (or the code is a library for mixed callers). The Kotlin-idiomatic form
@@ -375,3 +471,16 @@ Generic structure (Given/When/Then, fixtures, commands) lives in `testing.md`. K
   ```
 - `coEvery`/`coVerify` for suspend functions; `every`/`verify` otherwise. Type arguments on `mockk<T>()` stay (inference
   can't supply them).
+- **No relaxed mocks by default** (`mockk(relaxed = true)`): they hide unstubbed calls. Stub what the test needs; use a
+  relaxed mock only for a collaborator the test truly ignores, and say why.
+- **Verify precisely:** `verify(exactly = n)`/`coVerify(exactly = n)` when the count matters, `verify { ... wasNot Called }`
+  for "never", and `confirmVerified(mock)` where unexpected extra calls would be a bug.
+
+### Test data factories
+
+- Build test data with **top-level factory functions with default arguments** (`fun aReport(id: UUID = randomUuid(),
+  status: Status = Status.OPEN) = Report(id, status)`), overriding only what the test is about. No builder classes, no
+  shared mutable fixtures, and no `object TestData` grab-bag.
+- Keep a factory next to the tests that use it, in a concern-named file (`ReportFixtures.kt`); share across modules
+  only through a test-fixtures source set.
+- Inject a fixed `Clock` (`Clock.fixed(...)`) instead of reading the real time in tests (see Time).
