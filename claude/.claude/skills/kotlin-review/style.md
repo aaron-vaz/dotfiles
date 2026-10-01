@@ -15,8 +15,8 @@
 
 ### Boolean Naming (Kotlin — NOT Java Bean Spec)
 - **Properties:** Use natural names WITHOUT `is` prefix: `sampleSizeCallable`, `beforeMinDuration`, `qualified`
-  - Kotlin generates `isFoo` getters/setters automatically for `val foo: Boolean`
-  - Adding `is` yourself creates `isIsFoo()` in Java interop
+  - Java sees `val foo: Boolean` as `getFoo()` and `val isFoo: Boolean` as `isFoo()` — Kotlin doesn't add the prefix for you
+  - Dropping `is` is the repo's naming preference, not a Java-interop requirement
 - **Local variables:** Same rule — `confirmed`, `skewPrevented`, NOT `isConfirmed`, `isSkewPrevented`
 - **Exception:** Kotlin stdlib follows this: `isEmpty()`, `isBlank()` are *functions*, not properties
 
