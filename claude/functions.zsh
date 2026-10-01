@@ -17,25 +17,31 @@ _cc_env_prefix() {
 }
 
 # mcc — throwaway Claude Code session in a fresh temp dir. No session
-# tracking, no resume prompt — ad-hoc scratch work only.
-mcc() {
-  _cc_update_claude
-
-  local tmp_dir
-  tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/cc-XXXXXX") || return 1
-  cd "$tmp_dir" || return 1
-  echo "📁 throwaway dir: $tmp_dir" >&2
-
-  local session_name="mcc-$(date +%H%M%S)"
-  local -a env_prefix=(${(z)$(_cc_env_prefix)})
-  tmux new-session -s "$session_name" "${env_prefix[@]}" claude --model 'sonnet[1m]' --verbose "$@"
-}
+# tracking, no resume prompt — ad-hoc scratch work only. Alias for
+# `cc --scratch`; the calling shell stays in its original directory.
+mcc() { cc --scratch "$@"; }
 
 cc() {
   local base_args=(--verbose)
   local force_new=0
   local pick_mode=0
   local explicit_name=""
+
+  # ---- Scratch mode: throwaway session in a fresh temp dir ----------------
+  # Must run before -n/-r parsing so remaining args pass through to claude.
+  # Subshell cd keeps the caller's PWD/OLDPWD untouched; `builtin cd -q`
+  # bypasses the zoxide cd alias and chpwd hooks.
+  if [[ "$1" == "-s" || "$1" == "--scratch" ]]; then
+    shift
+    _cc_update_claude
+    local tmp_dir
+    tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/cc-XXXXXX") || return 1
+    echo "📁 throwaway dir: $tmp_dir" >&2
+    local -a env_prefix=(${(z)$(_cc_env_prefix)})
+    ( builtin cd -q "$tmp_dir" && tmux new-session -s "mcc-$(date +%H%M%S)" "${env_prefix[@]}" claude --model 'sonnet[1m]' "${base_args[@]}" "$@" )
+    return $?
+  fi
+
   [[ "$1" == "-n" || "$1" == "--new" ]] && { force_new=1; shift; }
   [[ "$1" == "-r" || "$1" == "--pick" ]] && { pick_mode=1; shift; }
   [[ $force_new -eq 1 && $# -gt 0 && "$1" != -* ]] && { explicit_name="$1"; shift; }
