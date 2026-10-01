@@ -12,3 +12,6 @@ logs/
 
 # OS
 .DS_Store
+
+# machine-synced cloud skills (regenerated)
+skills/synced/
