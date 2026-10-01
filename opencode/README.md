@@ -11,3 +11,4 @@ The install script symlinks the configuration files to `~/.config/opencode/`.
 - `settings.json` - OpenCode settings
 - `AGENTS.md` - Global instructions for OpenCode agents
 - `aliases.zsh` - Shell aliases for opencode commands
+- `functions.zsh` - Shell functions: `oc` (runs opencode; `oc --scratch` runs it in a throwaway temp dir) and `moc` (shorthand for `oc --scratch`)
