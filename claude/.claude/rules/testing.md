@@ -4,7 +4,7 @@
 
 Tests follow **Given-When-Then** pattern with `// Given`, `// When`, `// Then` labels (capitalised, no description after label).
 
-- **Test names use backticks** — allows spaces and special chars
+- **Kotlin tests** — naming, `runTest`, `assertThrows`, Mockk and field rules live in `rules/kotlin.md` (Testing section)
 - **No exceptions for simple tests** — even one-liners need Given/When/Then
 - **Comments always own line** — never append to end of code line
 - **Never skip `// Given`** — always include. No setup code? Add comment explaining why:
@@ -13,17 +13,6 @@ Tests follow **Given-When-Then** pattern with `// Given`, `// When`, `// Then` l
   // setup in before each
   ```
 - **Never leave `// Then` empty** — omit only if no assertions
-- **`runTest` block** — use for all coroutine-based tests (`suspend fun`, `Flow`, etc.)
-- **Exception assertions in `runTest`** — `org.junit.jupiter.api.assertThrows` doesn't accept suspend lambdas. Capture in `// When`, assert in `// Then`:
-  ```kotlin
-  // When
-  val action = suspend { mySuspendFun() }
-
-  // Then
-  val thrown = assertThrows<MyException> { action() }
-  assertEquals("expected message", thrown.message)
-  ```
-- **Mockk for mocking** — prefer over other libs for Kotlin consistency
 - **Use `assertEquals` not `assert()`** — better error messages
 - **Never `assertTrue(x == y)`** — beginner mistake; use specific assertions so failures show actual values:
   - `assertTrue(a == b)` → `assertEquals(b, a)`
@@ -31,7 +20,6 @@ Tests follow **Given-When-Then** pattern with `// Given`, `// When`, `// Then` l
   - `assertTrue(str.contains("..."))` → `assertContains(str, "...")`
   - `assertTrue(collection.contains(x))` → `assertContains(collection, x)`
   - `assertTrue(a === b)` → `assertSame(a, b)` from `org.junit.jupiter.api.Assertions`
-- **Test field initialization** — use `var x: Type = default` when sensible default exists. Reserve `lateinit var` for fields with no default, set in `@BeforeEach`.
 
 ## Test Data Rules
 
@@ -41,13 +29,9 @@ Tests follow **Given-When-Then** pattern with `// Given`, `// When`, `// Then` l
 - Meaningful names: `valid-request.json`, `edge-case-empty-list.json`
 - Pretty-print JSON (2-space indent)
 
-### Enum Casing
-- **Match production code exactly** — production uses `SOME_CONSTANT`, use that in tests
-- Check `/src/main/kotlin/` for exact case if test fails
-
-### Field Types
-- Verify JSON ↔ Kotlin data class mapping (nullable vs non-nullable)
-- Test both `null` and `{}` for optional fields
+### Enum Casing and Field Types
+- Match production enum constants exactly; verify JSON ↔ model nullability, and test both `null` and `{}` for optional
+  fields. Kotlin specifics: `rules/kotlin.md`.
 
 ## Running Tests
 
