@@ -63,6 +63,17 @@ file (see Testing).
   function with no natural receiver is just top-level. An extension is discoverable via autocomplete:
   `context.registry`, not `ResourceUtils.getRegistry(context)`.
 - Properties with a custom getter over `getX()` functions when the value is cheap and side-effect free.
+- **Extension property vs member property:**
+  - *Member property* (declared in the class) for the type's own state or identity, and for a computed value
+    (`val fullName get() = "$first $last"`) that is part of the type's concept and the type is yours.
+  - *Extension property* for a derived view on a type you don't own (`val Path.extensionOrNull`, `val
+    ExtensionContext.registry`), or on your own type when the value belongs to a different layer and shouldn't widen the
+    type (persistence/mapping/presentation: `val Report.dto`). Extension properties have **no backing field** — a getter
+    only, no initializer, no state.
+  - Either way the getter is cheap, pure and non-throwing, since a property reads as a field. Anything that does I/O,
+    allocates something expensive, can fail, or isn't idempotent is a function (`loadX()`, `toX()`), not a property.
+  - A member always wins over an extension of the same name: an extension that duplicates a member is dead code
+    (the compiler warns). Never name an extension after a stdlib/member API with different semantics.
 - Trailing lambda syntax; name the parameter when `it` would be unclear or the lambda is nested (never nest `it`).
 - Don't write a function that only forwards its arguments, and don't wrap a stdlib call in a one-line helper.
 - **Operators where possible.** When a method's meaning matches a Kotlin operator convention, define it as an `operator
@@ -150,8 +161,9 @@ shows up in autocomplete wherever it is. Being deliberate here is the price of d
   `String`/`Collection` in scope. Make them `private`/`internal`, or give them a specific name and a feature package so
   an import is a deliberate choice. Receiver is a domain type: public is fine. Never public extensions named like a stdlib
   function.
-- **File name = concern.** A file is the unit of grouping (and the JVM class `FooKt`). One file per concern or per type's
-  extensions (see File Organization); don't build a grab-bag `Constants.kt`/`Functions.kt` for the whole module.
+- **File name = concern, named like the stdlib.** A file is the unit of grouping (and the JVM class `FooKt`). One file per
+  receiver type's extensions or per concern, as a plain noun (`Strings.kt`, `Preconditions.kt` — see File
+  Organization); don't build a grab-bag `Constants.kt`/`Functions.kt`/`Utils.kt` for the whole module.
 - **No top-level mutable state** (`var`, mutable collections): there is no owner and no lifecycle. Shared state belongs in
   a class with an owner or a DI-managed bean.
 - **Collisions are resolved at the import**, not by prefixing names: `import com.a.Foo as AFoo`.
@@ -285,9 +297,15 @@ remove it.**
 
 ## File Organization
 
-- **Extensions on a type** live in the plural of that type, like the stdlib: `Paths.kt`, `Strings.kt`, `Collections.kt`,
-  `ExtensionContexts.kt`. **Other top-level functions** are named for the concern: `Errors.kt`, `Transform.kt`. Never
-  `*Utils.kt`, `*Helper.kt`, or `*Extensions.kt`.
+- **Name extension and top-level function files the way the stdlib does.** The stdlib's files are plain nouns with no
+  `Utils`/`Extensions`/`Helper` suffix: `Strings.kt`, `Collections.kt`, `Maps.kt`, `Sequences.kt`, `Ranges.kt`,
+  `Comparisons.kt`, `Preconditions.kt`, `Lazy.kt`.
+  - **Extensions on a type**: the plural of the receiver type — `Paths.kt`, `Instants.kt`, `ExtensionContexts.kt`,
+    `Readouts.kt` (domain type). Extensions on a family of types go in the family's plural (`Collections.kt` for
+    `Collection`/`List`/`Set`).
+  - **Top-level functions with no receiver**: the plain noun for the concern — `Preconditions.kt`, `Errors.kt`,
+    `Transform.kt`, `Retries.kt`.
+  - Never `*Utils.kt`, `*Util.kt`, `*Helper(s).kt`, `*Extensions.kt`, `*Ext.kt`, or a bare `Utils.kt`/`Common.kt`.
 - One primary declaration per file, named for it. A file named for purpose rather than its type may trip ktlint's
   filename rule; suppress with `@file:Suppress("ktlint:standard:filename")`.
 - Keep coupled code together (an annotation with its provider/processor); keep a `data class` and the extensions that
