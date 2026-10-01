@@ -23,7 +23,7 @@ bash ~/Code/shell/dotfiles/claude/install.sh
 - `persona.md` — Communication style (blunt, peer-to-peer)
 - `settings.json` — Hooks, permissions, model config
 - `mcp.json` — MCP server registrations (also symlinked to `~/.mcp.json`)
-- `functions.zsh` — `cc` launcher function (tmux session management), `mcc` throwaway-session launcher
+- `functions.zsh` — `cc` launcher function (tmux session management), `mcc` throwaway-session launcher (`cc --scratch`)
 
 ## `cc` Launcher
 
@@ -35,6 +35,7 @@ bash ~/Code/shell/dotfiles/claude/install.sh
 | `cc -n` | Force new session with startup prompt (`session-start.md`) |
 | `cc -n my-feature` | New session named `cwd-my-feature-HHMM` |
 | `cc -r` | Pick from recent sessions (fzf) |
+| `cc --scratch` / `cc -s` | Throwaway session in a fresh temp dir (see `mcc`) |
 | `cc <args>` | New session with args passed to claude |
 
 Auto-features:
@@ -47,7 +48,7 @@ For direct launch without tmux, use `cla` (alias for `claude`).
 
 ## `mcc` — Throwaway Session
 
-`mcc` launches Claude in a fresh `mktemp -d` scratch dir — no session tracking, no resume prompt. Use for ad-hoc/one-off work you don't want polluting a real project's session history. Args pass through to `claude`.
+`mcc` is shorthand for `cc --scratch` (`-s`). It launches Claude in a fresh `mktemp -d` scratch dir inside a tmux session named `mcc-HHMMSS` — skips the `~/.claude` pull, startup prompt, session tracking, and resume prompt. Use for ad-hoc/one-off work you don't want polluting a real project's session history. Args pass through to `claude`. Your shell stays in (returns to) its original directory on exit.
 
 ## Structure
 
