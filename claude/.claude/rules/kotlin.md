@@ -60,8 +60,14 @@ file (see Testing).
 - Properties with a custom getter over `getX()` functions when the value is cheap and side-effect free.
 - Trailing lambda syntax; name the parameter when `it` would be unclear or the lambda is nested (never nest `it`).
 - Don't write a function that only forwards its arguments, and don't wrap a stdlib call in a one-line helper.
-- `infix`/`operator` only where the call site reads like the domain (`a + b` for composable handlers) — not for
-  cleverness.
+- **Operators where possible.** When a method's meaning matches a Kotlin operator convention, define it as an `operator
+  fun` instead of a named method: `get`/`set` (`registry[key]` over `registry.get(key)`), `contains` (`x in set`),
+  `plus`/`minus`/`times` (`a + b`, `metrics + tracing + logging` for composable handlers), `plusAssign`, `unaryMinus`,
+  `invoke` (`validator(x)` for a single-purpose function-like class), `compareTo` (`<`, `>`; implement `Comparable`),
+  `iterator` (`for (x in thing)`), `rangeTo`/`rangeUntil` (`a..b`, `a..<b`), `componentN` (destructuring; automatic on
+  `data class`), `getValue`/`setValue` (property delegates). Use `infix` for a readable two-operand domain call
+  (`a shouldBe b`, `key to value`). The operator must keep its conventional meaning — never `plus` that mutates, or
+  `get` with side effects — and never as cleverness where the named method reads clearer.
 - `inline` only for functions taking lambdas (and `reified` type parameters). Not as a micro-optimization.
 - `inline fun <reified T>` factory over passing `SomeType::class.java` at call sites.
 - `@Deprecated` in new code uses `ReplaceWith`, and `DeprecationLevel.ERROR` when the migration is mechanical.
@@ -121,6 +127,35 @@ class NoteValidator { /* ... */ }
 
 - Factories are **file-level functions** named like the type — `fun ReadoutClient(...): ReadoutClient` — over a
   `companion object { fun create() }`. Singleton/default instances are top-level `val`s (with `by lazy` if expensive).
+
+## Namespacing Top-Level Declarations
+
+Top-level code has no class to namespace it: a public top-level name is visible to the whole package and, once imported,
+shows up in autocomplete wherever it is. Being deliberate here is the price of dropping `companion object`/`object` utils.
+
+- **Least visibility first.** Top-level declarations are `private` (file-scoped) by default, `internal` when the module
+  needs them, public only for real API. A `private` top-level is invisible outside its file, so it can't collide.
+- **The package is the namespace.** Organise by feature/domain (`...notes`, `...readout`), not by kind (`...utils`,
+  `...constants`, `...helpers`). A public top-level lives in the package that owns the concept; never in a catch-all
+  package or the root package.
+- **Names carry their own context.** Without a surrounding class, `MAX_LENGTH`, `DEFAULT_TIMEOUT` or `parse()` is
+  ambiguous. Name for the concept: `MAX_NOTE_LENGTH`, `DEFAULT_READOUT_TIMEOUT`, `parseReadoutId()`. A private constant
+  used by one class can stay short — the file is its context.
+- **Extensions on widely used types are scoped.** `fun String.clean()` or `fun Collection<T>.second()` pollutes every
+  `String`/`Collection` in scope. Make them `private`/`internal`, or give them a specific name and a feature package so
+  an import is a deliberate choice. Receiver is a domain type: public is fine. Never public extensions named like a stdlib
+  function.
+- **File name = concern.** A file is the unit of grouping (and the JVM class `FooKt`). One file per concern or per type's
+  extensions (see File Organization); don't build a grab-bag `Constants.kt`/`Functions.kt` for the whole module.
+- **No top-level mutable state** (`var`, mutable collections): there is no owner and no lifecycle. Shared state belongs in
+  a class with an owner or a DI-managed bean.
+- **Collisions are resolved at the import**, not by prefixing names: `import com.a.Foo as AFoo`.
+- **A prefix on several functions is a missing namespace.** If top-level functions share a prefix (`jsonEncode`,
+  `jsonDecode`, `jsonPretty`) they belong in their own file/package, on a receiver type, or in a class that holds
+  dependencies. A named `object` is acceptable only where the qualified call site is itself the point (`Json.encode(x)`)
+  and the functions share no state with a type — not as a default home for helpers.
+- **Java callers** of top-level code get `FileNameKt.fn()`; set `@file:JvmName("Notes")` for a clean name (see Java
+  Interop).
 
 ## Collections
 
@@ -266,7 +301,6 @@ remove it.**
 - `Comparator`: `compareBy`, `sortedBy`, `sortedWith(compareBy(...).thenBy(...))`.
 - `Pair`/`Triple` only locally; return a small `data class` from public functions.
 - Destructuring only for `Pair`, `Map.Entry`, and data classes with obvious component order.
-- Operator overloads and `infix` only where they match a domain meaning.
 - DSLs: lambdas with receivers (`Foo.() -> Unit`) with `@DslMarker` for nested builders.
 - Don't use reflection (`::class.java`, `javaClass`) at call sites when a `reified` helper hides it.
 - Don't translate Java APIs literally: `StringUtils.isEmpty(s)` → `s.isNullOrEmpty()`, `Collections.emptyList()` →
