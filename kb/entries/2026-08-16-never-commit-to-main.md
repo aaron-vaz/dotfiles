@@ -1,6 +1,6 @@
 ---
 name: never-commit-to-main
-description: Never commit directly to main/master in project repos — move to a branch/worktree without asking. Personal single-author repos are exempt — config (dotfiles) and homelab infrastructure both commit straight to the default branch.
+description: "Never commit directly to main/master in project repos — move to a branch/worktree without asking. Exempt: personal single-author repos — dotfiles (straight to master, then push) and homelab infra (straight to main)."
 type: feedback
 tags: [domain-rules, git, branches, main, dotfiles, homelab]
 status: active
@@ -27,7 +27,11 @@ because you happen to be its only committer this week.
 **How to apply:** Before the first commit in any session, check the current branch. If on main/master in a project repo, create and switch to a feature branch before committing — do this silently, as expected behavior, not as a question. If a violation already happened (commits landed on main), fix it immediately without waiting for confirmation: `git branch <name> HEAD`, `git checkout main && git reset --hard origin/main`, `git checkout <name>`. Only surface it after the fact as a one-line statement of what was done, not a question.
 
 In a personal repo you are the sole committer of (dotfiles, homelab and the
-like), commit to the default branch directly and don't raise it.
+like), commit to the default branch directly and don't raise it. In the dotfiles
+repo (`~/Code/shell/dotfiles`) also push straight to `master` — no feature branch
+or PR. The user's words: "that repo can go straight to main". That repo often has
+unrelated dirty files, so stage only the files relevant to the task before
+committing. Every repo other than dotfiles and homelab keeps the rule.
 
 **When a global rule and a repo-specific note disagree, ask — don't act on the
 looser one.** A session committed homelab work straight to main on the strength
