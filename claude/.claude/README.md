@@ -12,7 +12,7 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 ├── settings.json          # Hooks, permissions, model config
 ├── mcp.json               # MCP server registrations
 │
-├── rules/                 # Auto-loaded coding rules
+├── rules/                 # Coding rules (some path-scoped via paths:)
 ├── hooks/                 # Hook scripts
 ├── agents/                # Agent definitions
 ├── skills/                # Custom skills (12 skills)
@@ -21,8 +21,9 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 │
 ├── kb/                    # Knowledge base (searchable)
 │   ├── entries/           # YAML-frontmatter entries
-│   ├── search-kb.sh       # Search by tag/keyword
-│   └── audit-kb.sh        # Find stale entries
+│   ├── private/           # Untracked private store (default for new entries)
+│   ├── search-kb.sh       # Search by tag/keyword; --brief, --medium, --section <heading>, --full, --usage; multi-word AND
+│   └── audit-kb.sh        # Find stale entries; fails on missing name/type/description, warns on descriptions >300 chars
 │
 ├── sessions/              # Session tracking
 ├── logs/                  # Runtime logs
@@ -43,6 +44,7 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | PostToolUse/Bash | After any command | Logs command to command-log.txt |
 | PreToolUse/Bash | Any shell command | `guard-sensitive-paths.sh` denies commands naming `~/.ssh`, `~/.gnupg`, `~/.kube`, `~/Library`, `~/.netrc`, `~/.npmrc`, `~/.pypirc`, `~/.docker/config.json` (Bash-side twin of the `Read(~/...)` deny rules). Text match only: catches explicit references, not obfuscation, and can false-positive on commands that merely mention a path. Implicit use (`git push`, `ssh`) is unaffected; a project-level `./.npmrc` is allowed |
 | PreToolUse/Edit+Write+NotebookEdit | Main-thread file edit | `enforce-delegation.sh` denies it and points at `impl-orchestrator` (exempt: `.claude/`, `~/.agents/`, temp dirs, `CC_MAIN_EDITS=1`) |
+| PreToolUse/Read+Edit+Write | First touch of a file type per session+agent | `kb-feedback-push.sh` maps extension (.kt/.kts→kotlin, .py→python, .java→java, .sh→shell, .proto→protobuf, gradle files→gradle, test files→testing) to KB tags, injects `search-kb.sh --type feedback --tag <tag> --brief` results as additionalContext. Deduped per session+agent+tag via state file under `$TMPDIR`; never blocks |
 | SubagentStart | Any subagent spawn | `subagent-track.sh` records agent_id → agent_type for the subagent status line |
 
 ### Skills
@@ -82,6 +84,11 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 - **Tests:** `tests/delegation-mechanical.sh`.
 - **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch).
 
+### Rules
+
+- **Always loaded:** `code-style.md`, `testing.md`, `git.md`, `shell.md`.
+- **Path-scoped** (`paths:` frontmatter; load only when Claude reads a matching file): `kotlin.md` (`**/*.kt`, `**/*.kts`), `java.md` (`**/*.java`), `python.md` (`*.py`, `**/*.py`).
+
 ### Knowledge Base
 
 ```bash
@@ -90,6 +97,8 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 ~/.agents/kb/search-kb.sh --project myproject # by project
 ~/.agents/kb/audit-kb.sh                      # find stale entries
 ```
+
+**Tests:** `tests/kb-search-mechanical.sh`, `tests/kb-feedback-push-mechanical.sh`, `tests/kb-session-reminder-mechanical.sh`.
 
 ## Setup
 
