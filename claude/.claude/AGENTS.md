@@ -285,6 +285,7 @@ Types: `feat` `fix` `docs` `refactor` `test` `chore` | `BREAKING CHANGE`
 | `rules/kotlin.md` | `*.kt`, `*.kts` files only (via `paths:`) |
 | `rules/java.md` | `*.java` files only (via `paths:`) |
 | `rules/python.md` | `*.py` files only (via `paths:`) |
+| `rules/spring.md` | `*.kt`, `*.kts`, `*.java` files only (via `paths:`) |
 
 ## References (re-read when needed)
 
