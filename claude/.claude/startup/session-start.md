@@ -34,10 +34,20 @@ Ready.
 
 ## 3. Rename Tmux Session
 
-Once you know what you're working on — after understanding the task — write a short kebab-case slug (2–4 words) to rename this tmux session:
+Name the session so the user can tell parallel sessions apart. Write a short kebab-case slug (2–4 words) describing the work:
 
 ```bash
 echo 'feature-slug-here' > ~/.claude/sessions/.rename-request
 ```
 
-The session renames automatically within a few seconds. Do this once per session as early as possible. Examples: `homelab-caddy-fix`, `dotfiles-cleanup`, `api-refactor`. Skip if the tmux session name already reflects the work.
+The session renames automatically within a few seconds. Examples: `homelab-caddy-fix`, `dotfiles-cleanup`, `api-refactor`, `instrument-v02-audit`.
+
+**When (hard rule, not a nice-to-have):**
+- The startup turn only says "Ready" — there is no task yet, so do NOT rename then.
+- On the **first user message that states a task**, make the rename the **first tool call of that turn**, before any reading, searching or delegating. If the startup context and the task arrive in the same turn, do the startup reads, then rename before starting the task.
+- Name the work, not the repo: `social-sync-api` alone is useless; `meeting-venue-fix` says what the session is for.
+- **Self-check:** before ending your first substantive turn, if you have not written a `.rename-request` this session, write it now. Never finish a first turn unnamed.
+- **Re-name once** if the work pivots to a clearly different task mid-session (new ticket, new repo, new topic). Do not rename for sub-steps of the same task.
+- Skip only if the tmux session name already reflects the work.
+
+Subagents and delegated sessions do not rename; only the main session does. If you spawn or message other sessions for the user, mention the main session's slug when reporting so the user can map names to work.
