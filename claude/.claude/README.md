@@ -84,6 +84,15 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 - **Tests:** `tests/delegation-mechanical.sh`.
 - **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch).
 
+### Session naming
+
+`startup/session-start.md` (section 3) tells the main session to name itself so parallel sessions are distinguishable: write a 2–4 word kebab-case slug of the *work* (not the repo) to `~/.claude/sessions/.rename-request`, which renames the tmux session within seconds.
+
+- **When:** first user message that states a task, as the first tool call of that turn; the startup turn alone ("Ready") does not rename.
+- **Self-check:** a first substantive turn must not end without a rename having been written.
+- **Re-name:** once, on a clear pivot to different work. Subagents never rename.
+- **Enforcement:** instruction only (no hook), so it depends on the model following the startup prompt.
+
 ### Rules
 
 - **Always loaded:** `code-style.md`, `testing.md`, `git.md`, `shell.md`.
