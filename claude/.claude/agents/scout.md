@@ -1,7 +1,7 @@
 ---
 name: scout
 description: Read-only code locator. Finds where something is defined, what calls it, how a module is laid out, which files a change would touch. Returns file:line evidence, no opinions and no edits. Use before splitting or implementing work.
-model: sonnet
+model: haiku
 effort: low
 color: cyan
 maxTurns: 25

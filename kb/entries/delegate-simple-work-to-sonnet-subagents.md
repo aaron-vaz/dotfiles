@@ -17,6 +17,9 @@ context smaller — edits happen out of context.
   (or a Sonnet-backed agent type such as `caveman:cavecrew-builder` for 1-2 file edits). Give it the
   exact edit spec: path, old/new text or precise description, constraints.
 - Independent edits → parallel subagents in one message.
+- Read-only locating and verification runs (`scout`, `test-runner`) use Haiku 5.5 since 2026-10-08;
+  edits stay on Sonnet. Haiku 5.5 is supported in auto mode (Claude Code ≥ 2.1.293); earlier "no
+  haiku in auto mode" no longer holds.
 - Keep in main thread: investigation needing judgement, design decisions, debugging, reviewing the
   subagent's result, running builds/tests to verify.
 

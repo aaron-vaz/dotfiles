@@ -64,11 +64,11 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 
 ### Delegation (subagents)
 
-Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits code goes to `impl-orchestrator`.
+Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits code is delegated: multi-unit work to `impl-orchestrator`, a single file or artifact straight to `implementer`.
 
 | Agent | Tier | Role |
 |-------|------|------|
-| `impl-orchestrator` | opus | Plans, splits, dispatches, verifies. No Edit/Write; can spawn workers |
+| `impl-orchestrator` | opus (medium effort) | Plans, splits, dispatches, verifies multi-unit work. No Edit/Write; can spawn workers |
 | `implementer` | sonnet | One scoped unit of work (≤ ~5 files), builds and tests before reporting |
 | `quick-editor` | sonnet | Mechanical edit, hard limit 3 files |
 | `scout` | sonnet | Read-only locator, returns `path:line` evidence |
