@@ -43,7 +43,8 @@ Symlinks to other repos on this machine. **ALWAYS use this for repo discovery, n
 - Adversarial review, verification → different model than the one that did the work (see adversarial-review skill)
 
 **Delegation in Claude Code (enforced)** — the main session stays open for ad-hoc questions (reads, searches, explanations, small analysis — answer directly). Any task that edits code is delegated; "execute directly" above means dispatch immediately, not edit in the main thread.
-- **Implementation** → spawn `impl-orchestrator` (opus) with a full brief: goal, constraints, acceptance criteria, relevant paths. It cannot edit; it splits work across `scout` (sonnet, locate), `quick-editor` (sonnet, 1–3 file mechanical), `implementer` (sonnet, standard units), `test-runner` (sonnet, verify), `change-reviewer` (opus, independent review). Defs in `~/.claude/agents/`. No haiku anywhere in the chain — auto mode does not support it.
+- **Implementation** → spawn `impl-orchestrator` (opus) with a full brief: goal, constraints, acceptance criteria, relevant paths. It cannot edit; it splits work across `scout` (haiku, locate), `quick-editor` (sonnet, 1–3 file mechanical), `implementer` (sonnet, standard units), `test-runner` (haiku, verify), `change-reviewer` (opus, independent review). Defs in `~/.claude/agents/`. Haiku 5.5 is supported in auto mode (Claude Code ≥ 2.1.293) and does the read-only work; anything that edits stays sonnet or above — Haiku trails on agentic coding (Terminal-Bench 4.0: 39% vs Sonnet 5.5's 71%).
+- **Orchestrator only when the work splits.** Use `impl-orchestrator` for multi-unit work with disjoint file sets (several modules, or edit + test + review stages). A single file or single artifact (one doc, one spreadsheet, one script, a bounded fix) goes straight to `implementer` (or `quick-editor` for 1–3 mechanical files) with the full brief. Don't iterate by resuming the orchestrator with change after change — each resume reloads its whole transcript and every round gets slower. Batch the changes into one brief, or give a fresh worker the file on disk as its state.
 - **Never pass a `model` param when spawning these custom agents** — a per-call `model` overrides the tier in the definition. Built-in agents (`Plan`, `Explore`, `general-purpose`) have no fixed tier, so pick one per the tier list above.
 - `hooks/enforce-delegation.sh` denies main-thread Edit/Write/NotebookEdit outside `.claude/`, `~/.agents/`, and temp dirs. Deliberate direct edits: launch with `CC_MAIN_EDITS=1 cc`. Bash is not gated, but never use it to dodge the hook (`sed -i`, heredocs, `python`/`tee` writes) — delegate instead.
 - Do not run the main session with `--agent` / the `agent` setting — it breaks the main-vs-subagent check (`agent_id` present only inside subagents).
@@ -222,6 +223,7 @@ Generating messages:
 | Writing Jira from notes/bugs | `jira-writing` |
 | Reviewing/writing Kotlin | `kotlin-review` |
 | Review own code before PR | `self-review` |
+| Main session: own non-trivial work finished and verified, before handing over for merge | `junior-review-walkthrough` |
 | Archive session to KB (manual) | `session-archiver` |
 | Skills getting bloated | `skill-audit` |
 | Technical discovery documents | `tech-discovery` |
@@ -234,6 +236,7 @@ Generating messages:
 - "Let me review this PR" → review inline, not summary
 - "Starting an investigation" → `investigation-intake`
 - "Let me write this code" → consider `self-review` after
+- Main session finishing own non-trivial work → `junior-review-walkthrough` (junior presents decisions + code + visuals to Aaron). Not for subagents (return a decisions log in the report instead), not when Aaron asks for a review of his own PR; it authorises no commit/push/merge
 - Long session about to wrap up, or a natural milestone reached mid-task with more left to do → `checkpoint` unprompted
 - New session opens and a `checkpoint-pickup-suggest.sh` SessionStart hook surfaced an active checkpoint for this project → offer `/pickup` before starting fresh
 

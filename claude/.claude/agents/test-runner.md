@@ -1,7 +1,7 @@
 ---
 name: test-runner
 description: Runs the build, tests, and lint for a given scope and reports precisely what passed and failed. Reads the whole output, categorizes every failure, never edits code. Use to verify a change before claiming it works.
-model: sonnet
+model: haiku
 effort: low
 color: yellow
 maxTurns: 20
