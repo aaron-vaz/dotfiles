@@ -8,5 +8,9 @@
 #
 #   git nuke add-git-nuke
 
-git branch -D $1
-git push origin :$1
+set -eu
+
+branch="${1:?usage: git nuke <branch>}"
+
+git branch -D "$branch"
+git push origin ":$branch"
