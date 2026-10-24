@@ -1,11 +1,11 @@
 ---
 name: skelly
-description: Use when asked to create or scaffold a new project, service, CLI or repository from a template, or when skelly is mentioned. Drives the skelly CLI without prompts, so the run cannot hang waiting for input.
+description: Use when asked to create or scaffold a new project, service, CLI or repository from a template, or when skelly is mentioned.
 ---
 
 # skelly
 
-`skelly` creates a project from a template (a directory, git repo or registered alias). Its prompts cannot be answered by an agent, so never run `skelly init` the plain way: use `inspect`, then `init -no-input`.
+`skelly` creates a project from a template (a directory, git repo or registered alias). Never run `skelly init` the plain way: its prompts hang an agent. Use `inspect`, then `init -no-input`.
 
 ## Steps
 
@@ -24,7 +24,7 @@ description: Use when asked to create or scaffold a new project, service, CLI or
 
 ## Pitfalls
 
-- **Prompts hang an agent.** Always pass `-no-input` (`-json` implies it).
+- **Always pass `-no-input`** (`-json` implies it).
 - **Do not guess input names or values.** Unknown inputs and values outside `choices` are rejected; take them from `inspect`.
 - **A non-empty destination is an error.** `-yes` replaces its contents, so ask the user before using it.
 - **`-set` follows the type of the default:** `-set docker=false` is the boolean false.
