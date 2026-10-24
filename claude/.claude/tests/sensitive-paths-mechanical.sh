@@ -32,6 +32,11 @@ CASES=(
   'cat ~/.kube/config'
   'python3 -c "print(open(\"/x/.ssh/id_rsa\").read())"'
   'echo hi; cat "$HOME/.ssh/id_rsa"'
+  'cat ~/.aws/credentials'
+  'cat $HOME/.config/gh/hosts.yml'
+  'cat ~/.git-credentials'
+  'cd ~ && cat .aws/credentials'
+  'tar czf /tmp/x.tgz ~/.aws'
 )
 for c in "${CASES[@]}"; do
   denied "$c" && ok "T1: denied: $c" || bad "T1: expected deny for: $c"
@@ -51,6 +56,10 @@ ALLOW=(
   'grep -rn ssh README.md'
   "cat $HOME/Code/app/.npmrc"
   './gradlew test'
+  'cat ~/.awsome-notes.md'
+  'cat ~/.aws-cli-cache.md'
+  'cat ~/.config/ghostty/config'
+  'cat ~/.git-credentials-helper.md'
 )
 for c in "${ALLOW[@]}"; do
   denied "$c" && bad "T2: false positive on: $c" || ok "T2: allowed: $c"

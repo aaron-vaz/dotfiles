@@ -8,8 +8,9 @@
 # .denyRead, which also sandboxes all Bash (breaks git-over-SSH here).
 #
 # Protected, when anchored at the home dir (~, $HOME, ${HOME}, absolute home):
-#   .ssh .gnupg .kube Library .netrc .npmrc .pypirc .docker/config.json
-# Plus a bare `.ssh` / `.gnupg` / `.kube` path token anywhere, which covers
+#   .ssh .gnupg .kube .aws Library .netrc .npmrc .pypirc .git-credentials
+#   .docker/config.json .config/gh
+# Plus a bare `.ssh` / `.gnupg` / `.kube` / `.aws` path token anywhere, which covers
 # `cd ~ && cat .ssh/id_rsa`. A project-level ./.npmrc is NOT blocked.
 #
 # Implicit use is untouched: `git push` and `ssh host` read keys themselves and
@@ -25,8 +26,8 @@ HOME_RE="$(printf '%s' "${HOME%/}" | sed 's/[][\.*^$/|(){}+?]/\\&/g')"
 HOME_ANCHOR="(~|\\\$HOME|\\\$\\{HOME\\}|${HOME_RE})"
 END='([^[:alnum:]_.-]|$)'
 
-ANCHORED="${HOME_ANCHOR}/(\\.ssh|\\.gnupg|\\.kube|Library|\\.netrc|\\.npmrc|\\.pypirc|\\.docker/config\\.json)${END}"
-BARE="(^|[^[:alnum:]_.~-])\\.(ssh|gnupg|kube)${END}"
+ANCHORED="${HOME_ANCHOR}/(\\.ssh|\\.gnupg|\\.kube|\\.aws|Library|\\.netrc|\\.npmrc|\\.pypirc|\\.git-credentials|\\.docker/config\\.json|\\.config/gh)${END}"
+BARE="(^|[^[:alnum:]_.~-])\\.(ssh|gnupg|kube|aws)${END}"
 
 MATCH=""
 if printf '%s' "$CMD" | grep -qE "$ANCHORED"; then
@@ -36,7 +37,7 @@ elif printf '%s' "$CMD" | grep -qE "$BARE"; then
 fi
 [[ -z "$MATCH" ]] && exit 0
 
-REASON="Blocked: this command names a protected credential path (matched \"${MATCH# }\"). ~/.ssh, ~/.gnupg, ~/.kube, ~/Library, ~/.netrc, ~/.npmrc, ~/.pypirc and ~/.docker/config.json are off-limits to Claude, same as the Read tool. git and ssh use their keys implicitly, so you don't need to name them. If you really need this, ask the user to run it themselves with the ! prefix."
+REASON="Blocked: this command names a protected credential path (matched \"${MATCH# }\"). ~/.ssh, ~/.gnupg, ~/.kube, ~/.aws, ~/Library, ~/.netrc, ~/.npmrc, ~/.pypirc, ~/.git-credentials, ~/.docker/config.json and ~/.config/gh are off-limits to Claude, same as the Read tool. git and ssh use their keys implicitly, so you don't need to name them. If you really need this, ask the user to run it themselves with the ! prefix."
 
 jq -n --arg reason "$REASON" '{hookSpecificOutput: {hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: $reason}}'
 exit 0

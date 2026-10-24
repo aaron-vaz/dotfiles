@@ -8,7 +8,8 @@ PAYLOAD="$(cat 2>/dev/null)"
 CMD="$(echo "$PAYLOAD" | jq -r '.tool_input.command // empty' 2>/dev/null)"
 [[ -n "$CMD" ]] || exit 0
 
-if ! echo "$CMD" | grep -qE '(git([[:space:]]+-C[[:space:]]+[^[:space:]]+)?[[:space:]]+commit|gh[[:space:]]+(pr|issue|api|release))'; then
+# git with any global options (-C x, -c k=v, --no-pager, ...) and a subcommand that carries a message
+if ! echo "$CMD" | grep -qE '(git([[:space:]]+[^;&|]*)?[[:space:]]+(commit|tag|notes|merge)([[:space:]]|$)|gh[[:space:]]+(pr|issue|api|release))'; then
   exit 0
 fi
 

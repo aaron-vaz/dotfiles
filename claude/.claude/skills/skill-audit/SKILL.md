@@ -21,7 +21,7 @@ Write for the diff, not the default. Claude has read every language book and ope
 - Exact commands, file paths, tool names, API endpoints specific to this setup
 - Rules that contradict common defaults (these came from pain)
 - Toolchain gotchas (specific CLI bugs, version format quirks, API limitations)
-- EG/org-specific knowledge
+- org-specific knowledge
 - Workflow structure and step ordering
 - Choices between valid approaches (one line each)
 

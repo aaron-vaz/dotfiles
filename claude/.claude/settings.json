@@ -26,7 +26,13 @@
       "Read(~/.netrc)",
       "Read(~/.npmrc)",
       "Read(~/.pypirc)",
-      "Read(~/.docker/config.json)"
+      "Read(~/.docker/config.json)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.git-credentials)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.production)"
     ],
     "ask": [
       "Bash(git push --force*)",

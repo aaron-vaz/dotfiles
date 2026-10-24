@@ -103,13 +103,13 @@ The MCP tool handles markdown-to-ADF conversion internally. Send markdown string
 2. `editJiraIssue` with `fields.description` + top-level `contentFormat: markdown` — this path handles newlines correctly
 3. `editJiraIssue` for custom fields (Pod, Functional Area) if not done in step 2
 
-Confirmed failure: EGEXP-18669 (2026-06-16) — description created via `createJiraIssue` rendered as one unformatted block. Fixed by re-posting via `editJiraIssue` with `contentFormat: markdown`.
+Confirmed failure: PROJ-1234 (2026-06-16) — description created via `createJiraIssue` rendered as one unformatted block. Fixed by re-posting via `editJiraIssue` with `contentFormat: markdown`.
 
-**`createJiraIssue` silently drops some custom fields from `additional_fields`.** Confirmed drops on EGEXP: `customfield_10317` (Pod) and `customfield_10361` (Functional Area) are accepted by the schema but not persisted. Steps 2+3 above can be combined into one `editJiraIssue` call.
+**`createJiraIssue` silently drops some custom fields from `additional_fields`.** Confirmed drops on PROJ: `customfield_10317` (Pod) and `customfield_10361` (Functional Area) are accepted by the schema but not persisted. Steps 2+3 above can be combined into one `editJiraIssue` call.
 
-**EGEXP required custom fields on every new story/epic:**
-- `customfield_10317` — Pod (e.g. "Readout and Trustworthiness")
-- `customfield_10361` — Functional Area (e.g. "Clickstream & Experimentation - Experimentation")
+**PROJ required custom fields on every new story/epic:**
+- `customfield_10317` — Pod (e.g. "Platform")
+- `customfield_10361` — Functional Area (e.g. "Data - Analytics")
 
 **Source the values from a sibling ticket, not the parent epic.** Epics are often created with these fields blank; sibling stories in the same pod carry the correct values. Before creating a new child, `getJiraIssue` on a recent sibling in the same pod and copy Pod + Functional Area from there.
 
@@ -132,13 +132,13 @@ Not:
 
 After any `editJiraIssue` description update, `getJiraIssue` and diff to confirm no bullets/milestones were chopped.
 
-**`transitionJiraIssue` Resolution field gotcha.** Some workflow transitions (notably "Done" / "Closed" on EGEXP stories) require `Resolution` but reject explicit values like `{"resolution": {"name": "Done"}}` with `"The selected resolution cannot be chosen during this action."`. The valid resolution is workflow-specific and cannot be discovered from the transition payload alone. Workflow:
+**`transitionJiraIssue` Resolution field gotcha.** Some workflow transitions (notably "Done" / "Closed" on PROJ stories) require `Resolution` but reject explicit values like `{"resolution": {"name": "Done"}}` with `"The selected resolution cannot be chosen during this action."`. The valid resolution is workflow-specific and cannot be discovered from the transition payload alone. Workflow:
 1. `getJiraIssue` on a recently-resolved sibling ticket in the same project
 2. Read its `fields.resolution.name` (e.g. `"Fixed"`, `"Done"`, `"Won't Do"`)
 3. Pass that exact value: `{"transition": {"id": "31"}, "fields": {"resolution": {"name": "<sibling-value>"}}}`
 4. If that still fails, the workflow may not accept *any* resolution from this transition — try a different transition id (e.g. "Resolve Issue" instead of "Done"), or transition without `fields` first and let the workflow default fire.
 
-Recurring failure pattern (4x identical errors on EGEXP-18447, 2026-05-22): looping `transitionJiraIssue` with different `resolution.name` values without first fetching a working sibling — never converges, just rotates through "cannot be chosen" errors.
+Recurring failure pattern (4x identical errors on PROJ-5678, 2026-05-22): looping `transitionJiraIssue` with different `resolution.name` values without first fetching a working sibling — never converges, just rotates through "cannot be chosen" errors.
 
 **Confluence CQL search (`searchConfluenceUsingCql`) quirks:**
 - `limit` must be a **number**, not a string — `"limit": 5` fails validation; use `"limit": 5` as integer.

@@ -138,8 +138,12 @@ for agent in impl-orchestrator implementer quick-editor scout test-runner change
   name=$(awk '/^---$/{n++; next} n==1 && /^name:/{sub(/^name:[[:space:]]*/,""); print; exit}' "$f")
   model=$(awk '/^---$/{n++; next} n==1 && /^model:/{sub(/^model:[[:space:]]*/,""); print; exit}' "$f")
   [[ "$name" == "$agent" ]] && ok "T8a: $agent name matches filename" || bad "T8a: $agent name is '$name'"
-  # haiku is excluded on purpose: auto mode does not support it.
-  case "$model" in opus|sonnet|fable) ok "T8b: $agent uses an auto-mode-capable tier alias ($model)" ;; *) bad "T8b: $agent model '$model' must be opus|sonnet|fable (haiku lacks auto mode)" ;; esac
+  # haiku is for the read-only workers only (scout, test-runner); anything that edits or reviews uses a larger tier
+  case "$agent:$model" in
+    scout:haiku|test-runner:haiku) ok "T8b: $agent is a read-only worker on $model" ;;
+    *:opus|*:sonnet|*:fable) ok "T8b: $agent uses a tier alias ($model)" ;;
+    *) bad "T8b: $agent model '$model' must be opus|sonnet|fable (haiku only for scout and test-runner)" ;;
+  esac
 done
 ORCH_TOOLS=$(awk '/^---$/{n++; next} n==1 && /^tools:/{print; exit}' "$AGENTS_DIR/impl-orchestrator.md")
 [[ "$ORCH_TOOLS" == *Agent* && "$ORCH_TOOLS" != *Edit* && "$ORCH_TOOLS" != *Write* ]] \
