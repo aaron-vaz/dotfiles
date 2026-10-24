@@ -2,7 +2,7 @@
 
 if test "$(uname)" = "Linux"
 then
-  if test "$(whence apt-get 2> /dev/null)"
+  if command -v apt-get > /dev/null 2>&1
   then
     echo "\033[00;32m──›\033[0m updating apt-get"
     sudo apt-get update
@@ -12,7 +12,7 @@ then
     set -e
     sudo apt-get clean
     echo
-  elif test "$(whence dnf 2> /dev/null)"
+  elif command -v dnf > /dev/null 2>&1
   then
     echo "\033[00;32m──›\033[0m updating dnf"
     sudo dnf clean all
@@ -22,7 +22,7 @@ then
     set -e
     sudo dnf clean all
     echo
-  elif test "$(whence yay 2> /dev/null)"
+  elif command -v yay > /dev/null 2>&1
   then
     echo "\033[00;32m──›\033[0m updating aur"
     yay -Syu
@@ -30,7 +30,7 @@ then
     yay -Rns $(yay -Qtdq)
     set -e
     echo
-  elif test "$(whence pacman 2> /dev/null)"
+  elif command -v pacman > /dev/null 2>&1
   then
     echo "\033[00;32m──›\033[0m updating pacman"
     sudo pacman -Syu
