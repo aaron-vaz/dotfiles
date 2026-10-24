@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-<<<<<<< HEAD
-touch $HOME/Library/Application\ Support/com.mitchellh.ghostty/config
-=======
->>>>>>> bb003b94340bd1961c480fd774fdce35fb8f821b
+
+# Ghostty keeps its config under Application Support on macOS only
+[ "$(uname)" = "Darwin" ] || exit 0
+
+config_dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
+mkdir -p "$config_dir"
 
 # Symlink the config file
-ln -sf $DOTFILES/ghostty/config.symlink $HOME/Library/Application\ Support/com.mitchellh.ghostty/config
+ln -sf "$DOTFILES/ghostty/config.symlink" "$config_dir/config"
