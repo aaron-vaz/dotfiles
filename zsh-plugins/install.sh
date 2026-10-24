@@ -1,14 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 install_plugin() {
   plugin=$1
   location=$2
 
-  git clone --depth 1 https://github.com/$plugin.git $location/$plugin
+  if [ -d "$location/$plugin" ]
+  then
+    echo "$plugin is already installed"
+    return
+  fi
+
+  git clone --depth 1 "https://github.com/$plugin.git" "$location/$plugin"
 }
 
 plugin_dir=zsh-plugins/.plugins
 
 plugins=(
+  Aloxaf/fzf-tab
   hlissner/zsh-autopair
   srijanshetty/zsh-pip-completion
   zsh-users/zsh-autosuggestions
@@ -17,7 +24,7 @@ plugins=(
   zsh-users/zsh-syntax-highlighting
 )
 
-mkdir $plugin_dir
+mkdir -p "$plugin_dir"
 
 # install plugins
 for plugin in "${plugins[@]}"; do
@@ -25,7 +32,7 @@ for plugin in "${plugins[@]}"; do
   echo "\033[00;32m──›\033[0m installing $plugin"
   echo ""
   
-  install_plugin $plugin $plugin_dir
+  install_plugin "$plugin" "$plugin_dir"
 done
 
 # install prompt
