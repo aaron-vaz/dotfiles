@@ -15,7 +15,7 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 ├── rules/                 # Coding rules (some path-scoped via paths:)
 ├── hooks/                 # Hook scripts
 ├── agents/                # Agent definitions
-├── skills/                # Custom skills (12 skills)
+├── skills/                # Custom skills
 ├── references/            # Reference docs (loaded on demand)
 ├── scripts/               # Utility scripts
 │
@@ -58,6 +58,7 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | `investigation-intake` | Pre-investigation checklist |
 | `jira-writing` | Create Jira issues from notes |
 | `self-review` | Review own code as staff engineer |
+| `skelly` | Scaffold a new project from a template without prompts |
 | `session-archiver` | Archive session to KB (manual) |
 | `skill-audit` | Remove token-wasteful content from skills |
 | `tech-discovery` | Technical discovery documents |

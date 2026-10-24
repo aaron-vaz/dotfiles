@@ -226,6 +226,7 @@ Generating messages:
 | Main session: own non-trivial work finished and verified, before handing over for merge | `junior-review-walkthrough` |
 | Archive session to KB (manual) | `session-archiver` |
 | Skills getting bloated | `skill-audit` |
+| Scaffold a new project/service/CLI from a template | `skelly` |
 | Technical discovery documents | `tech-discovery` |
 | UI/a11y review | `web-design-guidelines` |
 
