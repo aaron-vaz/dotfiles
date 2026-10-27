@@ -8,7 +8,7 @@
   "editor.tabCompletion": "on",
   "explorer.openEditors.visible": 0,
   "window.reopenFolders": "none",
-  "terminal.external.osxExec": "iTerm.app",
+  "terminal.external.osxExec": "Ghostty.app",
   "files.autoSave": "onFocusChange",
   "extensions.autoUpdate": "on",
 
