@@ -22,7 +22,7 @@ success () {
 fail () {
   printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
   echo ''
-  exit
+  exit 1
 }
 
 setup_gitconfig () {
@@ -36,12 +36,31 @@ setup_gitconfig () {
       git_credential='osxkeychain'
     fi
 
-    user ' - What is your github author name?'
-    read -e git_authorname
-    user ' - What is your github author email?'
-    read -e git_authoremail
+    # GIT_AUTHOR_NAME and GIT_AUTHOR_EMAIL answer the questions without a prompt
+    git_authorname=$GIT_AUTHOR_NAME
+    git_authoremail=$GIT_AUTHOR_EMAIL
 
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.local.symlink
+    if { [ -z "$git_authorname" ] || [ -z "$git_authoremail" ]; } && ! [ -t 0 ]
+    then
+      fail 'set GIT_AUTHOR_NAME and GIT_AUTHOR_EMAIL to create git/gitconfig.local.symlink without a prompt'
+    fi
+
+    if [ -z "$git_authorname" ]
+    then
+      user ' - What is your github author name?'
+      read -e git_authorname
+    fi
+    if [ -z "$git_authoremail" ]
+    then
+      user ' - What is your github author email?'
+      read -e git_authoremail
+    fi
+
+    # \, | and & are special in a sed replacement
+    git_authorname=$(printf '%s' "$git_authorname" | sed 's/[\\|&]/\\&/g')
+    git_authoremail=$(printf '%s' "$git_authoremail" | sed 's/[\\|&]/\\&/g')
+
+    sed -e "s|AUTHORNAME|$git_authorname|g" -e "s|AUTHOREMAIL|$git_authoremail|g" -e "s|GIT_CREDENTIAL_HELPER|$git_credential|g" git/gitconfig.local.symlink.example > git/gitconfig.local.symlink
 
     success 'gitconfig'
   fi

@@ -7,3 +7,5 @@
 ./install -y    # install every module without asking
 ./install --help
 ```
+
+`--only`, `--skip` and `--list` choose modules without the picker, for scripts and agents. See [AGENTS.md](AGENTS.md).
