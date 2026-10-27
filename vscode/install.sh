@@ -19,7 +19,7 @@ check_install () {
 
 check_install
 
-if [ $BINARY != "" ]; then
+if [ -n "$BINARY" ]; then
   ln -sf "$DOTFILES/vscode/settings.json" "$VSCODE_HOME/User/settings.json"
   ln -sf "$DOTFILES/vscode/keybindings.json" "$VSCODE_HOME/User/keybindings.json"
 
