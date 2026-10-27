@@ -1,17 +1,182 @@
 #!/usr/bin/env bash
+#
+# Runs each module's install.sh, then bin/up. Asks which modules to install,
+# with all of them selected, in fzf. Choosing modules with a flag, or a stdin
+# that is not a terminal, installs without asking, so scripts and agents never
+# hit a prompt. A fresh machine has no fzf yet, so the fzf module is installed
+# first.
+#
+# Kept compatible with the bash 3.2 that ships with macOS.
 
 set -e
 
+# dot runs this from any directory, and the modules are found relative to it
+cd "$(dirname "$0")"
 export DOTFILES="$PWD"
 
-# run install scripts
-for install_file in **/install.sh; do
+usage() {
+  echo "usage: install [-y|--all] [--only a,b] [--skip a,b] [--no-update] [--list]"
   echo ""
-  echo "\033[00;32m──›\033[0m Installing $install_file"
-  echo ""
-  
-  bash -e $install_file
-done
+  echo "  -y, --all       install every module without asking"
+  echo "  --only a,b      install only these modules, without asking"
+  echo "  --skip a,b      install every module but these, without asking"
+  echo "  --no-update     do not run bin/up afterwards"
+  echo "  --list          print the modules, one per line, and exit"
+}
 
-# run up function
-./bin/up
+# in_list succeeds when the comma separated list $2 contains $1
+in_list() {
+  case ",$2," in
+    *",$1,"*) return 0 ;;
+  esac
+  return 1
+}
+
+# check_modules fails on a name in the comma separated list $1 that is not a module
+check_modules() {
+  local name
+
+  for name in ${1//,/ }; do
+    if ! [ -f "$name/install.sh" ]; then
+      echo "unknown module: $name (see install --list)" >&2
+      exit 1
+    fi
+  done
+}
+
+# find_fzf prints the path to fzf, which may not be on PATH yet during install.
+# The fzf module's own copy comes first: a distro fzf can be older than the
+# 0.35 that the start event needs.
+find_fzf() {
+  if [ -x "$HOME/.fzf/bin/fzf" ]; then
+    echo "$HOME/.fzf/bin/fzf"
+  elif command -v fzf > /dev/null 2>&1; then
+    command -v fzf
+  else
+    return 1
+  fi
+}
+
+# load_brew puts a Homebrew that is installed but not on PATH yet (a fresh
+# install by the homebrew module) on PATH, for the modules that install with it
+load_brew() {
+  local brew
+
+  command -v brew > /dev/null 2>&1 && return 0
+  for brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    if [ -x "$brew" ]; then
+      eval "$("$brew" shellenv)"
+      return 0
+    fi
+  done
+}
+
+# choose_modules marks the modules picked in fzf in the selected array
+choose_modules() {
+  local fzf="$1" chosen line i status=0
+
+  chosen=$(printf '%s\n' "${modules[@]}" | "$fzf" \
+    --multi \
+    --reverse \
+    --height=50% \
+    --prompt="install> " \
+    --header="Tab: toggle  Ctrl-A: all  Ctrl-D: none  Enter: install  Esc: quit" \
+    --sync \
+    --bind="start:select-all,ctrl-a:select-all,ctrl-d:deselect-all") || status=$?
+
+  # 130 is Esc or Ctrl-C, 1 is Enter with nothing to pick
+  case "$status" in
+    0) ;;
+    1|130) exit 0 ;;
+    *) exit "$status" ;;
+  esac
+
+  for i in "${!modules[@]}"; do
+    selected[$i]=0
+    while IFS= read -r line; do
+      if [ "$line" = "${modules[$i]}" ]; then
+        selected[$i]=1
+      fi
+    done <<< "$chosen"
+  done
+}
+
+main() {
+  local ask=1 update=1 list=0 only="" skip="" install_file i fzf
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -y|--all) ask=0 ;;
+      --only|--skip)
+        if [ -z "$2" ]; then
+          usage >&2
+          exit 1
+        fi
+        if [ "$1" = --only ]; then only="$2"; else skip="$2"; fi
+        ask=0
+        shift
+        ;;
+      --only=?*) only="${1#*=}"; ask=0 ;;
+      --skip=?*) skip="${1#*=}"; ask=0 ;;
+      --no-update) update=0 ;;
+      --list) list=1 ;;
+      -h|--help) usage; exit 0 ;;
+      *) usage >&2; exit 1 ;;
+    esac
+    shift
+  done
+
+  check_modules "$only"
+  check_modules "$skip"
+
+  # homebrew goes first: other modules install with brew on macOS
+  modules=(homebrew)
+  selected=(1)
+  for install_file in */install.sh; do
+    [ "$install_file" = homebrew/install.sh ] && continue
+    modules+=("${install_file%/install.sh}")
+    selected+=(1)
+  done
+
+  if [ "$list" = 1 ]; then
+    printf '%s\n' "${modules[@]}"
+    exit 0
+  fi
+
+  for i in "${!modules[@]}"; do
+    if [ -n "$only" ] && ! in_list "${modules[$i]}" "$only"; then
+      selected[$i]=0
+    fi
+    if in_list "${modules[$i]}" "$skip"; then
+      selected[$i]=0
+    fi
+  done
+
+  if [ "$ask" = 1 ] && [ -t 0 ]; then
+    if ! fzf=$(find_fzf); then
+      printf "\033[00;32m──›\033[0m Installing fzf to pick the modules\n"
+      bash -e fzf/install.sh
+      fzf=$(find_fzf) || { echo "fzf is still not installed" >&2; exit 1; }
+    fi
+    choose_modules "$fzf"
+  fi
+
+  for i in "${!modules[@]}"; do
+    [ "${selected[$i]}" = 1 ] || continue
+
+    echo ""
+    printf "\033[00;32m──›\033[0m Installing %s\n" "${modules[$i]}/install.sh"
+    echo ""
+
+    load_brew
+    bash -e "${modules[$i]}/install.sh"
+  done
+
+  load_brew
+
+  if [ "$update" = 1 ]; then
+    ./bin/up
+  fi
+}
+
+main "$@"
