@@ -1,7 +1,11 @@
-# shortcut to this dotfiles path is $DOTFILES
 export PROJECTS=$HOME/Code
 export WORKSPACES=$HOME/workspaces
-export DOTFILES=$PROJECTS/shell/dotfiles
+
+# shortcut to this dotfiles path is $DOTFILES: the repo ~/.zshrc links into,
+# wherever it was cloned
+DOTFILES=${${(%):-%x}:A:h:h}
+[[ -f $DOTFILES/install ]] || DOTFILES=$PROJECTS/shell/dotfiles
+export DOTFILES
 
 # all of our zsh files
 typeset -U config_files

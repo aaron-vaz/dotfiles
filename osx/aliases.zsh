@@ -1,1 +1,2 @@
-alias sed='gsed'
+# GNU sed from Homebrew on macOS
+command -v gsed > /dev/null && alias sed='gsed'
