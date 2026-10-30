@@ -58,7 +58,7 @@ A module uses only the files it needs. The names are what make them load:
 - **No prompt without a way around it.** Read an environment variable first and prompt only when stdin is a terminal; without one, fail with a message naming the variable (see `git/install.sh`).
 - **`update.sh` is sourced into zsh**, so it must never `exit` (that ends `up`), and it should do nothing when the tool is not installed. `bin/up` runs with `set -e`: a command that can fail for an expected reason (not logged in, nothing to upgrade) needs `|| …`, or every later module goes without its update.
 - **Shell files must not fail when the tool is missing.** A `path.zsh`, `env.zsh` or `completion.zsh` that runs a command guards it with `command -v`, or every new shell prints an error on machines without the tool.
-- **Prefer the tool's official installer or the system package manager**, and let the package manager do updates where it can. On macOS, a plain formula or cask belongs in `homebrew/Brewfile`, which `homebrew/install.sh` and `up` apply with `brew bundle`.
+- **Prefer the tool's official installer or the system package manager**, and let the package manager do updates where it can. On macOS, a plain CLI formula belongs in `homebrew/Brewfile`, which `homebrew/install.sh` and `up` apply with `brew bundle`. GUI apps (casks) are per machine: they live in `homebrew/Brewfile.apps`, which `homebrew/install.sh` offers in a picker (or `DOTFILES_CASKS=all|none|name,name` answers) and writes the choice to the untracked `~/.Brewfile`; `install` and `up` apply that file.
 - Print progress the way the other modules do: `echo "\033[00;32m──›\033[0m updating <tool>"`.
 
 ## Shell compatibility

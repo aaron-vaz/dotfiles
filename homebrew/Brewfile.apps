@@ -1,0 +1,12 @@
+# The apps install offers on macOS; the ones chosen are written to ~/.Brewfile.
+cask "balenaetcher"
+cask "displaylink"
+cask "docker"
+cask "firefox"
+cask "font-jetbrains-mono"
+cask "ghostty"
+cask "jetbrains-toolbox"
+cask "keeweb"
+cask "maccy"
+cask "signal"
+cask "visual-studio-code"

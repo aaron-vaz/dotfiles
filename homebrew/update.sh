@@ -8,6 +8,10 @@ then
   if test "$(uname)" = "Darwin"
   then
     brew bundle --file="$DOTFILES/homebrew/Brewfile"
+    if [ -f "$HOME/.Brewfile" ]
+    then
+      brew bundle --file="$HOME/.Brewfile"
+    fi
   fi
   brew upgrade
   brew cleanup --prune=all
