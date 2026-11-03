@@ -59,7 +59,7 @@ then
   done
 
   brew bundle --file="$DOTFILES/homebrew/Brewfile"
-  # apps are per machine: ~/.Brewfile holds the ones chosen here, and up keeps applying it
+  # apps are per machine: ~/.Brewfile holds the ones chosen here; up never installs, so only install applies it
   if ! [ -f "$HOME/.Brewfile" ]
   then
     choose_casks
