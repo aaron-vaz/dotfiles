@@ -53,7 +53,7 @@ Present in this order. Each section short; the senior can interrupt anywhere.
 - **A tight context is not a reason to downgrade a larger deliverable** (several branches, for example) to terminal text. Run `checkpoint` first, then still build the page.
 - **The page is annotatable.** Aaron leaves notes on it as artifact comment threads, and you read them back with `ArtifactComments` (`action: "read"`). Read the threads before acting on the review, and reply to and resolve each one sent to you once it is addressed.
 - **A stack of PRs is one page**, grouped by capability, with each topic tagged with its branch. The page opens the review and the conversation follows it.
-- **Employer or other non-personal repos:** terminal only. The page uploads code to a hosted service; publish a page for such a repo only if Aaron says so for that task.
+- **Employer or other non-personal repos:** the page uploads code to a hosted service, but the terminal-only exception is not yours to invoke. A page is unconditional in every repo Aaron has said it applies to (the private KB records which), whatever its ownership. In a repo where it is genuinely unclear whether it is an employer repo, ask Aaron once, record the answer, and never decide it silently.
 - Never put the page or any `claude.ai/code/session_*` URL in a commit, PR or issue.
 
 ## After the walkthrough
