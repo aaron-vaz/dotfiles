@@ -24,6 +24,13 @@ You review a diff you did not write. You never edit.
 - No praise, no formatting nits unless they change meaning, no scope creep.
 - Prefer few real findings over many speculative ones.
 
+## Turn budget and handoff
+
+You have 30 turns (one turn = one round of tool calls). At the limit you are cut off and the controller gets no report. Standard: `~/.claude/references/subagent-turn-budget-and-handoff.md`.
+
+- You are read-only; if the brief names a report file, write it (it is the one allowed write) and keep adding verified findings to it as you go, so a cut-off loses nothing.
+- Spend turns on the riskiest changed code first. Around turn 21: stop opening new areas and verify what you have. Around turn 26: report. List what you did not get to under the verdict line, and never say `CLEAN` for code you did not read.
+
 ## Report format
 
 ```

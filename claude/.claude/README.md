@@ -48,6 +48,8 @@ Adapted from work config. Minimal foundation — add plugins, MCP servers, and s
 | PreToolUse/Read+Edit+Write | First touch of a file type per session+agent | `kb-feedback-push.sh` maps extension (.kt/.kts→kotlin, .py→python, .java→java, .sh→shell, .proto→protobuf, gradle files→gradle, test files→testing) to KB tags, injects `search-kb.sh --type feedback --tag <tag> --brief` results as additionalContext. Deduped per session+agent+tag via state file under `$TMPDIR`; never blocks |
 | SubagentStart | Any subagent spawn | `subagent-track.sh` records agent_id → agent_type for the subagent status line |
 
+Hooks read tool metadata as JSON on stdin and run in the session's working directory, not through `CLAUDE_*` variables: see `references/hooks.md` ("Hook Input Contract"). Contract test: `tests/hook-stdin-contract-mechanical.sh`.
+
 ### Skills
 
 | Skill | Purpose |
@@ -79,11 +81,13 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 
 - **Enforcement:** `hooks/enforce-delegation.sh` (PreToolUse). `agent_id` in the payload exists only inside subagents, so a missing one means main thread. Don't run the main session with `--agent`.
 - **Bypass:** `CC_MAIN_EDITS=1 cc` — `cc`/`mcc` forward it through tmux via `env`, since tmux sessions don't inherit the launching shell's environment.
+- **Turn budget and handoff:** every definition has a "Turn budget and handoff" section with its own limit (`maxTurns`): handoff note within the first 3 tool rounds, stop new work at ~70%, report (`PARTIAL` if unfinished) by ~85%. Briefs state the limit and name the handoff and report paths. Standard: `references/subagent-turn-budget-and-handoff.md`.
 - **Don't pass `model`** when spawning these agents: a per-call `model` beats the definition's tier.
 - **Haiku only for read-only workers:** `scout` and `test-runner` run on haiku; every worker that edits or reviews is sonnet or above.
 - **Depth:** `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=2` in `settings.json` (main → orchestrator → workers). `Agent(type)` allowlists in a subagent's `tools:` are ignored by Claude Code, so the orchestrator's worker list is enforced by its prompt; workers simply have no `Agent` tool.
 - **Status line:** `subagentStatusLine` → `hooks/subagent-statusline.js`. Row: status glyph, agent type, model tier (colored), elapsed, context %, tokens, sparkline, effort, label.
 - **Tests:** `tests/delegation-mechanical.sh`.
+- **Verified harness facts** (model resolution order, status line payload, report and resume mechanics, deny-rule caveats): `references/delegation-stack.md`.
 - **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch).
 
 ### Session naming
@@ -108,6 +112,8 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 ~/.agents/kb/search-kb.sh --project myproject # by project
 ~/.agents/kb/audit-kb.sh                      # find stale entries
 ```
+
+Design rationale (flat entries, gitignored TSV index, SessionStart output rules): `references/memory-system.md`.
 
 **Tests:** `tests/kb-search-mechanical.sh`, `tests/kb-feedback-push-mechanical.sh`, `tests/kb-session-reminder-mechanical.sh`.
 

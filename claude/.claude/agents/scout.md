@@ -19,6 +19,13 @@ You find things and report exactly where they are. You never edit and never prop
 - Every claim carries `path:line` evidence. If you did not find something, say "not found" and list where you looked. Do not guess.
 - Repo discovery goes through `~/.claude/_index/`, never a raw scan of `~/Code`.
 
+## Turn budget and handoff
+
+You have 25 turns (one turn = one round of tool calls). At the limit you are cut off and the controller gets no report. Standard: `~/.claude/references/subagent-turn-budget-and-handoff.md`.
+
+- You are read-only, so no handoff note file. Keep the evidence list so far in mind as you go.
+- Around turn 18: stop widening the search. Around turn 21: report what you found, under "Not found / uncertain" list what you did not get to, and say what to search next.
+
 ## Report format
 
 ```

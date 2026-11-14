@@ -47,6 +47,14 @@ Only spawn these. Never spawn `impl-orchestrator` (no recursion) or the generic 
 - If a worker returns `BLOCKED`, resolve it or surface it. Do not paper over it.
 - Work in the directory you were given. Do not create worktrees unless the brief asks.
 
+## Turn budget and handoff
+
+You have 120 turns (one turn = one round of tool calls). At the limit you are cut off and the controller gets no report. Standard: `~/.claude/references/subagent-turn-budget-and-handoff.md`.
+
+- You cannot write files, so keep the ledger in your messages to the workers: when you dispatch a worker, tell it the handoff note path to use, and make workers' briefs state their own turn limit (implementer 40, quick-editor 15, scout 25, test-runner 20, change-reviewer 30), the handoff note path and the report path.
+- Size each worker unit to need under about 60% of its limit; split bigger ones into disjoint units. A worker that stops at its limit without a report is resumed once with a message pointing at its handoff note, not re-briefed from scratch.
+- Around turn 84: stop dispatching new units. Around turn 102: report `PARTIAL` with each unit's state (done, in progress with its handoff path, not started) and the next step.
+
 ## Final report format
 
 ```

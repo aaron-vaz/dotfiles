@@ -152,6 +152,24 @@ for worker in implementer quick-editor scout test-runner change-reviewer; do
   TOOLS=$(awk '/^---$/{n++; next} n==1 && /^tools:/{print; exit}' "$AGENTS_DIR/$worker.md")
   [[ -n "$TOOLS" && "$TOOLS" != *Agent* ]] && ok "T8d: $worker has explicit tools and no Agent (no runaway nesting)" || bad "T8d: $worker tools wrong: '$TOOLS'"
 done
+# T8e: every definition carries the turn-budget section and names its own maxTurns,
+# so a limit change in the frontmatter cannot silently leave a stale number behind
+for agent in impl-orchestrator implementer quick-editor scout test-runner change-reviewer; do
+  f="$AGENTS_DIR/$agent.md"
+  [[ -f "$f" ]] || continue
+  turns=$(awk '/^---$/{n++; next} n==1 && /^maxTurns:/{sub(/^maxTurns:[[:space:]]*/,""); print; exit}' "$f")
+  if [[ -z "$turns" ]]; then bad "T8e: $agent has no maxTurns"; continue; fi
+  if ! grep -q '^## Turn budget and handoff$' "$f"; then bad "T8e: $agent lacks the '## Turn budget and handoff' section"; continue; fi
+  section=$(awk '/^## Turn budget and handoff$/{on=1; next} /^## /{on=0} on' "$f")
+  [[ "$section" == *"You have $turns turns"* ]] \
+    && ok "T8e: $agent states its $turns-turn limit in the budget section" \
+    || bad "T8e: $agent budget section must say 'You have $turns turns' (maxTurns is $turns)"
+  [[ "$section" == *"subagent-turn-budget-and-handoff.md"* ]] \
+    && ok "T8e: $agent budget section points at the standard" \
+    || bad "T8e: $agent budget section must point at references/subagent-turn-budget-and-handoff.md"
+done
+[[ -f "$HOME/.claude/references/subagent-turn-budget-and-handoff.md" ]] \
+  && ok "T8f: the turn-budget standard exists" || bad "T8f: references/subagent-turn-budget-and-handoff.md missing"
 
 echo ""
 echo "Passed: $PASS  Failed: $FAIL"
