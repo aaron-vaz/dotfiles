@@ -19,5 +19,8 @@
 | `gh api ... 2>&1 \| python3 -c "json.load(sys.stdin)"` → `JSONDecodeError` | `2>&1` merges stderr into stdin, breaking JSON parse. Drop `2>&1` when piping to JSON parser, or use `gh api --jq '.field'` |
 | Grep/Glob fails: `ENOENT: posix_spawn 'rg'` | `rg` (ripgrep) not on PATH. Fall back to `Bash` with `grep -r` or `find` |
 | `'utf-8' codec can't decode byte 0xXX` | Subprocess captured with `text=True` (system locale) instead of `encoding="utf-8", errors="replace"`. Fix: `subprocess.run(..., capture_output=True, encoding="utf-8", errors="replace")` |
+| Config check passes but the setting is not in effect: `tmux -f <file> new-session` | With a tmux server already running the new session joins it and never reads the file. Use a private socket and assert values: `tmux -L cfgtest -f <conf> new-session -d && tmux -L cfgtest show -g extended-keys` (confirmed on tmux 3.7c) |
+| New completion path in `fpath` is invisible after editing zshrc | `compinit -C` skips rescanning `fpath` while `~/.zcompdump` is same-day, and `zsh -n` cannot catch it. Verify with `rm -f ~/.zcompdump && zsh -ic 'whence -w _docker'` |
+| Alias or function name collision check by grepping the repo | `~/.localrc` is untracked and machine-specific, so a repo grep misses it. Use `zsh -ic 'whence -w <name>'` |
 | Hook not firing | `chmod +x ~/.claude/hooks/*.sh`; check settings.json hook syntax |
 | KB search not found | `~/.agents/kb/search-kb.sh --rebuild-index` |

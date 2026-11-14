@@ -1,6 +1,6 @@
 # Hook Configuration Examples
 
-**Last Updated:** 2026-02-27
+**Last Updated:** 2026-11-14
 
 Reference for configuring Claude Code hooks in `~/.claude/settings.json`.
 
@@ -51,7 +51,7 @@ cat ~/.claude/settings.json
       "matcher": "Bash",
       "hooks": [{
         "type": "command",
-        "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -q \"git commit\"; then echo '⚠️  Pre-commit reminder: Consider running /claude-md-management:claude-md-improver if you made architectural changes'; fi"
+        "command": "if jq -r '.tool_input.command // empty' | grep -q \"git commit\"; then echo '⚠️  Pre-commit reminder: Consider running /claude-md-management:claude-md-improver if you made architectural changes'; fi"
       }]
     }]
   }
@@ -71,7 +71,7 @@ cat ~/.claude/settings.json
       "matcher": "Bash",
       "hooks": [{
         "type": "command",
-        "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -q \"git commit\"; then echo 'Reminder: tests must pass before committing'; fi"
+        "command": "if jq -r '.tool_input.command // empty' | grep -q \"git commit\"; then echo 'Reminder: tests must pass before committing'; fi"
       }]
     }]
   }
@@ -130,7 +130,7 @@ cat ~/.claude/settings.json
       "matcher": "Bash",
       "hooks": [{
         "type": "command",
-        "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -qE '(mvn|./gradlew)'; then echo 'Reminder: Verify correct Java version active (check project CLAUDE.md)'; fi"
+        "command": "if jq -r '.tool_input.command // empty' | grep -qE '(mvn|./gradlew)'; then echo 'Reminder: Verify correct Java version active (check project CLAUDE.md)'; fi"
       }]
     }]
   }
@@ -168,11 +168,11 @@ You can combine multiple hooks on the same event:
         "hooks": [
           {
             "type": "command",
-            "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -q \"git commit\"; then echo '⚠️  Pre-commit checklist: tests pass, pre-commit-reviewer run, CLAUDE.md updated?'; fi"
+            "command": "if jq -r '.tool_input.command // empty' | grep -q \"git commit\"; then echo '⚠️  Pre-commit checklist: tests pass, pre-commit-reviewer run, CLAUDE.md updated?'; fi"
           },
           {
             "type": "command",
-            "command": "if echo \"$CLAUDE_BASH_COMMAND\" | grep -qE '(mvn|./gradlew)'; then echo '⚠️  JVM build - verify Java version matches project requirements'; fi"
+            "command": "if jq -r '.tool_input.command // empty' | grep -qE '(mvn|./gradlew)'; then echo '⚠️  JVM build - verify Java version matches project requirements'; fi"
           }
         ]
       }
@@ -208,12 +208,40 @@ You can combine multiple hooks on the same event:
 - ❌ Create hooks that fire too frequently
 - ❌ Make hooks that require user input
 
-## Environment Variables Available
+## Hook Input Contract
 
-| Variable | Description | Available In |
-|----------|-------------|--------------|
-| `$CLAUDE_BASH_COMMAND` | The bash command about to execute | PreToolUse (Bash) |
-| `$CLAUDE_TOOL_NAME` | Name of tool being used | PreToolUse, PostToolUse |
+Hooks receive tool metadata as JSON on stdin, not through environment variables. This was verified on 2026-08-22 by wiring a probe hook that dumped stdin and the environment on `PreToolUse:Bash` and `PostToolUse:Edit|Write`. `tests/hook-stdin-contract-mechanical.sh` is the executable specification.
+
+The payload looks like this:
+
+```json
+{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"command": "..."}, "cwd": "/path/of/the/session", "session_id": "..."}
+```
+
+- `PostToolUse` nests its input under `tool_input` in the same way and adds `tool_response`.
+- Inside a subagent the payload also carries `agent_id` and `agent_type`; both are absent on main-thread calls.
+- The only `CLAUDE_*` variables that exist are `CLAUDE_PROJECT_DIR`, `CLAUDE_PID`, `CLAUDE_CODE_SESSION_ID`, `CLAUDE_EFFORT`, `CLAUDE_CODE_ENTRYPOINT`, `CLAUDECODE`, and `CLAUDE_CODE_MESSAGING_SOCKET` with its `_TOKEN`.
+- `CLAUDE_BASH_COMMAND`, `CLAUDE_TOOL_INPUT`, `CLAUDE_FILE_PATH` and `CLAUDE_TOOL_NAME` are never set. A hook that reads them matches an empty string, enforces nothing, and still looks healthy in `/hooks`.
+
+Read the command like this, keeping the environment fallback in case the contract reverts:
+
+```bash
+CMD="$(jq -r '.tool_input.command // empty' 2>/dev/null || true)"
+CMD="${CMD:-${CLAUDE_BASH_COMMAND:-}}"
+```
+
+The `|| true` matters under `set -e`: an unguarded failing command substitution kills the script, which is how `pre-commit-review.sh` once crashed with `CLAUDE_BASH_COMMAND: unbound variable`.
+
+### Working directory
+
+A hook runs in the session's working directory, not in the directory of a compound command such as `cd ~/Code/shell/dotfiles && git commit ...`. The payload's `cwd` field is the session directory. A bare `git diff --cached` or `git -C .` inside a hook therefore reads whatever repository the session happens to be in.
+
+- A hook that guards one specific repository should resolve it from its own file location, for example `git -C "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)" rev-parse --show-toplevel`. This works through the `~/.claude` symlinks because `pwd -P` resolves them.
+- A hook that acts on the repository the user is committing in should try, in order: `git -C <path>` from the command, a leading `cd <path>`, the payload's `.cwd`, then `$PWD`.
+
+### Verifying a hook
+
+A guard without a test of its own is not a guard. A silent hook looks identical to a working one in `/hooks`, so assert a side effect (a log file, a denial, a warning) before trusting it. Test a repository-resolving hook against a synthetic repository rather than the live index: the hook resolves its root from its own path, so copying it into a fake repository makes it resolve there.
 
 ## Testing Hooks
 
