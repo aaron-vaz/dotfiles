@@ -23,6 +23,15 @@ Curated feature/session knowledge in two stores: private `~/.agents/kb/private/`
 ~/.agents/kb/search-kb.sh --tag <tag> --full
 ```
 
+### Design
+
+- **Flat entry directories, no topic subdirectories.** Tags do the categorisation, because forcing one category on a cross-cutting entry creates friction.
+- **A TSV index instead of parsing frontmatter on every search.** `index.tsv` is a generated cache that rebuilds when any entry is newer than it, and it is gitignored (`git add kb/index.tsv` is rejected for that reason). Grepping one TSV is faster than parsing dozens of YAML headers.
+- **Shell scripts only.** `search-kb.sh` and `audit-kb.sh` need nothing beyond what a Claude Code hook already needs.
+- **SessionStart output is injected as a system reminder, so it stays short and silent when empty.** The hook runs `search-kb.sh --project <repo> --brief`, caps it with `head -8`, and prints a header only when something matched.
+- **Expiry forces review.** Entries default to 90 days; foundational ones use `expires: 2099-01-01` (see Entry Lifecycle).
+- **One-off migration scripts are written, run and deleted in the same session.** They do not stay in the repository.
+
 ### Entry Lifecycle
 
 ```
