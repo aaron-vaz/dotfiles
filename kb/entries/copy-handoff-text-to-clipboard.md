@@ -21,5 +21,5 @@ Two mechanics worth not re-deriving:
 
 ## Related
 
-- [[2026-08-16-never-commit-to-main]]
+- [[never-commit-to-main]]
 - [[no-session-urls-in-external-content]]

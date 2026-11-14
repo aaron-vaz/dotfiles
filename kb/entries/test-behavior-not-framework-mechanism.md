@@ -42,6 +42,3 @@ verify a new regression test actually catches the regression: temporarily revert
 the test fails at the expected place, then restore the fix and confirm it passes again — a test that
 was never seen to fail is not proven to test anything.
 
-## Related
-
-- [[default-runtest-over-runblocking-in-new-coroutine-tests]]

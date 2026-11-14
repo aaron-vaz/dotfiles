@@ -29,6 +29,3 @@ mechanism is noise to them.
 - Vendor names that are product-relevant choices (e.g. a maps provider as the venue source) may stay;
   plumbing vendors (S3, SQS, Lambda, Secrets Manager) go.
 
-## Related
-
-- [[delegate-simple-work-to-sonnet-subagents]]

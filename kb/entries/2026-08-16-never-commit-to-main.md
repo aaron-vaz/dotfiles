@@ -18,6 +18,14 @@ changes can go to main". The rule is about protecting shared history under
 review, not about branch hygiene as an end in itself — so apply it where a second
 person could be affected, and skip it in a repo only you commit to.
 
+For homelab, Aaron went further on 2026-10-30: "It's my personal repo you can commit
+and push as you go to main just make sure to do logical commits to mention good
+history not random commits." So in `~/Code/homelab`, commit **and push** to `main`
+as each piece of work finishes, without asking. Keep the history readable: one
+commit per logical change (a rig, a harness repair, a docs fix), each with a
+conventional message that says why. Do not commit half-edited files that another
+agent is still changing, and do not make a catch-all "wip" commit.
+
 The exemption turns on who commits, not on what the repo holds: it covers config
 *and* infrastructure-as-code, and it does **not** extend to a product repo just
 because you happen to be its only committer this week.
@@ -40,6 +48,14 @@ this rule as written at the time. The call turned out to be right, but it was a
 guess; the question then sat unanswered across two sessions because it was never
 put plainly. Surface the conflict in one sentence and get a ruling.
 
+## Force-pushing shared branches
+
+Never run `git push --force` or `--force-with-lease` on a shared branch (`main`, `master`, `release/*`, `develop`, or any branch carrying other contributors' commits). Force-push only your own feature branches, and only after an interactive rebase.
+
+**Why:** Force-pushing a shared branch rewrites history other people have based work on. It causes merge conflicts, lost commits and team-wide rebases.
+
+**How to apply:** Before any force push, check the branch name. If it is shared, stop and use a regular `git push`, or rebase locally and open a new branch. If you are unsure whether a branch is shared, ask before forcing.
+
 ## Related
 
-- [[never-force-push-shared-branches]]
+- [[never-guess-identifiers]]

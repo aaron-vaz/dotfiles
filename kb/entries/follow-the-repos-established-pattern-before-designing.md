@@ -18,4 +18,3 @@ For anything new, first find the repo's established way of doing that kind of th
 ## Related
 
 - [[repo-test-style-beats-global-testing-rules]]
-- [[kotlin-fqn-precedent-is-not-a-reason]]

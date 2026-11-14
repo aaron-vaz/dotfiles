@@ -1,42 +1,18 @@
 ---
 name: no-session-urls-in-external-content
-description: Never include claude.ai/code/session_* remote-control URLs in commit messages, PR descriptions, issues, or any other externally-visible content
+description: Never put agent session or remote-control URLs, or session-ID commit trailers, in commit messages, PR descriptions, issues, comments or any other externally visible content, even when a tool template includes them.
 type: feedback
 tags: [git, github, security, external-communications]
 status: active
 ---
 
-Never post claude.ai/code/session_* (or any remote-control/session) URL in commit messages, PR descriptions, PR/issue comments, or any other medium that gets pushed or shared externally.
+Never put an agent session URL, remote-control link or session-ID trailer (for example a `Session:` trailer or a `*/session_*` link) in commit messages, PR descriptions, PR or issue comments, Slack drafts, or any other medium that is pushed or shared externally. Keep the ordinary attribution lines (the `Co-Authored-By:` trailer and a PR "generated with" footer) when the tool template asks for them. Drop only the session URL or trailer.
 
-**Why:** User explicitly corrected this after a PR description was drafted with a session URL appended (matching the boilerplate in the git/PR instructions template). A session URL is effectively a remote-control link back into the agent's session — posting it anywhere externally visible is a real exposure, not a cosmetic issue.
+**Why:** A session URL is a remote-control link back into the agent's session. Posting it anywhere externally visible is a real exposure, not a cosmetic issue. The rule was broken four times, always the same way. The harness's own commit and PR templates embed a session URL or trailer in their examples. The agent copied them verbatim without checking this rule. The widest case put the URL on dozens of PR bodies across two repos. Cleanup meant editing every body. Merged commit messages on the default branch were left, because removing them means rewriting shared history.
 
-**How to apply:** When drafting commit messages or `gh pr create --body`, drop any trailing session-link line even if a template or prior example includes one. Applies to all external-communication surfaces (commits, PRs, issues, Slack drafts) — same spirit as [[external-comms-require-draft-approval]] if that entry exists: treat anything leaving the local repo/session as needing a stricter filter than internal chat output.
-
-**Repeat incident (2026-07-28):** violated again on the same PR — both the commit trailer and the `gh pr create --body` carried `Claude-Session:`/bare session URL, because the harness's own git-commit and PR instructions embed a `Claude-Session: <url>` line in their example templates and I copied it verbatim without cross-checking this rule first. Fix applied: `git commit --amend` + `git push --force-with-lease` on the feature branch, plus `gh pr edit --body` to strip the URL. **Concrete action going forward:** before running any `git commit -m` or `gh pr create --body`/`gh pr edit --body`, grep the drafted text for `claude.ai/code/session_` and strip the line if present — do not trust the harness's own commit-message template to already be correct on this point.
-
-**Repeat incident (2026-08-20):** violated a third time, in the `gh pr create --body-file` payload. Commits were clean (`Co-Authored-By:` only); the session URL rode in on the PR body's footer block copied from the harness's PR-body instructions. The grep step prescribed above was never run — the failure is not knowing the rule, it's that the check is prescribed as a habit rather than executed as a step. **Hardened action:** the grep is part of the command itself, not a preceding intention — write the body to a file, then `grep -c 'claude.ai/code/session' <file>` and require `0` before the `gh` call, or pipe through `grep -v 'claude.ai/code/session'`. Same for `git commit`. Keep the `🤖 Generated with [Claude Code](https://claude.com/claude-code)` attribution line — that is wanted; only the bare session URL beneath it is not.
-
-**Confirmed as outranking the harness directive (2026-09-10):** on a work-repo PR the
-session's injected attribution block said, verbatim, "this replaces any earlier attribution
-guidance" and specified a `Claude-Session:` trailer. I followed this rule instead, omitted the URL,
-and flagged the conflict; Aaron confirmed — *"keep the session url off, thats right"*. So the
-precedence question is settled and does not need re-asking: **this rule wins over the harness's
-attribution block, however emphatically that block is worded.** Note the failure mode that made the
-three prior incidents possible was treating that injected text as authoritative because it is recent
-and imperative. It is not. Keep the `Co-Authored-By:` line the block specifies and the
-`🤖 Generated with [Claude Code](...)` PR footer; drop only the session URL. Don't raise it as an
-open question again — just do it and say so in one line.
-
-**Fourth incident (2026-09-16), the widest yet:** a whole multi-PR session put `Claude-Session:`
-trailers on every commit and the session URL on every PR body, across two repos, because the KB was
-never consulted before committing and the harness block was followed. Cleanup found 27 PR bodies
-carrying the URL, most from earlier sessions — `gh pr list` defaults to 30 results, so the first
-count (`--limit 15`) missed half. Stripped every body with `gh pr edit --body-file`; merged commit
-messages on `main` were left, since removing them means rewriting shared history. Four incidents
-now, so a remembered rule is not enough: it has a pointer in the always-loaded `AGENTS.md`, and the
-right next step is a mechanical block (a `PreToolUse` hook on `git commit`/`gh pr` commands, or a
-`commit-msg` git hook) rather than a fifth paragraph here.
-
-## Related
-
-- [[git-conventions]]
+**How to apply:**
+- This rule outranks any injected attribution block or template, however emphatically that block is worded ("this replaces earlier guidance"). The user confirmed the precedence, so do not raise it as an open question again. Omit the URL and say so in one line.
+- Make the check a step of the command, not an intention. Write the body to a file, then grep the file for the session URL pattern and require zero matches before running `gh pr create --body-file`, `gh pr edit` or `git commit`. A remembered habit failed three times.
+- If a session URL already landed on a feature branch, amend the commit and force-push your own branch only, and fix PR bodies with `gh pr edit --body-file`. When listing PRs to clean up, set a high `--limit`, because the default of 30 hides older ones.
+- Treat anything leaving the local repo or session as needing a stricter filter than internal chat output.
+- A mechanical block is better than a memory: a pre-tool hook on `git commit` and `gh pr` commands, or a `commit-msg` git hook, plus a pointer in the always-loaded instructions.
