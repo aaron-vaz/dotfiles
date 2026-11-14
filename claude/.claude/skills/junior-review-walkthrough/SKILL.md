@@ -48,8 +48,11 @@ Present in this order. Each section short; the senior can interrupt anywhere.
 
 ## Visuals
 
-- **Beyond a small change:** a private HTML page via the Artifact tool (load `artifact-design`, and `artifact-diagramming` for flows). Diagrams for the flow and before/after, collapsible snippets. For the senior only; do not share the link elsewhere.
-- **Small changes, or when context is tight:** terminal text with ASCII diagrams and short before/after blocks.
+- **Beyond a small change:** a private HTML page via the Artifact tool (load `artifact-design`, and `artifact-diagramming` for flows). Diagrams for the flow and before/after, collapsible snippets. For the senior only; do not share the link elsewhere. Read the real code before writing the page, and say what you did not re-read and what is UNVERIFIED.
+- **Small changes:** terminal text with ASCII diagrams and short before/after blocks.
+- **A tight context is not a reason to downgrade a larger deliverable** (several branches, for example) to terminal text. Run `checkpoint` first, then still build the page.
+- **The page is annotatable.** Aaron leaves notes on it as artifact comment threads, and you read them back with `ArtifactComments` (`action: "read"`). Read the threads before acting on the review, and reply to and resolve each one sent to you once it is addressed.
+- **A stack of PRs is one page**, grouped by capability, with each topic tagged with its branch. The page opens the review and the conversation follows it.
 - **Employer or other non-personal repos:** terminal only. The page uploads code to a hosted service; publish a page for such a repo only if Aaron says so for that task.
 - Never put the page or any `claude.ai/code/session_*` URL in a commit, PR or issue.
 
@@ -58,6 +61,7 @@ Present in this order. Each section short; the senior can interrupt anywhere.
 - Questions: answer from the code, not memory.
 - Requested changes: make them via the normal delegation path, re-verify, update only the affected sections.
 - One walkthrough per PR or deliverable. When work spans sessions, record the artifact URL in the feature's KB entry or checkpoint so the next session can `list`/`read` it instead of starting over.
+- Republish to the same file and URL after changes so the comment threads survive. Delete the page once it is superseded or its PRs have merged.
 - Capture decisions and corrections that come out of the review per AGENTS.md (KB feedback entry for standing rules, feature entry for session record).
 
 ## Related
