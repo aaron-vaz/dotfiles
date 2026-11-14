@@ -45,10 +45,12 @@ Use `permissions.allow` rules to:
 
 **File operations:**
 ```json
-"Read(file_path:/path/to/file)"           // Specific file
-"Edit(file_path:/path/to/dir/*)"          // Directory pattern
-"Write(file_path:/tmp/build-cache/*)"     // Temp files
+"Read(~/.config/example/**)"              // Home-relative directory tree
+"Read(~/.example-token)"                  // Specific file
+"Edit(//tmp/build-cache/**)"              // Absolute path (note the double slash)
 ```
+
+A `file_path:` prefix inside `Read`, `Edit` or `Write` never matches anything. Claude Code warns about it at startup, and a deny written that way protects nothing. Write the path form directly: `~/path` for home-relative or `//abs/path` for absolute. A single leading `/` anchors at the settings source, not at the filesystem root. The live deny list in `settings.json` is the working example.
 
 **Wildcards:**
 - `*` matches any characters within a path segment
