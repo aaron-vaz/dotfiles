@@ -8,7 +8,7 @@
 ./install --help
 ```
 
-`--only`, `--skip` and `--list` choose modules without the picker, for scripts and agents. See [AGENTS.md](AGENTS.md).
+`--only`, `--skip` and `--list` choose modules without the picker, for scripts and agents. See [docs/agents/install.md](docs/agents/install.md).
 
 ## Extensions
 
