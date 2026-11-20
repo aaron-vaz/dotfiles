@@ -51,6 +51,16 @@ A module uses only the files it needs. The names are what make them load:
 
 `$DOTFILES` points at the repo root in all of them.
 
+## Extensions
+
+Machine-specific modules that must not be public (work tools, a server's backup jobs) live outside this repo, in `~/.dotfiles.d/<extension>/` (`$DOTFILES_EXTENSIONS_DIR` moves it; set it in `~/.zshenv`, since `~/.localrc` loads too late). An extension is laid out like this repo: module folders with the files above, plus an optional `bin/` (put on `PATH`) and `functions/` (autoloaded). It is usually a private git clone, but a plain folder works.
+
+- `install` lists extension modules as `<extension>/<module>` after the built-in ones, and runs their `install.sh` from the extension's root.
+- `bin/up` pulls each extension that is a git repo with no uncommitted changes, then sources its modules' `update.sh`. A failed pull warns and `up` carries on.
+- `.zshrc` loads extension `*.zsh` files after the built-in ones in each phase.
+
+Nothing about a specific extension belongs in this repo.
+
 ## Writing a module
 
 - **`install.sh` is idempotent.** Check before doing work (`command -v tool`, `[ -d ~/.tool ]`) so running `./install` again is safe and quick.

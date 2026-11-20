@@ -1,8 +1,8 @@
 export CLICOLOR=true
 
-fpath=($DOTFILES/functions $fpath)
+fpath=($DOTFILES/functions ${DOTFILES_EXTENSIONS_DIR:-$HOME/.dotfiles.d}/*/functions(N/) $fpath)
 
-autoload -U $DOTFILES/functions/*(:t)
+autoload -U $DOTFILES/functions/*(:t) ${DOTFILES_EXTENSIONS_DIR:-$HOME/.dotfiles.d}/*/functions/*(N:t)
 
 bindkey "^[[3~" delete-char
 

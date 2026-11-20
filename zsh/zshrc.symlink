@@ -7,9 +7,13 @@ DOTFILES=${${(%):-%x}:A:h:h}
 [[ -f $DOTFILES/install ]] || DOTFILES=$PROJECTS/shell/dotfiles
 export DOTFILES
 
-# all of our zsh files
+# extensions add modules from outside this repo, e.g. ~/.dotfiles.d/work/vpn.
+# Set DOTFILES_EXTENSIONS_DIR in ~/.zshenv to move them: ~/.localrc is too late.
+export DOTFILES_EXTENSIONS_DIR=${DOTFILES_EXTENSIONS_DIR:-$HOME/.dotfiles.d}
+
+# all of our zsh files, the extensions' after this repo's
 typeset -U config_files
-config_files=($DOTFILES/*/*.zsh)
+config_files=($DOTFILES/*/*.zsh $DOTFILES_EXTENSIONS_DIR/*/*/*.zsh(N))
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}; do

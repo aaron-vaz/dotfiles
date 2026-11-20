@@ -18,3 +18,24 @@ for update_script in $DOTFILES/**/update.sh; do
   source $update_script
   echo ""
 done
+
+# then each extension in ~/.dotfiles.d: pull it when it is a git repo, and
+# update its modules
+for extension in ${DOTFILES_EXTENSIONS_DIR:-$HOME/.dotfiles.d}/*(N/); do
+  if [[ -e $extension/.git ]]
+  then
+    if [[ $(git -C $extension diff --shortstat 2> /dev/null | tail -n1) != "" ]]
+    then
+      echo "\033[1;31m──›\033[0m ${extension:t} is dirty, skipping pull"
+    else
+      echo "\033[00;32m──›\033[0m updating ${extension:t}"
+      git -C $extension pull || echo "\033[1;31m──›\033[0m ${extension:t} pull failed"
+    fi
+    echo ""
+  fi
+
+  for update_script in $extension/*/update.sh(N); do
+    source $update_script
+    echo ""
+  done
+done

@@ -14,6 +14,9 @@ set -e
 cd "$(dirname "$0")"
 export DOTFILES="$PWD"
 
+# extensions add modules from outside this repo, e.g. ~/.dotfiles.d/work/vpn
+ext_dir="${DOTFILES_EXTENSIONS_DIR:-$HOME/.dotfiles.d}"
+
 usage() {
   echo "usage: install [-y|--all] [--only a,b] [--skip a,b] [--no-update] [--list]"
   echo ""
@@ -22,6 +25,9 @@ usage() {
   echo "  --skip a,b      install every module but these, without asking"
   echo "  --no-update     do not run bin/up afterwards"
   echo "  --list          print the modules, one per line, and exit"
+  echo ""
+  echo "Modules in \$DOTFILES_EXTENSIONS_DIR (default ~/.dotfiles.d) are named"
+  echo "<extension>/<module>, e.g. work/vpn."
 }
 
 # in_list succeeds when the comma separated list $2 contains $1
@@ -32,12 +38,16 @@ in_list() {
   return 1
 }
 
-# check_modules fails on a name in the comma separated list $1 that is not a module
+# check_modules fails on a name in the comma separated list $1 that is not in
+# the modules array. Empty names (",gh", "gh,,pyenv") are skipped.
 check_modules() {
-  local name
+  local name names all
 
-  for name in ${1//,/ }; do
-    if ! [ -f "$name/install.sh" ]; then
+  all=$(IFS=,; echo "${modules[*]}")
+  IFS=, read -r -a names <<< "$1"
+  for name in "${names[@]}"; do
+    [ -n "$name" ] || continue
+    if ! in_list "$name" "$all"; then
       echo "unknown module: $name (see install --list)" >&2
       exit 1
     fi
@@ -126,9 +136,6 @@ main() {
     shift
   done
 
-  check_modules "$only"
-  check_modules "$skip"
-
   # homebrew goes first: other modules install with brew on macOS
   modules=(homebrew)
   selected=(1)
@@ -137,6 +144,17 @@ main() {
     modules+=("${install_file%/install.sh}")
     selected+=(1)
   done
+
+  # extension modules come after this repo's, so they can build on them
+  for install_file in "$ext_dir"/*/*/install.sh; do
+    [ -f "$install_file" ] || continue
+    install_file="${install_file#"$ext_dir"/}"
+    modules+=("${install_file%/install.sh}")
+    selected+=(1)
+  done
+
+  check_modules "$only"
+  check_modules "$skip"
 
   if [ "$list" = 1 ]; then
     printf '%s\n' "${modules[@]}"
@@ -169,7 +187,10 @@ main() {
     echo ""
 
     load_brew
-    bash -e "${modules[$i]}/install.sh"
+    case "${modules[$i]}" in
+      */*) (cd "$ext_dir/${modules[$i]%%/*}" && bash -e "${modules[$i]#*/}/install.sh") ;;
+      *) bash -e "${modules[$i]}/install.sh" ;;
+    esac
   done
 
   load_brew
