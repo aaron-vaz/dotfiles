@@ -8,6 +8,9 @@ _cc_update_claude() {
   claude update >&2 2>&1 || echo "⚠️  claude update failed — continuing" >&2
 }
 
+# Launches go through claude-with-secrets (reads MCP secrets from the Keychain
+# inside the tmux pane, then execs claude); see claude/.claude/README.md.
+
 # _cc_env_prefix — forward CC_MAIN_EDITS (delegation-hook escape hatch) into the
 # claude process. tmux gives new sessions the server's environment, not this
 # shell's, so the variable has to ride on the command itself via env(1).
@@ -38,7 +41,7 @@ cc() {
     tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/cc-XXXXXX") || return 1
     echo "📁 throwaway dir: $tmp_dir" >&2
     local -a env_prefix=(${(z)$(_cc_env_prefix)})
-    ( builtin cd -q "$tmp_dir" && tmux new-session -s "mcc-$(date +%H%M%S)" "${env_prefix[@]}" claude --model 'sonnet[1m]' "${base_args[@]}" "$@" )
+    ( builtin cd -q "$tmp_dir" && tmux new-session -s "mcc-$(date +%H%M%S)" "${env_prefix[@]}" "$HOME/.claude/scripts/claude-with-secrets" --model 'sonnet[1m]' "${base_args[@]}" "$@" )
     return $?
   fi
 
@@ -64,7 +67,7 @@ cc() {
   base_name=$(basename "$(pwd)" | sed 's/[^a-zA-Z0-9_-]/_/g')
 
   local -a env_prefix=(${(z)$(_cc_env_prefix)})
-  local claude_cmd=("${env_prefix[@]}" claude --model 'sonnet[1m]' "${base_args[@]}")
+  local claude_cmd=("${env_prefix[@]}" "$HOME/.claude/scripts/claude-with-secrets" --model 'sonnet[1m]' "${base_args[@]}")
 
   # ---- Session naming helpers ---------------------------------------------
   _cc_new_session_name() {

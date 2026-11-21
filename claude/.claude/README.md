@@ -88,7 +88,7 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 - **Status line:** `subagentStatusLine` → `hooks/subagent-statusline.js`. Row: status glyph, agent type, model tier (colored), elapsed, context %, tokens, sparkline, effort, label.
 - **Tests:** `tests/delegation-mechanical.sh`.
 - **Verified harness facts** (model resolution order, status line payload, report and resume mechanics, deny-rule caveats): `references/delegation-stack.md`.
-- **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch).
+- **Launchers:** `cc` and `mcc` run `claude update` before starting (failure never blocks launch) and start claude via `scripts/claude-with-secrets` (see MCP secrets below).
 
 ### Session naming
 
@@ -116,6 +116,26 @@ Main session (`cc`, Sonnet) stays open for ad-hoc questions. Anything that edits
 Design rationale (flat entries, gitignored TSV index, SessionStart output rules): `references/memory-system.md`.
 
 **Tests:** `tests/kb-search-mechanical.sh`, `tests/kb-feedback-push-mechanical.sh`, `tests/kb-session-reminder-mechanical.sh`.
+
+## MCP secrets (Keychain)
+
+MCP secrets are not stored in `mcp.json` or `~/.mcp.json`. Both reference them as `${VAR}` placeholders (`TESSERAE_MCP_TOKEN`, `HOMEASSISTANT_MCP_TOKEN`), which Claude Code expands from its environment. `cc`/`mcc` start claude through `scripts/claude-with-secrets`, which reads each value from the macOS Keychain and then `exec`s claude.
+
+| Env var | Keychain service |
+|---------|------------------|
+| `TESSERAE_MCP_TOKEN` | `tesserae-mcp-token` |
+| `HOMEASSISTANT_MCP_TOKEN` | `homeassistant-mcp-token` (raw token, no `Bearer `) |
+
+```bash
+# Add or update one (prompts for the value; -U overwrites)
+security add-generic-password -U -a "$USER" -s tesserae-mcp-token -w
+security add-generic-password -U -a "$USER" -s homeassistant-mcp-token -w
+```
+
+- **Why a launcher:** a tmux pane does not inherit the launching shell's exports, and `env VAR=secret claude` would leave the secret in the tmux client's argv. The launcher runs inside the pane and reads the Keychain there.
+- **Missing item:** the launcher warns on stderr (variable name only) and starts claude anyway; that MCP server will fail to authenticate.
+- **Plain `claude` outside `cc`/`mcc` has no secrets.** Use `~/.claude/scripts/claude-with-secrets` instead, or export the variables yourself. A variable already set in the environment is not overwritten.
+- **Adding a secret:** add an `ENV_VAR:service` row to `SECRETS` in the script and reference `${ENV_VAR}` in the MCP config.
 
 ## Setup
 

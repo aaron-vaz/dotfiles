@@ -1,3 +1,18 @@
 {
-  "mcpServers": {}
+  "mcpServers": {
+    "tesserae": {
+      "command": "tesserae-mcp",
+      "env": {
+        "TESSERAE_URL": "http://homeassistant.aaronvaz.home:8765",
+        "TESSERAE_MCP_TOKEN": "${TESSERAE_MCP_TOKEN}"
+      }
+    },
+    "homeassistant": {
+      "type": "http",
+      "url": "http://homeassistant.aaronvaz.home:8123/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${HOMEASSISTANT_MCP_TOKEN}"
+      }
+    }
+  }
 }
