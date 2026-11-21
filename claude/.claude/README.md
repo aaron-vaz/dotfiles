@@ -117,25 +117,28 @@ Design rationale (flat entries, gitignored TSV index, SessionStart output rules)
 
 **Tests:** `tests/kb-search-mechanical.sh`, `tests/kb-feedback-push-mechanical.sh`, `tests/kb-session-reminder-mechanical.sh`.
 
-## MCP secrets (Keychain)
+## MCP secrets (OS keystore)
 
-MCP secrets are not stored in `mcp.json` or `~/.mcp.json`. Both reference them as `${VAR}` placeholders (`TESSERAE_MCP_TOKEN`, `HOMEASSISTANT_MCP_TOKEN`), which Claude Code expands from its environment. `cc`/`mcc` start claude through `scripts/claude-with-secrets`, which reads each value from the macOS Keychain and then `exec`s claude.
+MCP configs hold `${VAR}` placeholders, never secret values. `cc`/`mcc` start claude through `scripts/claude-with-secrets`, which reads each secret from the OS keystore (macOS Keychain via `security`, else Linux `secret-tool`), exports it, and then `exec`s claude. Claude Code expands `${VAR}` in `command`, `args`, `env`, `url` and `headers`.
 
-| Env var | Keychain service |
-|---------|------------------|
-| `TESSERAE_MCP_TOKEN` | `tesserae-mcp-token` |
-| `HOMEASSISTANT_MCP_TOKEN` | `homeassistant-mcp-token` (raw token, no `Bearer `) |
+The secret list is per machine and untracked. Create `${XDG_CONFIG_HOME:-~/.config}/claude/secrets.map` (override the path with `CLAUDE_SECRETS_MAP`), one `ENV_VAR keystore-service` pair per line. `scripts/claude-with-secrets.map.example` shows the format.
 
 ```bash
-# Add or update one (prompts for the value; -U overwrites)
-security add-generic-password -U -a "$USER" -s tesserae-mcp-token -w
-security add-generic-password -U -a "$USER" -s homeassistant-mcp-token -w
+# 1. Store the value (prompts for it; -U overwrites)
+security add-generic-password -U -a "$USER" -s my-mcp-token -w          # macOS
+secret-tool store --label=my-mcp-token service my-mcp-token             # Linux
+
+# 2. Map it to an env var on this machine
+echo 'MY_MCP_TOKEN my-mcp-token' >> ~/.config/claude/secrets.map
+
+# 3. Reference it in the MCP config as ${MY_MCP_TOKEN}
 ```
 
-- **Why a launcher:** a tmux pane does not inherit the launching shell's exports, and `env VAR=secret claude` would leave the secret in the tmux client's argv. The launcher runs inside the pane and reads the Keychain there.
-- **Missing item:** the launcher warns on stderr (variable name only) and starts claude anyway; that MCP server will fail to authenticate.
-- **Plain `claude` outside `cc`/`mcc` has no secrets.** Use `~/.claude/scripts/claude-with-secrets` instead, or export the variables yourself. A variable already set in the environment is not overwritten.
-- **Adding a secret:** add an `ENV_VAR:service` row to `SECRETS` in the script and reference `${ENV_VAR}` in the MCP config.
+- **Why a launcher:** a tmux pane does not inherit the launching shell's exports, and `env VAR=secret claude` would leave the secret in the tmux client's argv. The launcher runs inside the pane and reads the keystore there.
+- **No map file:** the launcher starts claude with no secrets. `${VAR}` placeholders for unset variables make those MCP servers fail to authenticate.
+- **Missing keystore item:** the launcher warns on stderr (names only) and starts claude anyway.
+- **Plain `claude` outside `cc`/`mcc` has no secrets.** Run `~/.claude/scripts/claude-with-secrets` instead, or export the variables yourself. A variable already set in the environment is not overwritten.
+- **Values are stored raw:** keep prefixes such as `Bearer ` in the MCP config, not in the keystore.
 
 ## Setup
 
